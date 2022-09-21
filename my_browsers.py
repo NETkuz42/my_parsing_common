@@ -93,5 +93,3 @@ class Chrome:
         finally:
             sleep(1)
         return work_chrome.page_source
-
-#test
