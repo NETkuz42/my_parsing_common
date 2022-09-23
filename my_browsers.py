@@ -96,6 +96,6 @@ class Chrome:
         return work_chrome.page_source
 
 
-chrome=Chrome().start_chrome(header=False)
-chrome.get("https://www.drom.ru/")
-input("тест")
+# chrome=Chrome().start_chrome(header=False)
+# chrome.get("https://www.drom.ru/")
+# input("тест")
