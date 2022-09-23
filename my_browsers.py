@@ -7,6 +7,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from user_agent import generate_user_agent
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import WebDriverException
+from os import path
 
 
 class Chrome:
@@ -14,15 +15,16 @@ class Chrome:
     # Определяет браузер в классе
     def __init__(self, browser=None):
         self.browser = browser
+        self.path_to_dir = os.path.dirname(__file__)
         pass
 
     # Запускает Хром
     def start_chrome(self, profile=0, header=True):  # Принимает номер профиля, по умолчанию 0)
-        ser = Service(executable_path='browsers\\chromedriver.exe')  # путь к chromedriver
+        ser = Service(executable_path=path.join(self.path_to_dir, 'browsers\\chromedriver.exe'))  # путь к chromedriver
         op = webdriver.ChromeOptions()  # опции для неразлоченного селениума
         if header:
             op.add_argument('--headless')  # Параметр запуска безголового режима
-        op.binary_location = r'C:\PHYTON\my_parsing_common\browsers\chrome\Chrome 105.0.5195.127\chrome.exe'  # Путь к старой версии хрома
+        op.binary_location = path.join(self.path_to_dir, 'browsers\\chrome\\Chrome 105.0.5195.127\\chrome.exe')  # Путь к старой версии хрома
         op.add_argument(
             f"--user-data-dir=D:\\DISTRIB_LOCAL\\PARSING\\CHROME\\FAKE_USER_DATA_{str(profile)}")  # Путь к папке с профилями
         op.add_argument("--profile-directory=default")  # Загружает нужный профиль
@@ -95,7 +97,3 @@ class Chrome:
             sleep(1)
         return work_chrome.page_source
 
-
-# chrome=Chrome().start_chrome(header=False)
-# chrome.get("https://www.drom.ru/")
-# input("тест")
