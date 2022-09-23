@@ -22,8 +22,9 @@ class Chrome:
         op = webdriver.ChromeOptions()  # опции для неразлоченного селениума
         if header:
             op.add_argument('--headless')
+        op.binary_location = "browsers\\chrome\\Chrome 105.0.5195.127\\chrome.exe"
         op.add_argument(
-            f"--user-data-dir=D:\\DISTRIB\\PARSING\\CHROME\\FAKE_USER_DATA_{str(profile)}")  # Путь к папке с профилями
+            f"--user-data-dir=D:\\DISTRIB_LOCAL\\PARSING\\CHROME\\FAKE_USER_DATA_{str(profile)}")  # Путь к папке с профилями
         op.add_argument("--profile-directory=default")  # Загружает нужный профиль
         op.add_argument(
             'log-level=3')  # Отображает только критические ошибки в логе, вылазили некритичные ошибки в VC code
