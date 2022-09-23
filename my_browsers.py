@@ -14,14 +14,14 @@ class Chrome:
 
     # Определяет браузер в классе
     def __init__(self, browser=None):
-        self.browser = browser
-        self.path_to_dir = os.path.dirname(__file__)
+        self.browser = browser  # Сессия хрома которой управлять
+        self.path_to_dir = path.dirname(__file__)  # Путь к текущей папке
         pass
 
     # Запускает Хром
     def start_chrome(self, profile=0, header=True):  # Принимает номер профиля, по умолчанию 0)
         ser = Service(executable_path=path.join(self.path_to_dir, 'browsers\\chromedriver.exe'))  # путь к chromedriver
-        op = webdriver.ChromeOptions()  # опции для неразлоченного селениума
+        op = webdriver.ChromeOptions()  # опции для не разлоченного селениума
         if header:
             op.add_argument('--headless')  # Параметр запуска безголового режима
         op.binary_location = path.join(self.path_to_dir, 'browsers\\chrome\\Chrome 105.0.5195.127\\chrome.exe')  # Путь к старой версии хрома
@@ -38,10 +38,10 @@ class Chrome:
         op.add_argument(f"user-agent={fake_user_agent}")  # устанавливает фиктивный юзер агент
         # op.add_argument("--disable-notifications") # Отключает уведомления, включение этой функции даёт не прохождение проверки на intoli.com
 
-        op.add_experimental_option("excludeSwitches", ["enable-automation"])  # Убирает данные что хром в авторежиме
-        op.add_experimental_option("useAutomationExtension", False)  # Убирает данные что хром в авторежиме
+        op.add_experimental_option("excludeSwitches", ["enable-automation"])  # Убирает данные что хром в авто режиме
+        op.add_experimental_option("useAutomationExtension", False)  # Убирает данные что хром в авто режиме
         self.browser = webdriver.Chrome(service=ser, options=op)  # Запускает селениум
-        self.browser.set_page_load_timeout(60)  # Максимальное время ожидания прогрузки старницы.
+        self.browser.set_page_load_timeout(60)  # Максимальное время ожидания загрузки страницы.
         return self.browser
 
     # Возвращает информацию от текущем юзер агенте
@@ -68,16 +68,16 @@ class Chrome:
         agent_info = self.info_user_agent()  # Сохраняет полученного юзер агента
         return agent_info
 
-    # переключается на окно с натройкамии и удаляет кэш
+    # переключается на окно с настройками и удаляет кэш
     def clear_cache(self):
         self.browser.get('chrome://settings/clearBrowserData')  # Открывает настройки
         sleep(2)
-        actions = ActionChains(self.browser)  # Определяет начала дейсвия
+        actions = ActionChains(self.browser)  # Определяет начала действия
         actions.send_keys(Keys.TAB * 7 + Keys.ENTER)  # Переключается на кнопку "выполнить сброс"
-        actions.perform()  # Подтверждает сброк
+        actions.perform()  # Подтверждает сброс
 
     # Открывает новую вкладку и определяет её ID
-    def new_tab(self, tab_number):  # Функция запускающая новое окнои возвращающая его ID
+    def new_tab(self, tab_number):  # Функция запускающая новое окно и возвращающая его ID
         self.browser.execute_script(f'''window.open("", "_blank");''')  # Запускает новое пустое окно
         self.browser.switch_to.window(self.browser.window_handles[tab_number])  # переключается на новое окно
         tab_id = self.browser.current_window_handle  # Определяет ID нового окна
