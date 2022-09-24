@@ -97,8 +97,3 @@ class Chrome:
             sleep(1)
         return work_chrome.page_source
 
-# Тест
-# тест2
-# Тест 3
-# тест 4
-# тест 5
