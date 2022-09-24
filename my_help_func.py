@@ -64,7 +64,3 @@ def find_values(value_type, table, clarification):
     except AttributeError:
         name = None
     return name
-
-
-
-
