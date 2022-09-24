@@ -65,9 +65,6 @@ def find_values(value_type, table, clarification):
         name = None
     return name
 
-#test
-
-
 
 
 
