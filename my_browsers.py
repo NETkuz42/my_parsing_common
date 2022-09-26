@@ -19,7 +19,7 @@ class Chrome:
         pass
 
     # Запускает Хром
-    def start_chrome(self, profile=0, header=True):  # Принимает номер профиля, по умолчанию 0)
+    def start_chrome(self, profile=0, header=False):  # Принимает номер профиля, по умолчанию 0)
         ser = Service(executable_path=path.join(self.path_to_dir, 'browsers\\chromedriver.exe'))  # путь к chromedriver
         op = webdriver.ChromeOptions()  # опции для не разлоченного селениума
         if header:
@@ -96,3 +96,6 @@ class Chrome:
         finally:
             sleep(1)
         return work_chrome.page_source
+
+
+

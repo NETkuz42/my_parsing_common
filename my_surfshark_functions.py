@@ -161,7 +161,7 @@ class My_surf:
             else: log.write(f";{reason_gap};{successful_pages}\n{now_time};{cause};{country};{ip}") #Если запуск сурфа не первый значит выодит все параметры.
 
     #Функция обходда капчи и пустых окон путём переключения серверов сурфшарка.
-    def connect_error_detect(self,page,status=None,successful_pages=None, max_page=130):
+    def connect_error_detect(self, page, status=None, successful_pages=None, max_page=130):
 
         #Запускает переподключение по новому кругу
         def new_face(new_status):
