@@ -18,7 +18,7 @@ def auto_parsing(browser, ID, link_pages, bs_func, country_explorer=False,):
     # Коннектится к первой стране
     browser.switch_to.window(tab_surf_id)  # Переключается на окно с сурфом и Поехали
     if country_explorer:
-        country=country_explorer.get_country(ID)  # Если задан эксплорер получает страну из него
+        country = country_explorer.get_country(ID)  # Если задан эксплорер получает страну из него
     else:
         country = None  # Если нет эксплорера тогда пустое значение, чтобы получить страну рандомно.
     sleep(1)
@@ -37,13 +37,13 @@ def auto_parsing(browser, ID, link_pages, bs_func, country_explorer=False,):
     successful_page = 0
     list_dicts = []
     for link in link_pages:  # В словаре ссылок берёт ссылку и список номеров страниц
-        # number_pages += 1
-        # if number_pages != 0 and number_pages % 30 == 0:  # Для недопущения блокировки сурфом, спит с заданной периодичностью.
-        #     sleep_time = 600  # сплю 10 минут
-        #     print(f"ID:{ID} промежуточный лимит: {number_pages} сплю {sleep_time}")
-        #     sleep(sleep_time)
-        # else:
-        #     sleep(random.randrange(12, 30))  # Время ожидания между подходами
+        number_pages += 1
+        if number_pages != 0 and number_pages % 30 == 0:  # Для недопущения блокировки сурфом, спит с заданной периодичностью.
+            sleep_time = 600  # сплю 10 минут
+            print(f"ID:{ID} промежуточный лимит: {number_pages} сплю {sleep_time}")
+            sleep(sleep_time)
+        else:
+            sleep(random.randrange(12, 30))  # Время ожидания между подходами
 
         surf.connect_error_detect(link, status=None, successful_pages=successful_page,
                                   max_page=130)  # Проверяет прошла ли проверка на успешность загрузки по многим парметрам
