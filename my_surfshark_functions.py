@@ -5,6 +5,7 @@ from numpy import maximum
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import WebDriverException
 from time import sleep, time
 import random
 import time
@@ -185,9 +186,9 @@ class My_surf:
         except TimeoutException:
             print("ID ",self.ID," ошибка загрузки ","страница за указанное время не загрузилась")
             successful_pages=new_face("empty_page") #Коннектится под новым лицом
-        except: #Если ошибка при открытии, уходит в рекурсивную функцию смены VPN серверов.
-            print("ID ",self.ID," ошибка загрузки ","пустая страница")
-            successful_pages=new_face("empty_page") #Коннектится под новым лицом
+        except WebDriverException: #Если ошибка при открытии, уходит в рекурсивную функцию смены VPN серверов.
+            print("ID ",self.ID," ошибка загрузки ","ошибка драйвера")
+            successful_pages = new_face("empty_page") #Коннектится под новым лицом
         sleep(1)
         surf_lock_status=self.alert_detect() #Проверяет наличие блокировки сурфом
         if surf_lock_status==True:

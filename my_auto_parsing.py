@@ -39,7 +39,7 @@ def auto_parsing(browser, ID, link_pages, key_func, country_explorer=False,):
     number_pages = 0
     successful_page = 0
     result_frame = pd.DataFrame()
-    for link in link_pages:  # В словаре ссылок берёт ссылку и список номеров страниц
+    for link in link_pages:  # В списке ссылок берёт ссылку и список номеров страниц
         number_pages += 1
         if number_pages != 0 and number_pages % 30 == 0:  # Для недопущения блокировки сурфом, спит с заданной периодичностью.
             sleep_time = 600  # сплю 10 минут
