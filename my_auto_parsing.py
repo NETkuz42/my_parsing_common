@@ -1,3 +1,5 @@
+import pandas as pd
+
 from my_parsing_common.my_surfshark_functions import My_surf as ms
 from my_parsing_common.my_browsers import Chrome
 from time import sleep
@@ -5,6 +7,7 @@ import random
 
 
 def auto_parsing(browser, ID, link_pages, key_func, country_explorer=False,):
+    sleep(ID*10)
     driver_control = Chrome(browser)  # Ввожу управление
     real_agent = driver_control.info_user_agent()  # Сохраняет реальный юзер агент
 
@@ -35,7 +38,7 @@ def auto_parsing(browser, ID, link_pages, key_func, country_explorer=False,):
 
     number_pages = 0
     successful_page = 0
-    list_dicts = []
+    result_frame = pd.DataFrame()
     for link in link_pages:  # В словаре ссылок берёт ссылку и список номеров страниц
         number_pages += 1
         if number_pages != 0 and number_pages % 30 == 0:  # Для недопущения блокировки сурфом, спит с заданной периодичностью.
@@ -47,7 +50,7 @@ def auto_parsing(browser, ID, link_pages, key_func, country_explorer=False,):
 
         surf.connect_error_detect(link, status=None, successful_pages=successful_page,
                                   max_page=130)  # Проверяет прошла ли проверка на успешность загрузки по многим параметрам
-        pars_list = bs_func(browser.page_source)  # Выгружает список объявлений
-        list_dicts.append(pars_list)
-    return list_dicts
+        part_frame = key_func(browser, link)  # Выгружает список объявлений
+        result_frame = pd.concat([result_frame,part_frame])
+    return result_frame
 
