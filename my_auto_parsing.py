@@ -4,7 +4,7 @@ from time import sleep
 import random
 
 
-def auto_parsing(browser, ID, link_pages, bs_func, country_explorer=False,):
+def auto_parsing(browser, ID, link_pages, key_func, country_explorer=False,):
     driver_control = Chrome(browser)  # Ввожу управление
     real_agent = driver_control.info_user_agent()  # Сохраняет реальный юзер агент
 
@@ -43,11 +43,11 @@ def auto_parsing(browser, ID, link_pages, bs_func, country_explorer=False,):
             print(f"ID:{ID} промежуточный лимит: {number_pages} сплю {sleep_time}")
             sleep(sleep_time)
         else:
-            sleep(random.randrange(12, 30))  # Время ожидания между подходами
+            sleep(random.randrange(0, 2))  # Время ожидания между подходами
 
         surf.connect_error_detect(link, status=None, successful_pages=successful_page,
-                                  max_page=130)  # Проверяет прошла ли проверка на успешность загрузки по многим парметрам
-        pars_list = bs_func(browser.page_source)  # Выгружает список обявлений
+                                  max_page=130)  # Проверяет прошла ли проверка на успешность загрузки по многим параметрам
+        pars_list = bs_func(browser.page_source)  # Выгружает список объявлений
         list_dicts.append(pars_list)
     return list_dicts
 
