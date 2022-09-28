@@ -182,23 +182,23 @@ class My_surf:
             successful_pages=new_face("page_limit") #Если блокировка есть уходит на новый круг
 
         try:                       
-            self.browser.get(page) #Пробует открыть страницу
+            self.browser.get(page)  # Пробует открыть страницу
         except TimeoutException:
-            print("ID ",self.ID," ошибка загрузки ","страница за указанное время не загрузилась")
-            successful_pages=new_face("empty_page") #Коннектится под новым лицом
-        except WebDriverException: #Если ошибка при открытии, уходит в рекурсивную функцию смены VPN серверов.
+            print("ID ", self.ID, " ошибка загрузки ", "страница за указанное время не загрузилась")
+            successful_pages=new_face("empty_page")  # Коннектится под новым лицом
+        except WebDriverException:  # Если ошибка при открытии, уходит в рекурсивную функцию смены VPN серверов.
             print("ID ",self.ID," ошибка загрузки ","ошибка драйвера")
             successful_pages = new_face("empty_page") #Коннектится под новым лицом
         sleep(1)
-        surf_lock_status=self.alert_detect() #Проверяет наличие блокировки сурфом
-        if surf_lock_status==True:
-            print("ID ",self.ID," блокировка ","surf_alert")
-            successful_pages=new_face("surf_alert") #Если блокировка есть уходит на новый круг
+        surf_lock_status=self.alert_detect()  # Проверяет наличие блокировки сурфом
+        if surf_lock_status:
+            print("ID ", self.ID, " блокировка ", "surf_alert")
+            successful_pages = new_face("surf_alert")  # Если блокировка есть уходит на новый круг
         sleep(1)
-        website_lock_status=self.website_lock_detect() #Проверяряет наличие блокировки сайтом
+        website_lock_status = self.website_lock_detect() #Проверяряет наличие блокировки сайтом
         if website_lock_status!=False:
-            print("ID ",self.ID," блокировка ",website_lock_status)
-            successful_pages=new_face(website_lock_status) #Если блокировка есть уходит на новый круг
+            print("ID ", self.ID, " блокировка ", website_lock_status)
+            successful_pages = new_face(website_lock_status)  # Если блокировка есть уходит на новый круг
         sleep(1)
         website_confirm_status=self.website_confirm_detect()
         if website_confirm_status==False:
@@ -262,7 +262,7 @@ class My_surf:
         #Список всех блокировок
         all_known_lock={"'Вы не робот?' in self.browser.find_element(By.ID,'content').text" : "captha farpost",
         "self.browser.find_element(By.CSS_SELECTOR,'body > div.container > div > h1').text=='Доступ ограничен: проблема с IP'" : "block ip Avito"}
-        for lock,name_lock in all_known_lock.items(): #Пербирает все типы блокировок
+        for lock, name_lock in all_known_lock.items(): #Пербирает все типы блокировок
             try:
                 if eval(lock): return name_lock #Если находит блокировку возвращает название
             except TimeoutException: return "за заданное время время сайт не загрузился"
