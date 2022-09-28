@@ -103,6 +103,7 @@ class Chrome:
         return work_chrome.page_source
 
     def start_with_surf(self, country_explorer=False):
+        sleep(self.id_browser*10)
         self.start_chrome(header=False)
         driver_control = Chrome(id_browser=self.id_browser, browser=self.browser)  # Ввожу управление
         real_agent = driver_control.info_user_agent()  # Сохраняет реальный юзер агент

@@ -269,24 +269,17 @@ class My_surf:
             except NoSuchElementException: pass
         return False #Если не наход возвращает False
     
-    # #Словарь с признаками успешной загрузки страницы
-    # def website_confirm_detect(self):
-    #     all_known_confirm = {"self.browser.find_element(By.CSS_SELECTOR, 'div[data-ftid=\"component_header\"]')": "Появился логит дрома"}
-    #     for confirm, name_confirm in all_known_confirm.items():
-    #         try:
-    #             if eval(confirm) is True:
-    #                 print(name_confirm)
-    #                 return True
-    #         except NoSuchElementException: pass
-    #     return False #Если не находит подтверждение возвращает False
-
+    #Словарь с признаками успешной загрузки страницы
     def website_confirm_detect(self):
-        all_known_confirm = {self.browser.find_element(By.CSS_SELECTOR, 'div[data-ftid="component_header"]'): "Появился логит дрома"}
+        all_known_confirm = {"self.browser.find_element(By.CSS_SELECTOR, 'div[data-ftid=\"component_header\"]')": "Появился логит дрома"}
         for confirm, name_confirm in all_known_confirm.items():
             try:
-                if confirm is True:
+                test = bool(eval(confirm))
+                if test is True:
                     print(name_confirm)
                     return True
-            except NoSuchElementException: pass
+            except NoSuchElementException:
+                pass
         return False #Если не находит подтверждение возвращает False
+
 
