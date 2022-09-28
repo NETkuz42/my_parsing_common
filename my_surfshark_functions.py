@@ -2,7 +2,7 @@ from ast import Pass
 from hashlib import new
 from unicodedata import name
 from numpy import maximum
-from selenium.webdriver.common.by import By
+from selenium.webdriver.common.by import By as BY
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import WebDriverException
@@ -271,16 +271,12 @@ class My_surf:
     
     #Словарь с признаками успешной загрузки страницы
     def website_confirm_detect(self):
-        all_known_confirm={"self.browser.find_element(By.XPATH,'/html/body/div[1]/div/table/tbody/tr/td[1]/table/tbody/tr/td[1]')":"появился логотип Фарпоста",
-                            "self.browser.find_element(By.XPATH,'/html/body/div[2]/div[2]/div/span')":"Появился логит дрома",
-                            "self.browser.find_element(By.XPATH,'/html/body/div[1]/header/div/div[2]/div[1]')":"Появился логит wildberris",
-                            "self.browser.find_element(By.XPATH,'/html/body/div[1]/div/div[4]/div[3]/div[1]')":"Появился фильтр авито",
-                            "self.browser.find_element(By.XPATH,'/html/body/div/div/div[2]/div/div/div[1]')":"Появился логит алиэкспресс",
-                            "self.browser.find_element(By.XPATH,'/html/body/div[2]/div/div[1]/header/div[1]/div[2]/div/div[1]')":"Появился каталог Озона"
-                            }
-        for confirm,name_confirm in all_known_confirm.items():
+        all_known_confirm = {"self.browser.find_element(BY.CSS_SELECTOR, div[data-ftid='component_header'])": "Появился логит дрома"}
+        for confirm, name_confirm in all_known_confirm.items():
             try:
-                if eval(confirm): return True
+                if eval(confirm) == True:
+                    print(name_confirm)
+                    return True
             except NoSuchElementException: pass
         return False #Если не находит подтверждение возвращает False
 
