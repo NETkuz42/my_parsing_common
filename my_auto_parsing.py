@@ -6,7 +6,7 @@ from time import sleep
 import random
 
 
-def auto_parsing(browser, ID, link_pages, key_func, country_explorer=False,):
+def first_start(browser, ID, link_pages, key_func, country_explorer=False,):
     sleep(ID*10)
     driver_control = Chrome(browser)  # Ввожу управление
     real_agent = driver_control.info_user_agent()  # Сохраняет реальный юзер агент
@@ -15,7 +15,7 @@ def auto_parsing(browser, ID, link_pages, key_func, country_explorer=False,):
     tab_pars_id = driver_control.new_tab(1)  # Запускает пустое окно для парсинга
     tab_setting_id = driver_control.new_tab(2)  # Запускает пусто окно для сброса настроек
 
-    surf = ms(ID, browser, driver_control, country_explorer, real_agent, tab_surf_id, tab_pars_id, tab_setting_id,
+    configured_browser = ms(ID, browser, driver_control, country_explorer, real_agent, tab_surf_id, tab_pars_id, tab_setting_id,
               lose_sleep_time=60)  # Определяю браузер с которым будет работать сурф
 
     # Коннектится к первой стране
@@ -25,7 +25,7 @@ def auto_parsing(browser, ID, link_pages, key_func, country_explorer=False,):
     else:
         country = None  # Если нет эксплорера тогда пустое значение, чтобы получить страну рандомно.
     sleep(1)
-    country_info=surf.surf_connect(country)  # Коннектится к первой стране
+    country_info = configured_browser.surf_connect(country)  # Коннектится к первой стране
 
     # Проверка на успешность подключения
     if country_info[2] != "fail":
@@ -33,13 +33,15 @@ def auto_parsing(browser, ID, link_pages, key_func, country_explorer=False,):
         browser.switch_to.window(tab_pars_id)  # Переключается на окно для парсинга
         driver_control.change_fake_agent()  # Присваивает фейкового агента
     elif country_info[2] == "fail":
-        country_info=surf.remove_evidence("empty_country")  # Если подключение не получилось, будет коннектится через новую страну
-    surf.log(ID, cause="start", country=country_info[0], ip=country_info[2])  # Записывает данные в лог
+        country_info = configured_browser.remove_evidence("empty_country")  # Если подключение не получилось, будет коннектится через новую страну
+    configured_browser.log(ID, cause="start", country=country_info[0], ip=country_info[2])  # Записывает данные в лог
+    return configured_browser
 
+def parsing_links_list(ID, configured_surf, browser, links_list, key_func):
     number_pages = 0
     successful_page = 0
     result_frame = pd.DataFrame()
-    for link in link_pages:  # В списке ссылок берёт ссылку и список номеров страниц
+    for link in links_list:  # В списке ссылок берёт ссылку и список номеров страниц
         number_pages += 1
         if number_pages != 0 and number_pages % 30 == 0:  # Для недопущения блокировки сурфом, спит с заданной периодичностью.
             sleep_time = 600  # сплю 10 минут
@@ -48,8 +50,7 @@ def auto_parsing(browser, ID, link_pages, key_func, country_explorer=False,):
         else:
             sleep(random.randrange(0, 2))  # Время ожидания между подходами
 
-        surf.connect_error_detect(link, status=None, successful_pages=successful_page,
-                                  max_page=130)  # Проверяет прошла ли проверка на успешность загрузки по многим параметрам
+        configured_browser.connect_error_detect(link, status=None, successful_pages=successful_page, max_page=130)  # Проверяет прошла ли проверка на успешность загрузки по многим параметрам
         part_frame = key_func(browser, link)  # Выгружает список объявлений
         result_frame = pd.concat([result_frame,part_frame])
     return result_frame
