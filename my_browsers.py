@@ -16,7 +16,7 @@ import random
 class Chrome:
 
     # Определяет браузер в классе
-    def __init__(self, id_browser=None, browser=None, configured_browser=None):
+    def __init__(self, id_browser, browser=None, configured_browser=None):
         self.id_browser = id_browser
         self.browser = browser  # Сессия хрома которой управлять
         self.configured_browser = configured_browser
@@ -102,11 +102,9 @@ class Chrome:
             sleep(1)
         return work_chrome.page_source
 
-    def start_with_surf(self, id_browser=None, country_explorer=False):
-        if self.id_browser is None:
-            self.id_browser = id_browser
+    def start_with_surf(self, country_explorer=False):
         self.start_chrome(header=False)
-        driver_control = Chrome(self.id_browser, browser=self.browser)  # Ввожу управление
+        driver_control = Chrome(id_browser=self.id_browser, browser=self.browser)  # Ввожу управление
         real_agent = driver_control.info_user_agent()  # Сохраняет реальный юзер агент
 
         tab_surf_id = ms().surf_start(self.browser)  # Запускаю первое окно с сурфом
