@@ -13,7 +13,7 @@ from datetime import datetime
 
 class My_surf:
 
-    def __init__(self,ID=None, browser=None,browser_control=None,country_explorer=None,real_agent=None,tab_surf_id=None,tab_pars_id=None,tab_setting_id=None,connect_method='random_all',lose_sleep_time=300,):
+    def __init__(self,ID=None, browser=None,browser_control=None,country_explorer=False,real_agent=None,tab_surf_id=None,tab_pars_id=None,tab_setting_id=None,connect_method='random_all',lose_sleep_time=300,):
         self.browser=browser #Процесс рабочего браузера
         self.browser_control=browser_control #Класс с набором функций работы с браузером
         self.country_explorer=country_explorer #Диспетчер стран распределяющий их по скорости
@@ -205,7 +205,7 @@ class My_surf:
             print("ID ",self.ID,"нет подтерждения успеха(ХЗ почему)")
             successful_pages=new_face("not_confirm") #Если нет подтверждения успеха,уходит на новый круг
         
-        successful_pages=successful_pages+1
+        successful_pages +=1
         return successful_pages #Возращает значение "успешности" проверки
 
 
@@ -213,7 +213,7 @@ class My_surf:
     def remove_evidence(self,status):
         #Функция реконнекта к новой стране.
         def reload_country(status_low): #Общая функция
-            if self.country_explorer==None: #Если диспетчер стран не задан, задаёт страну нон
+            if not self.country_explorer: #Если диспетчер стран не задан, задаёт страну нон
                 new_country=None
             else:
                 new_country=self.country_explorer.get_another_country(self.ID,old_country_status=status_low) #Возвращает статус старой страны, получает новую из эксплорера
