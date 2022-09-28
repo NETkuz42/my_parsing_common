@@ -2,7 +2,7 @@ from ast import Pass
 from hashlib import new
 from unicodedata import name
 from numpy import maximum
-from selenium.webdriver.common.by import By as BY
+from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import WebDriverException
@@ -269,12 +269,22 @@ class My_surf:
             except NoSuchElementException: pass
         return False #Если не наход возвращает False
     
-    #Словарь с признаками успешной загрузки страницы
+    # #Словарь с признаками успешной загрузки страницы
+    # def website_confirm_detect(self):
+    #     all_known_confirm = {"self.browser.find_element(By.CSS_SELECTOR, 'div[data-ftid=\"component_header\"]')": "Появился логит дрома"}
+    #     for confirm, name_confirm in all_known_confirm.items():
+    #         try:
+    #             if eval(confirm) is True:
+    #                 print(name_confirm)
+    #                 return True
+    #         except NoSuchElementException: pass
+    #     return False #Если не находит подтверждение возвращает False
+
     def website_confirm_detect(self):
-        all_known_confirm = {"self.browser.find_element(BY.CSS_SELECTOR, div[data-ftid='component_header'])": "Появился логит дрома"}
+        all_known_confirm = {self.browser.find_element(By.CSS_SELECTOR, 'div[data-ftid="component_header"]'): "Появился логит дрома"}
         for confirm, name_confirm in all_known_confirm.items():
             try:
-                if eval(confirm) == True:
+                if confirm is True:
                     print(name_confirm)
                     return True
             except NoSuchElementException: pass
