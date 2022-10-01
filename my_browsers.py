@@ -14,13 +14,13 @@ import random
 
 
 class Chrome:
+    path_to_dir = path.dirname(__file__)  # Путь к текущей папке
 
     # Определяет браузер в классе
-    def __init__(self, id_browser, browser=None, configured_browser=None):
+    def __init__(self, id_browser, browser=None, work_surf=None):
         self.id_browser = id_browser
         self.browser = browser  # Сессия хрома которой управлять
-        self.configured_browser = configured_browser
-        self.path_to_dir = path.dirname(__file__)  # Путь к текущей папке
+        self.work_surf = work_surf
         pass
 
     # Запускает Хром
@@ -112,8 +112,8 @@ class Chrome:
         tab_pars_id = driver_control.new_tab(1)  # Запускает пустое окно для парсинга
         tab_setting_id = driver_control.new_tab(2)  # Запускает пусто окно для сброса настроек
 
-        self.configured_browser = ms(self.id_browser, self.browser, driver_control, country_explorer,
-                                     real_agent, tab_surf_id, tab_pars_id, tab_setting_id, lose_sleep_time=300)  # Определяю браузер с которым будет работать сурф
+        self.work_surf = ms(self.id_browser, self.browser, driver_control, country_explorer,
+                            real_agent, tab_surf_id, tab_pars_id, tab_setting_id, lose_sleep_time=300)  # Определяю браузер с которым будет работать сурф
 
         # Коннектится к первой стране
         self.browser.switch_to.window(tab_surf_id)  # Переключается на окно с сурфом и Поехали
@@ -122,7 +122,7 @@ class Chrome:
         else:
             country = None  # Если нет эксплорера тогда пустое значение, чтобы получить страну рандомно.
         sleep(1)
-        country_info = self.configured_browser.surf_connect(country)  # Коннектится к первой стране
+        country_info = self.work_surf.surf_connect(country)  # Коннектится к первой стране
 
         # Проверка на успешность подключения
         if country_info[2] != "fail":
@@ -130,11 +130,11 @@ class Chrome:
             self.browser.switch_to.window(tab_pars_id)  # Переключается на окно для парсинга
             driver_control.change_fake_agent()  # Присваивает фейкового агента
         elif country_info[2] == "fail":
-            country_info = self.configured_browser.remove_evidence(
+            country_info = self.work_surf.remove_evidence(
                 "empty_country")  # Если подключение не получилось, будет коннектится через новую страну
-        self.configured_browser.log(self.id_browser, cause="start", country=country_info[0],
-                               ip=country_info[2])  # Записывает данные в лог
-        return Chrome(self.id_browser, self.browser, self.configured_browser)
+        self.work_surf.log(self.id_browser, cause="start", country=country_info[0],
+                           ip=country_info[2])  # Записывает данные в лог
+        return Chrome(self.id_browser, self.browser, self.work_surf)
 
     def parsing_list_with_surf(self, links_list, key_func):
         number_pages = 0
@@ -149,8 +149,8 @@ class Chrome:
             else:
                 sleep(random.randrange(0, 2))  # Время ожидания между подходами
 
-            self.configured_browser.connect_error_detect(link, status=None, successful_pages=successful_page,
-                                                    max_page=130)  # Проверяет прошла ли проверка на успешность загрузки по многим параметрам
+            self.work_surf.connect_error_detect(link, status=None, successful_pages=successful_page,
+                                                max_page=130)  # Проверяет прошла ли проверка на успешность загрузки по многим параметрам
             part_frame = key_func(self.browser, link)  # Выгружает список объявлений
             result_frame = pd.concat([result_frame, part_frame])
         return result_frame
