@@ -131,8 +131,7 @@ class Chrome:
         elif country_info[2] == "fail":
             country_info = Chrome.work_surf.remove_evidence(
                 "empty_country")  # Если подключение не получилось, будет коннектится через новую страну
-        Chrome.work_surf.log(self.id_browser, cause="start", country=country_info[0],
-                           ip=country_info[2])  # Записывает данные в лог
+        Chrome.work_surf.log(self.id_browser, cause="start", country=country_info[0], ip=country_info[2])  # Записывает данные в лог
         return Chrome.work_surf
 
     def parsing_list_with_surf(self, links_list, key_func):

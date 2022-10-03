@@ -271,7 +271,7 @@ class My_surf:
     
     #Словарь с признаками успешной загрузки страницы
     def website_confirm_detect(self):
-        all_known_confirm = {"self.browser.find_element(By.CSS_SELECTOR, 'div[data-ftid=\"component_head\"]')": "Появился логит дрома"}
+        all_known_confirm = {"self.browser.find_element(By.CSS_SELECTOR, 'div[data-ftid=\"component_header\"]')": "Появился логит дрома"}
         for confirm, name_confirm in all_known_confirm.items():
             try:
                 test = bool(eval(confirm))
