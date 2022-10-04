@@ -174,7 +174,7 @@ class My_surf:
             return reset_pages
 
         #Проверка на максимальное количество загруженных страниц
-        min_page=max_page/2+int(self.ID)*3 #Вводит минимальный лимит страниц
+        min_page=max_page-self.ID*10 #Вводит минимальный лимит страниц
         if min_page<max_page: page_limit=random.randrange(int(min_page),int(max_page)) #Проверяет чтобы минимальный лимит был больше максимального
         else: page_limit=max_page #Если min>max тогда лимит=max.
         if successful_pages>=page_limit:
