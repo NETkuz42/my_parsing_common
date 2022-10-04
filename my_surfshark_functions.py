@@ -13,8 +13,8 @@ from datetime import datetime
 
 class My_surf:
 
-    def __init__(self,ID=None, browser=None,browser_control=None,country_explorer=False,real_agent=None,tab_surf_id=None,tab_pars_id=None,tab_setting_id=None,connect_method='random_all',lose_sleep_time=300,):
-        self.browser=browser #Процесс рабочего браузера
+    def __init__(self,browser_control=None,country_explorer=False,real_agent=None,tab_surf_id=None,tab_pars_id=None,tab_setting_id=None,connect_method='random_all',lose_sleep_time=300,):
+        self.browser= browser_control.browser#Процесс рабочего браузера
         self.browser_control=browser_control #Класс с набором функций работы с браузером
         self.country_explorer=country_explorer #Диспетчер стран распределяющий их по скорости
         self.real_agent=real_agent #реальный юзер агент
@@ -22,7 +22,7 @@ class My_surf:
         self.tab_pars_id=tab_pars_id #Вкладка с запущенным парсингом
         self.tab_setting_id=tab_setting_id #Вкладка с настройками браузера для сброса параметров
         self.lose_sleep_time=lose_sleep_time #Вреамя сна если вылезла ошибка сурфа или 3 неудачных коннекта
-        self.ID=ID
+        self.ID=browser_control.id_browser
 
         pass
 
