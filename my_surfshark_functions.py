@@ -276,7 +276,6 @@ class My_surf:
             try:
                 test = bool(eval(confirm))
                 if test is True:
-                    print(name_confirm)
                     return True
             except NoSuchElementException:
                 pass
