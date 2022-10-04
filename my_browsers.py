@@ -47,7 +47,7 @@ class Chrome:
         op.add_experimental_option("useAutomationExtension", False)  # Убирает данные что хром в авто режиме
         Chrome.browser = webdriver.Chrome(service=ser, options=op)  # Запускает селениум
         Chrome.browser.set_page_load_timeout(60)  # Максимальное время ожидания загрузки страницы.
-        return Chrome.browser
+        return self.browser
 
     # Возвращает информацию от текущем юзер агенте
     def info_user_agent(self):
@@ -108,11 +108,11 @@ class Chrome:
         driver_control = Chrome(self.id_browser)  # Ввожу управление
         real_agent = self.info_user_agent()  # Сохраняет реальный юзер агент
 
-        tab_surf_id = ms().surf_start(Chrome.browser)  # Запускаю первое окно с сурфом
+        tab_surf_id = ms().surf_start(self.browser)  # Запускаю первое окно с сурфом
         tab_pars_id = self.new_tab(1)  # Запускает пустое окно для парсинга
         tab_setting_id = self.new_tab(2)  # Запускает пусто окно для сброса настроек
 
-        Chrome.work_surf = ms(self.id_browser, Chrome.browser, driver_control, country_explorer, real_agent, tab_surf_id, tab_pars_id, tab_setting_id, lose_sleep_time=300)  # Определяю браузер с которым будет работать сурф
+        self.work_surf = ms(self.id_browser, self.browser, driver_control, country_explorer, real_agent, tab_surf_id, tab_pars_id, tab_setting_id, lose_sleep_time=300)  # Определяю браузер с которым будет работать сурф
 
         # Коннектится к первой стране
         Chrome.browser.switch_to.window(tab_surf_id)  # Переключается на окно с сурфом и Поехали
@@ -121,18 +121,18 @@ class Chrome:
         else:
             country = None  # Если нет эксплорера тогда пустое значение, чтобы получить страну рандомно.
         sleep(1)
-        country_info = Chrome.work_surf.surf_connect(country)  # Коннектится к первой стране
+        country_info = self.work_surf.surf_connect(country)  # Коннектится к первой стране
 
         # Проверка на успешность подключения
         if country_info[2] != "fail":
             sleep(1)
-            Chrome.browser.switch_to.window(tab_pars_id)  # Переключается на окно для парсинга
+            self.work_surf.browser.switch_to.window(tab_pars_id)  # Переключается на окно для парсинга
             self.change_fake_agent()  # Присваивает фейкового агента
         elif country_info[2] == "fail":
-            country_info = Chrome.work_surf.remove_evidence(
+            country_info = self.work_surf.remove_evidence(
                 "empty_country")  # Если подключение не получилось, будет коннектится через новую страну
-        Chrome.work_surf.log(self.id_browser, cause="start", country=country_info[0], ip=country_info[2])  # Записывает данные в лог
-        return Chrome.work_surf
+        self.work_surf.log(self.id_browser, cause="start", country=country_info[0], ip=country_info[2])  # Записывает данные в лог
+        return self.work_surf
 
     def parsing_list_with_surf(self, links_list, key_func):
         number_pages = 0
