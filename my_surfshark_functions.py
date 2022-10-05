@@ -162,6 +162,39 @@ class My_surf:
             else: log.write(f";{reason_gap};{successful_pages}\n{now_time};{cause};{country};{ip}") #Если запуск сурфа не первый значит выодит все параметры.
 
     #Функция обходда капчи и пустых окон путём переключения серверов сурфшарка.
+    def remove_evidence(self,status):
+        #Функция реконнекта к новой стране.
+        def reload_country(status_low): #Общая функция
+            if not self.country_explorer: #Если диспетчер стран не задан, задаёт страну нон
+                new_country=None
+            else:
+                new_country=self.country_explorer.get_another_country(self.ID,old_country_status=status_low) #Возвращает статус старой страны, получает новую из эксплорера
+            try_session=self.surf_connect(country=new_country) #Коннектит сурфшарк к новому серверу
+            if try_session[2]=="fail": reload_country("empty_country")
+            return try_session #Возрващает страну, список стран, новый ip, количество попыток
+
+        self.browser.switch_to.window(self.tab_pars_id), #Переключаюсь на окно парсинга
+        sleep(1)
+        self.browser.get('about:blank'), #Открывает пустую страницу
+        sleep(2)
+        self.browser.switch_to.window(self.tab_setting_id) #Переключается на окно с настройками
+        sleep(2)
+        self.browser_control.change_manual_agent(self.real_agent), #Меняет агента на реального
+        sleep(1)
+        self.browser_control.clear_cache(), #Удаляет весь кэш и куки
+        sleep(1)
+        self.surf_disconnect(), #Разрывает соединение
+        sleep(1)
+        surf_session=reload_country(status) #Коннекится к новой стране
+        sleep(1)
+        self.browser.switch_to.window(self.tab_pars_id), #переключается на окно с парсингом
+        sleep(1)
+        self.browser_control.change_fake_agent(), #Меняет юзер агента на фиктивного
+        sleep(1)
+        return surf_session #Возрващается список 1-страна, 2-IP адрес.
+
+
+    #Удаляет все следы.
     def connect_error_detect(self, page, status=None, successful_pages=None, max_page=130):
 
         #Запускает переподключение по новому кругу
@@ -181,7 +214,7 @@ class My_surf:
             print("ID ",self.ID," лимит ",f"{page_limit}")
             successful_pages=new_face("page_limit") #Если блокировка есть уходит на новый круг
 
-        try:                       
+        try:
             self.browser.get(page)  # Пробует открыть страницу
         except TimeoutException:
             print("ID ", self.ID, " ошибка загрузки ", "страница за указанное время не загрузилась")
@@ -204,42 +237,9 @@ class My_surf:
         if website_confirm_status==False:
             print("ID ",self.ID,"нет подтерждения успеха(ХЗ почему)")
             successful_pages=new_face("not_confirm") #Если нет подтверждения успеха,уходит на новый круг
-        
+
         successful_pages +=1
         return successful_pages #Возращает значение "успешности" проверки
-
-
-    #Удаляет все следы.
-    def remove_evidence(self,status):
-        #Функция реконнекта к новой стране.
-        def reload_country(status_low): #Общая функция
-            if not self.country_explorer: #Если диспетчер стран не задан, задаёт страну нон
-                new_country=None
-            else:
-                new_country=self.country_explorer.get_another_country(self.ID,old_country_status=status_low) #Возвращает статус старой страны, получает новую из эксплорера
-            try_session=self.surf_connect(country=new_country) #Коннектит сурфшарк к новому серверу
-            if try_session[2]=="fail": reload_country("empty_country")
-            return try_session #Возрващает страну, список стран, новый ip, количество попыток
-
-        self.browser.switch_to.window(self.tab_pars_id), #Переключаюсь на окно парсинга
-        sleep(1) 
-        self.browser.get('about:blank'), #Открывает пустую страницу
-        sleep(2) 
-        self.browser.switch_to.window(self.tab_setting_id) #Переключается на окно с настройками
-        sleep(2)
-        self.browser_control.change_manual_agent(self.real_agent), #Меняет агента на реального
-        sleep(1) 
-        self.browser_control.clear_cache(), #Удаляет весь кэш и куки
-        sleep(1) 
-        self.surf_disconnect(), #Разрывает соединение
-        sleep(1) 
-        surf_session=reload_country(status) #Коннекится к новой стране
-        sleep(1)
-        self.browser.switch_to.window(self.tab_pars_id), #переключается на окно с парсингом
-        sleep(1)
-        self.browser_control.change_fake_agent(), #Меняет юзер агента на фиктивного
-        sleep(1) 
-        return surf_session #Возрващается список 1-страна, 2-IP адрес. 
 
     # Функция для проверки успешности при прозвоне стран
     def defines_a_lock(self,page,sleep_time=10): #Проверяет сайты на ошибки, принимает:страницу для анализа, максимально время ожидания.

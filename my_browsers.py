@@ -15,11 +15,10 @@ import random
 
 class Chrome:
     path_to_dir = path.dirname(__file__)  # Путь к текущей папке
-    work_surf = None
-    browser = None
+    browser: webdriver.Chrome
 
     # Определяет браузер в классе
-    def __init__(self, id_browser):
+    def __init__(self, id_browser,):
         self.id_browser = id_browser
         pass
 
@@ -47,20 +46,17 @@ class Chrome:
         op.add_experimental_option("useAutomationExtension", False)  # Убирает данные что хром в авто режиме
         Chrome.browser = webdriver.Chrome(service=ser, options=op)  # Запускает селениум
         Chrome.browser.set_page_load_timeout(60)  # Максимальное время ожидания загрузки страницы.
-        return Chrome.browser
+        return Chrome
 
     # Возвращает информацию от текущем юзер агенте
     def info_user_agent(self):
-        agent_info = Chrome.browser.execute_script(
-            "return navigator.userAgent")  # Возвращает данные от текущем юзер агенте
+        agent_info = Chrome.browser.execute_script("return navigator.userAgent")  # Возвращает данные от текущем юзер агенте
         return agent_info
 
     # Устанавливает рандомный юзер агент
     def change_fake_agent(self):
-        fake_user_agent = generate_user_agent(device_type="desktop",
-                                              navigator='chrome')  # Создаёт фиктивного рандомного юзер агента
-        Chrome.browser.execute_cdp_cmd('Network.setUserAgentOverride',
-                                     {"userAgent": f'{fake_user_agent}'})  # Заносит юзер агента в систему
+        fake_user_agent = generate_user_agent(device_type="desktop", navigator='chrome')  # Создаёт фиктивного рандомного юзер агента
+        Chrome.browser.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": f'{fake_user_agent}'})  # Заносит юзер агента в систему
         sleep(1)
         agent_info = self.info_user_agent()  # сохраняет данные о полученном юзер агенте
         return agent_info
@@ -86,7 +82,7 @@ class Chrome:
         Chrome.browser.execute_script(f'''window.open("", "_blank");''')  # Запускает новое пустое окно
         Chrome.browser.switch_to.window(Chrome.browser.window_handles[tab_number])  # переключается на новое окно
         tab_id = Chrome.browser.current_window_handle  # Определяет ID нового окна
-        return (tab_id)  # Возвращает ID окна
+        return tab_id  # Возвращает ID окна
 
     # Проверяет страница на ошибки возвращает содержимое
     def check_source_simple(self, work_chrome, link):
