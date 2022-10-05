@@ -80,7 +80,9 @@ class Chrome:
     # Открывает новую вкладку и определяет её ID
     def new_tab(self, tab_number):  # Функция запускающая новое окно и возвращающая его ID
         Chrome.browser.execute_script(f'''window.open("", "_blank");''')  # Запускает новое пустое окно
+        sleep(1)
         Chrome.browser.switch_to.window(Chrome.browser.window_handles[tab_number])  # переключается на новое окно
+        sleep(1)
         tab_id = Chrome.browser.current_window_handle  # Определяет ID нового окна
         return tab_id  # Возвращает ID окна
 

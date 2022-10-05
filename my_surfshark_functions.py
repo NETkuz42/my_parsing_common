@@ -10,10 +10,11 @@ from time import sleep, time
 import random
 import time
 from datetime import datetime
+from my_browsers import Chrome
 
 class My_surf:
 
-    def __init__(self,browser_control=None,country_explorer=False,real_agent=None,tab_surf_id=None,tab_pars_id=None,tab_setting_id=None,connect_method='random_all',lose_sleep_time=300,):
+    def __init__(self, ID, browser_control=None,country_explorer=False,real_agent=None,tab_surf_id=None,tab_pars_id=None,tab_setting_id=None,connect_method='random_all',lose_sleep_time=300,):
         self.browser= browser_control.browser#Процесс рабочего браузера
         self.browser_control=browser_control #Класс с набором функций работы с браузером
         self.country_explorer=country_explorer #Диспетчер стран распределяющий их по скорости
@@ -22,7 +23,7 @@ class My_surf:
         self.tab_pars_id=tab_pars_id #Вкладка с запущенным парсингом
         self.tab_setting_id=tab_setting_id #Вкладка с настройками браузера для сброса параметров
         self.lose_sleep_time=lose_sleep_time #Вреамя сна если вылезла ошибка сурфа или 3 неудачных коннекта
-        self.ID=browser_control.id_browser
+        self.ID = ID
 
         pass
 
@@ -281,4 +282,34 @@ class My_surf:
                 pass
         return False #Если не находит подтверждение возвращает False
 
+    #Запускает сурф
+    def start_with_surf(self, country_explorer=False):
+        sleep(self.ID*10)
+        control = Chrome(self.ID).start_chrome(header=False)  # Ввожу управление
+        real_agent = control.info_user_agent()  # Сохраняет реальный юзер агент
+
+        self.tab_pars_id = control.new_tab(1)  # Запускает пустое окно для парсинга
+        self.tab_setting_id = control.new_tab(2)  # Запускает пусто окно для сброса настроек
+        Chrome.work_surf = ms(driver_control, country_explorer, real_agent, None, tab_pars_id, tab_setting_id, lose_sleep_time=300)  # Определяю браузер с которым будет работать сурф
+        tab_surf_id = Chrome.work_surf.surf_start()
+
+        # Коннектится к первой стране
+        Chrome.browser.switch_to.window(tab_surf_id)  # Переключается на окно с сурфом и Поехали
+        if country_explorer:
+            country = country_explorer.get_country(self.id_browser)  # Если задан эксплорер получает страну из него
+        else:
+            country = None  # Если нет эксплорера тогда пустое значение, чтобы получить страну рандомно.
+        sleep(1)
+        country_info = Chrome.work_surf.surf_connect(country)  # Коннектится к первой стране
+
+        # Проверка на успешность подключения
+        if country_info[2] != "fail":
+            sleep(1)
+            Chrome.work_surf.browser.switch_to.window(tab_pars_id)  # Переключается на окно для парсинга
+            self.change_fake_agent()  # Присваивает фейкового агента
+        elif country_info[2] == "fail":
+            country_info = Chrome.work_surf.remove_evidence(
+                "empty_country")  # Если подключение не получилось, будет коннектится через новую страну
+        Chrome.work_surf.log(self.id_browser, cause="start", country=country_info[0], ip=country_info[2])  # Записывает данные в лог
+        return Chrome.work_surf
 
