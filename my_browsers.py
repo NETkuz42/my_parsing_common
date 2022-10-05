@@ -98,37 +98,6 @@ class Chrome:
             sleep(1)
         return work_chrome.page_source
 
-    # def start_with_surf(self, country_explorer=False):
-    #     sleep(self.id_browser*10)
-    #     driver_control = Chrome(self.id_browser)  # Ввожу управление
-    #     driver_control.start_chrome(header=False)
-    #     real_agent = driver_control.info_user_agent()  # Сохраняет реальный юзер агент
-    #
-    #     tab_pars_id = driver_control.new_tab(1)  # Запускает пустое окно для парсинга
-    #     tab_setting_id = driver_control.new_tab(2)  # Запускает пусто окно для сброса настроек
-    #     Chrome.work_surf = ms(driver_control, country_explorer, real_agent, None, tab_pars_id, tab_setting_id, lose_sleep_time=300)  # Определяю браузер с которым будет работать сурф
-    #     tab_surf_id = Chrome.work_surf.surf_start()
-    #
-    #     # Коннектится к первой стране
-    #     Chrome.browser.switch_to.window(tab_surf_id)  # Переключается на окно с сурфом и Поехали
-    #     if country_explorer:
-    #         country = country_explorer.get_country(self.id_browser)  # Если задан эксплорер получает страну из него
-    #     else:
-    #         country = None  # Если нет эксплорера тогда пустое значение, чтобы получить страну рандомно.
-    #     sleep(1)
-    #     country_info = Chrome.work_surf.surf_connect(country)  # Коннектится к первой стране
-    #
-    #     # Проверка на успешность подключения
-    #     if country_info[2] != "fail":
-    #         sleep(1)
-    #         Chrome.work_surf.browser.switch_to.window(tab_pars_id)  # Переключается на окно для парсинга
-    #         self.change_fake_agent()  # Присваивает фейкового агента
-    #     elif country_info[2] == "fail":
-    #         country_info = Chrome.work_surf.remove_evidence(
-    #             "empty_country")  # Если подключение не получилось, будет коннектится через новую страну
-    #     Chrome.work_surf.log(self.id_browser, cause="start", country=country_info[0], ip=country_info[2])  # Записывает данные в лог
-    #     return Chrome.work_surf
-    #
     # def parsing_list_with_surf(self, links_list, key_func):
     #     number_pages = 0
     #     successful_page = 0

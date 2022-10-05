@@ -153,9 +153,9 @@ class MySurf:
         time_to_disconnect = 0  # Вводит счётчик секунд на разьединение
         if self.control.browser.find_element(By.XPATH,
                                              '/html/body/div/div/div[2]/div[2]/div/div[3]/div[1]/div/div[1]').text == "ПОДКЛЮЧЕНО":  # Если видит что подключено, то
-            self.browser.find_element(By.XPATH,
+            self.control.browser.find_element(By.XPATH,
                                       '/html/body/div/div/div[2]/div[2]/div/div[3]/div[2]/button').click()  # Находит кнопку ОТКЛЮЧИТЬ
-            while self.browser.find_element(By.XPATH,
+            while self.control.browser.find_element(By.XPATH,
                                             '/html/body/div/div/div[2]/div[2]/div/div[3]/div[1]/div/div[1]').text != 'НЕ ПОДКЛЮЧЕНО':  # Фикисрует поменлось ли с ПОДКЛЮЧЕНО
                 sleep(1)
                 time_to_disconnect = time_to_disconnect + 1  # Добавляет значние к счётчику
@@ -211,7 +211,7 @@ class MySurf:
         return surf_session  # Возрващается список 1-страна, 2-IP адрес.
 
     # Удаляет все следы.
-    def connect_error_detect(self, page, status=None, successful_pages=None, max_page=130):
+    def connect_error_detect(self, page, status=None, successful_pages=0, max_page=130):
 
         # Запускает переподключение по новому кругу
         def new_face(new_status):
@@ -282,15 +282,13 @@ class MySurf:
     # Словарь с признаками блокироки и статусом
     def website_lock_detect(self):
         # Список всех блокировок
-        all_known_lock = {"'Вы не робот?' in self.browser.find_element(By.ID,'content').text": "captha farpost",
-                          "self.browser.find_element(By.CSS_SELECTOR,'body > div.container > div > h1').text=='Доступ ограничен: проблема с IP'": "block ip Avito"}
+        all_known_lock = {"'Вы не робот?' in self.control.browser.find_element(By.ID,'content').text": "captha farpost",
+                          "self.control.browser.find_element(By.CSS_SELECTOR,'body > div.container > div > h1').text=='Доступ ограничен: проблема с IP'": "block ip Avito"}
         for lock, name_lock in all_known_lock.items():  # Пербирает все типы блокировок
             try:
                 if eval(lock): return name_lock  # Если находит блокировку возвращает название
             except TimeoutException:
                 return "за заданное время время сайт не загрузился"
-            except WebDriverException:
-                return "не понятная ошибка драйвера"
             except NoSuchElementException:
                 pass
         return False  # Если не наход возвращает False
@@ -298,7 +296,7 @@ class MySurf:
     # Словарь с признаками успешной загрузки страницы
     def website_confirm_detect(self):
         all_known_confirm = {
-            "self.browser.find_element(By.CSS_SELECTOR, 'div[data-ftid=\"component_header\"]')": "Появился логит дрома"}
+            "self.control.browser.find_element(By.CSS_SELECTOR, 'div[data-ftid=\"component_header\"]')": "Появился логит дрома"}
         for confirm, name_confirm in all_known_confirm.items():
             try:
                 test = bool(eval(confirm))
