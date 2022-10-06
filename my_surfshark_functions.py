@@ -332,6 +332,10 @@ class MySurf:
                     return True
             except NoSuchElementException:
                 pass
+            except TimeoutException:
+                pass
+            except WebDriverException:
+                pass
         return False  # Если не находит подтверждение возвращает False
 
     # Запускает сурф
