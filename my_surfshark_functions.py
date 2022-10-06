@@ -11,7 +11,7 @@ from datetime import datetime
 
 class MySurf:
 
-    def __init__(self, ID, country_explorer=False, connect_method='random_all', lose_sleep_time=300):
+    def __init__(self, ID, country_explorer=False, connect_method='random_all', lose_sleep_time=900, max_page=10000):
         self.control: Chrome = None
         self.ID = ID
         self.tab_surf_id = None
@@ -21,7 +21,8 @@ class MySurf:
         self.successful_pages = 0
         self.attempts = 0
         self.face_reset_numbers = 0
-        self.min_page = self.ID*10
+        self.min_page = max_page/2+self.ID*10
+        self.max_page = max_page
         self.country_explorer = country_explorer  # Диспетчер стран распределяющий их по скорости
         self.lose_sleep_time = lose_sleep_time  # Вреамя сна если вылезла ошибка сурфа или 3 неудачных коннекта
         pass
@@ -214,7 +215,7 @@ class MySurf:
         return surf_session  # Возрващается список 1-страна, 2-IP адрес.
 
     # Удаляет все следы.
-    def connect_error_detect(self, page, status=None, max_page=10000):
+    def connect_error_detect(self, page, status=None,):
 
         # Запускает переподключение по новому кругу
         def full_new_face(new_status):
@@ -248,10 +249,10 @@ class MySurf:
             self.connect_error_detect(page, status=None,)
             return True
         # Проверка на максимальное количество загруженных страниц
-        if self.min_page < max_page:
-            page_limit = random.randrange(int(self.min_page), int(max_page))  # Проверяет чтобы минимальный лимит был больше максимального
+        if self.min_page < self.max_page:
+            page_limit = random.randrange(int(self.min_page), int(self.max_page))  # Проверяет чтобы минимальный лимит был больше максимального
         else:
-            page_limit = max_page  # Если min>max тогда лимит=max.
+            page_limit = self.max_page  # Если min>max тогда лимит=max.
         if self.successful_pages >= page_limit:
             print("ID ", self.ID, " лимит ", f"{self.successful_pages}")
             full_new_face("page_limit")  # Если блокировка есть уходит на новый круг
