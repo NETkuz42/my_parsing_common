@@ -13,15 +13,17 @@ class MySurf:
 
     def __init__(self, ID, country_explorer=False, connect_method='random_all', lose_sleep_time=300):
         self.control: Chrome = None
+        self.ID = ID
         self.tab_surf_id = None
         self.tab_setting_id = None
         self.real_agent = None
         self.tab_pars_id = None
         self.successful_pages = 0
         self.attempts = 0
+        self.face_reset_numbers = 0
+        self.min_page = self.ID*10
         self.country_explorer = country_explorer  # Диспетчер стран распределяющий их по скорости
         self.lose_sleep_time = lose_sleep_time  # Вреамя сна если вылезла ошибка сурфа или 3 неудачных коннекта
-        self.ID = ID
         pass
 
     # Ждёт пока появится кнопка "Подключено".
@@ -221,10 +223,15 @@ class MySurf:
                      reload[2])  # Записывает данные в лог
             sleep(3)
             self.successful_pages = 0  # Обнуляет счётчик успешных страниц
+            self.face_reset_numbers = 0
             self.connect_error_detect(page, status=new_status,)  # Идёт на новый круг
             return True
 
-        def reload_face():
+        def reload_face(err_status):
+            if err_status != "page_limit":
+                self.face_reset_numbers += 1
+            if self.face_reset_numbers >= 5:
+                full_new_face(err_status)
             self.control.browser.switch_to.window(self.tab_pars_id),  # Переключаюсь на окно парсинга
             sleep(1)
             self.control.browser.get('about:blank'),  # Открывает пустую страницу
@@ -241,28 +248,26 @@ class MySurf:
             self.connect_error_detect(page, status=None,)
             return True
         # Проверка на максимальное количество загруженных страниц
-        min_page = max_page - self.ID * 10  # Вводит минимальный лимит страниц
-        if min_page < max_page:
-            page_limit = random.randrange(int(min_page),
-                                          int(max_page))  # Проверяет чтобы минимальный лимит был больше максимального
+        if self.min_page < max_page:
+            page_limit = random.randrange(int(self.min_page), int(max_page))  # Проверяет чтобы минимальный лимит был больше максимального
         else:
             page_limit = max_page  # Если min>max тогда лимит=max.
         if self.successful_pages >= page_limit:
-            print("ID ", self.ID, " лимит ", f"{page_limit}")
+            print("ID ", self.ID, " лимит ", f"{self.successful_pages}")
             full_new_face("page_limit")  # Если блокировка есть уходит на новый круг
 
         if self.successful_pages % 30 == 0 and self.successful_pages != 0:
-            print("ID ", self.ID, "обновляю лицо", f"стр:{page_limit}")
-            reload_face()
+            print("ID ", self.ID, "обновляю лицо", f"стр:{self.successful_pages}")
+            reload_face("page_limit")
 
         try:
             self.control.browser.get(page)  # Пробует открыть страницу
         except TimeoutException:
             print("ID ", self.ID, " ошибка загрузки ", "страница за указанное время не загрузилась")
-            full_new_face("empty_page")  # Коннектится под новым лицом
+            reload_face("timeout_err")  # Коннектится под новым лицом
         except WebDriverException:  # Если ошибка при открытии, уходит в рекурсивную функцию смены VPN серверов.
             print("ID ", self.ID, " ошибка загрузки ", "ошибка драйвера")
-            successful_pages = full_new_face("empty_page")  # Коннектится под новым лицом
+            reload_face("driver_err")  # Коннектится под новым лицом
         sleep(1)
         surf_lock_status = self.alert_detect()  # Проверяет наличие блокировки сурфом
         if surf_lock_status:
@@ -272,12 +277,12 @@ class MySurf:
         website_lock_status = self.website_lock_detect()  # Проверяряет наличие блокировки сайтом
         if website_lock_status != False:
             print("ID ", self.ID, " блокировка ", website_lock_status)
-            full_new_face(website_lock_status)  # Если блокировка есть уходит на новый круг
+            reload_face(website_lock_status)  # Если блокировка есть уходит на новый круг
         sleep(1)
         website_confirm_status = self.website_confirm_detect()
         if website_confirm_status == False:
             print("ID ", self.ID, "нет подтерждения успеха(ХЗ почему)")
-            full_new_face("not_confirm")  # Если нет подтверждения успеха,уходит на новый круг
+            reload_face("not_confirm")  # Если нет подтверждения успеха,уходит на новый круг
 
         self.successful_pages += 1
         return True  # Возращает значение "успешности" проверки
