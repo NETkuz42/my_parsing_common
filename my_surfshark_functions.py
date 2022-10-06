@@ -285,6 +285,7 @@ class MySurf:
             reload_face("not_confirm")  # Если нет подтверждения успеха,уходит на новый круг
 
         self.successful_pages += 1
+        self.face_reset_numbers = 0
         return True  # Возращает значение "успешности" проверки
 
     # Функция для проверки успешности при прозвоне стран
