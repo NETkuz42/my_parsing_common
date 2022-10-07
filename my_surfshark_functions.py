@@ -171,7 +171,7 @@ class MySurf:
     def log(self, reason_gap=None, successful_pages=None, cause=None, country=None,
             ip=None):  # Определяет 6 параметров.
         now_time = time.strftime('%d-%m-%Y %H:%M:%S', time.localtime())
-        with open(f"Data\\log\\log_thread_{self.ID}.csv", "a") as log:
+        with open(f"data\\log\\log_thread_{self.ID}.csv", "a") as log:
             if cause == "start":  # Опредлеяет первый запуск сурфшарка, чтобы не выводить показатели "Причины разрыва" и "Числа отработанных страниц"
                 log.write(f"\n{now_time};{cause};{country};{ip}")
             elif cause == "end":
