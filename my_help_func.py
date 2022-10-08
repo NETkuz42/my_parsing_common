@@ -17,6 +17,7 @@ def path_cheker(papka, result_list=None):
             result_list.append(full_path)
     return result_list
 
+
 def test_list():
     li=[]
     for i in range(1,1000):
@@ -34,7 +35,6 @@ def test_list():
     test.to_csv("data\list_test.csv", sep=";")
 
 
-# Переводит всё содержимое файла в нижний регистр
 def lower_case(path_to_file,path_to_save):
     with open(path_to_file,"r") as file_to_read:
         data=file_to_read.read()
@@ -43,7 +43,7 @@ def lower_case(path_to_file,path_to_save):
         file_to_write.write(data_lower)
 
 
-# Клонирует папку с учётной записью хрома на указанное количество папок
+# Переводит всё содержимое файла в нижний регистр
 def profile_cloning(path_to_reference, number_clones=None):  # Принимает путь к папке с эталонной учёткой и кол копий
     print(f"Делаю {number_clones} копий профиля")
     split_name = str(path_to_reference).split("_")[:-1]  # Разделяет путь на составляющие убирает последнюю часть
@@ -56,14 +56,42 @@ def profile_cloning(path_to_reference, number_clones=None):  # Принимае�
     print(f"{number_profile} копий профиля создано")
     return True
 
-# Возращает текстовые значения при парсинге
 
+# Клонирует папку с учётной записью хрома на указанное количество папок
+def profile_cheker(cloning_numbers: int, sample_profile=r"my_parsing_common\browsers\chrome\optim_user", cloning_path=r"D:\DISTRIB_LOCAL\PARSING\CHROME"):
+
+    list_items = os.listdir(cloning_path)
+
+    profiles_exist = []
+    for item in list_items:
+        path_to_item = os.path.join(cloning_path, item)
+        if os.path.isdir(path_to_item):
+            profiles_exist.append(path_to_item)
+
+    if len(profiles_exist) < cloning_numbers:
+        print("создаю", cloning_numbers, "профилей")
+        for number in range(cloning_numbers):
+            name = f"FAKE_USER_DATA_{number}"
+            new_path = os.path.join(cloning_path, name)
+            shutil.copytree(sample_profile, new_path, dirs_exist_ok=True)
+            print("профиль", name, "создан")
+
+    if cloning_numbers == 0:
+        print("Удаляю", len(profiles_exist),"профилей")
+        for profile in profiles_exist:
+            shutil.rmtree(profile, ignore_errors=True)
+            print(profile, "удалён")
+
+
+
+# Возращает текстовые значения при парсинге
 def find_values(value_type, table, clarification):
     try:
         name = value_type.find(table, class_=clarification).text
     except AttributeError:
         name = None
     return name
+
 
 #Объеденяет все .csv файлы в папке в один датафрейм.
 def merge_files(papka_files, path_to_save):
