@@ -43,22 +43,8 @@ def lower_case(path_to_file,path_to_save):
         file_to_write.write(data_lower)
 
 
-# Переводит всё содержимое файла в нижний регистр
-def profile_cloning(path_to_reference, number_clones=None):  # Принимает путь к папке с эталонной учёткой и кол копий
-    print(f"Делаю {number_clones} копий профиля")
-    split_name = str(path_to_reference).split("_")[:-1]  # Разделяет путь на составляющие убирает последнюю часть
-    name = "_".join(split_name)  # Соединяет название обратной без последней цифры
-    number_profile = 0
-    while number_profile < number_clones:
-        number_profile=number_profile+1
-        new_name = f"{name}_{number_profile}"
-        shutil.copytree(path_to_reference, new_name, dirs_exist_ok=True)
-    print(f"{number_profile} копий профиля создано")
-    return True
-
-
-# Клонирует папку с учётной записью хрома на указанное количество папок
-def profile_cheker(cloning_numbers: int, sample_profile=r"my_parsing_common\browsers\chrome\optim_user", cloning_path=r"D:\DISTRIB_LOCAL\PARSING\CHROME"):
+# Управляет профилями, создаёт или удаляет папки.
+def profile_manager(cloning_numbers: int, sample_profile=r"my_parsing_common\browsers\chrome\optim_user", cloning_path=r"D:\DISTRIB_LOCAL\PARSING\CHROME"):
 
     list_items = os.listdir(cloning_path)
 
