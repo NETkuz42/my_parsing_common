@@ -36,8 +36,8 @@ class Chrome:
         op.add_argument("--ignore-certificate-error")
         op.add_argument("--ignore-ssl-errors")
 
-        # fake_user_agent = generate_user_agent(device_type="desktop", navigator='chrome')  # генерит рандомного юзер агента
-        # op.add_argument(f"user-agent={fake_user_agent}")  # устанавливает фиктивный юзер агент
+        fake_user_agent = generate_user_agent(device_type="desktop", navigator='chrome')  # генерит рандомного юзер агента
+        op.add_argument(f"user-agent={fake_user_agent}")  # устанавливает фиктивный юзер агент
         # op.add_argument("--disable-notifications") # Отключает уведомления, включение этой функции даёт не прохождение проверки на intoli.com
 
         op.add_experimental_option("excludeSwitches", ["enable-automation"])  # Убирает данные что хром в авто режиме
