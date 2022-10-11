@@ -19,6 +19,7 @@ class Chrome:
         self.browser: webdriver.Chrome = None
         self.path_to_dir = path.dirname(__file__)  # Путь к текущей папке
         self.id_browser = id_browser
+        self.page_counter = 0
 
     # Запускает Хром
     def start_chrome(self, header=True):  # Принимает номер профиля, по умолчанию 0)
@@ -85,18 +86,25 @@ class Chrome:
         return tab_id  # Возвращает ID окна
 
     # Проверяет страница на ошибки возвращает содержимое
-    def check_source_simple(self, work_chrome, link):
+    def check_source_simple(self, link, reset_counter):
+        if self.page_counter >= reset_counter:
+            print("ID:",self.id_browser,", стр:",self.page_counter, ", меняю агента")
+            self.clear_cache()
+            sleep(1)
+            self.change_fake_agent()
+            sleep(1)
         try:
-            work_chrome.get(link)
+            self.browser.get(link)
+            self.page_counter += 1
         except TimeoutException:
             print("ошибка времени загрузки страницы, повторяю")
-            self.check_source_simple(work_chrome, link)
+            self.check_source_simple(self.browser, link)
         except WebDriverException:
             print("непонятная ошибка драйвера, повторяю")
-            self.check_source_simple(work_chrome, link)
+            self.check_source_simple(self.browser, link)
         finally:
             sleep(1)
-        return work_chrome.page_source
+        return self.browser.page_source
 
     # def parsing_list_with_surf(self, links_list, key_func):
     #     number_pages = 0
