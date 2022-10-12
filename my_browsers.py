@@ -76,7 +76,9 @@ class Chrome:
         self.browser.get('chrome://settings/clearBrowserData')  # Открывает настройки
         sleep(2)
         actions = ActionChains(self.browser)  # Определяет начала действия
+        sleep(1)
         actions.send_keys(Keys.TAB * 7 + Keys.ENTER)  # Переключается на кнопку "выполнить сброс"
+        sleep(1)
         actions.perform()  # Подтверждает сброс
 
     # Открывает новую вкладку и определяет её ID
@@ -90,26 +92,35 @@ class Chrome:
 
     # Проверяет страница на ошибки возвращает содержимое
     def simple_check(self, link, reset_counter=30):
+        def remove_track():
+            sleep(1)
+            self.clear_cache()
+            sleep(1)
+            self.change_fake_agent()
+            sleep(1)
+            self.simple_check(link, reset_counter)
+
+        check_ok = False
         max_page = reset_counter-self.random_delimiter
         try:
             self.browser.get(link)
         except TimeoutException:
             print("ID:", self.id_browser, ", cтр:", self.page_counter, "ошибка времени загрузки страницы, повторяю")
-            sleep(1)
-            self.simple_check(link, reset_counter)
+            remove_track()
+
         except WebDriverException as err:
             print("ID:", self.id_browser, ", cтр:", self.page_counter, "ошибка драйвера", err)
-            sleep(5)
-            self.simple_check(link, reset_counter)
+            remove_track()
         finally:
             sleep(1)
 
         try:
             check_ok = bool(self.browser.find_element(By.CSS_SELECTOR, 'div.css-184qm5b.ergwwjd0'))
+            sleep(1)
         except NoSuchElementException:
             print("ID:", self.id_browser, ", cтр:", self.page_counter, "почемуто_не_появился_логотип_дрома")
-            check_ok = False
-            self.simple_check(link, reset_counter)
+            remove_track()
+
         if check_ok:
             self.page_counter += 1
             source_page = self.browser.page_source
@@ -122,7 +133,7 @@ class Chrome:
             return source_page
         else:
             print("ID:", self.id_browser, ", cтр:", self.page_counter, "почемуто_не_появился_логотип_дрома")
-            self.simple_check(link, reset_counter)
+            remove_track()
 
     # def parsing_list_with_surf(self, links_list, key_func):
     #     number_pages = 0
