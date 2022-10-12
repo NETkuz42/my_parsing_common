@@ -7,6 +7,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from user_agent import generate_user_agent
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import NoSuchElementException
 from os import path
 import pandas as pd
 import random
@@ -101,15 +102,21 @@ class Chrome:
             self.simple_check(link, reset_counter)
         finally:
             sleep(1)
-        self.page_counter += 1
-        source_page = self.browser.page_source
-        if self.page_counter % max_page == 0 and self.page_counter != 0:
-            print("ID:", self.id_browser, ", стр:", self.page_counter, ", меняю агента")
-            self.clear_cache()
-            sleep(1)
-            self.change_fake_agent()
-            sleep(1)
-        return source_page
+
+        try:
+            check_ok = bool(self.browser.find_element(By.CSS_SELECTOR, 'div.css-184qm5b.ergwwjd0'))
+        except NoSuchElementException:
+            check_ok = False
+        if check_ok:
+            self.page_counter += 1
+            source_page = self.browser.page_source
+            if self.page_counter % max_page == 0 and self.page_counter != 0:
+                print("ID:", self.id_browser, ", стр:", self.page_counter, ", меняю агента")
+                self.clear_cache()
+                sleep(1)
+                self.change_fake_agent()
+                sleep(1)
+            return source_page
 
     # def parsing_list_with_surf(self, links_list, key_func):
     #     number_pages = 0
