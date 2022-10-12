@@ -20,6 +20,7 @@ class Chrome:
         self.path_to_dir = path.dirname(__file__)  # Путь к текущей папке
         self.id_browser = id_browser
         self.page_counter = 0
+        self.random_delimiter = random.randrange(1, 10)
 
     # Запускает Хром
     def start_chrome(self, header=True):  # Принимает номер профиля, по умолчанию 0)
@@ -87,25 +88,26 @@ class Chrome:
 
     # Проверяет страница на ошибки возвращает содержимое
     def simple_check(self, link, reset_counter):
-        if self.page_counter >= reset_counter:
-            print("ID:",self.id_browser,", стр:",self.page_counter, ", меняю агента")
+        max_page = reset_counter-self.random_delimiter
+        try:
+            self.browser.get(link)
+        except TimeoutException:
+            print("ID:", self.id_browser, ", cтр:", self.page_counter, "ошибка времени загрузки страницы, повторяю")
+            self.simple_check(link, reset_counter)
+        except WebDriverException:
+            print("ID:", self.id_browser, ", cтр:", self.page_counter, "непонятная ошибка драйвера, повторяю")
+            self.simple_check(link, reset_counter)
+        finally:
+            sleep(1)
+        self.page_counter += 1
+        source_page = self.browser.page_source
+        if self.page_counter % max_page == 0 and self.page_counter != 0:
+            print("ID:", self.id_browser, ", стр:", self.page_counter, ", меняю агента")
             self.clear_cache()
             sleep(1)
             self.change_fake_agent()
             sleep(1)
-            self.page_counter = 0
-        try:
-            self.browser.get(link)
-        except TimeoutException:
-            print("ошибка времени загрузки страницы, повторяю")
-            self.simple_check(self.browser, link)
-        except WebDriverException:
-            print("непонятная ошибка драйвера, повторяю")
-            self.simple_check(self.browser, link)
-        finally:
-            sleep(1)
-        self.page_counter += 1
-        return self.browser.page_source
+        return source_page
 
     # def parsing_list_with_surf(self, links_list, key_func):
     #     number_pages = 0
