@@ -87,7 +87,7 @@ class Chrome:
         return tab_id  # Возвращает ID окна
 
     # Проверяет страница на ошибки возвращает содержимое
-    def simple_check(self, link, reset_counter):
+    def simple_check(self, link, reset_counter=30):
         max_page = reset_counter-self.random_delimiter
         try:
             self.browser.get(link)
