@@ -93,9 +93,11 @@ class Chrome:
             self.browser.get(link)
         except TimeoutException:
             print("ID:", self.id_browser, ", cтр:", self.page_counter, "ошибка времени загрузки страницы, повторяю")
+            sleep(1)
             self.simple_check(link, reset_counter)
-        except WebDriverException:
-            print("ID:", self.id_browser, ", cтр:", self.page_counter, "непонятная ошибка драйвера, повторяю")
+        except WebDriverException as err:
+            print("ID:", self.id_browser, ", cтр:", self.page_counter, "ошибка драйвера", err)
+            sleep(5)
             self.simple_check(link, reset_counter)
         finally:
             sleep(1)
