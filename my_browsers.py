@@ -25,6 +25,7 @@ class Chrome:
 
     # Запускает Хром
     def start_chrome(self, header=True):  # Принимает номер профиля, по умолчанию 0)
+        sleep(self.id_browser*5)
         ser = Service(executable_path=path.join(self.path_to_dir, 'browsers\\chromedriver.exe'))  # путь к chromedriver
         op = webdriver.ChromeOptions()  # опции для не разлоченного селениума
         if header:
@@ -106,7 +107,9 @@ class Chrome:
         try:
             check_ok = bool(self.browser.find_element(By.CSS_SELECTOR, 'div.css-184qm5b.ergwwjd0'))
         except NoSuchElementException:
+            print("ID:", self.id_browser, ", cтр:", self.page_counter, "почемуто_не_появился_логотип_дрома")
             check_ok = False
+            self.simple_check(link, reset_counter)
         if check_ok:
             self.page_counter += 1
             source_page = self.browser.page_source
@@ -117,6 +120,9 @@ class Chrome:
                 self.change_fake_agent()
                 sleep(1)
             return source_page
+        else:
+            print("ID:", self.id_browser, ", cтр:", self.page_counter, "почемуто_не_появился_логотип_дрома")
+            self.simple_check(link, reset_counter)
 
     # def parsing_list_with_surf(self, links_list, key_func):
     #     number_pages = 0
