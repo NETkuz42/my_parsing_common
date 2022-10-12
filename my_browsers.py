@@ -105,11 +105,11 @@ class Chrome:
         try:
             self.browser.get(link)
         except TimeoutException:
-            print("ID:", self.id_browser, ", cтр:", self.page_counter, "ошибка времени загрузки страницы, повторяю")
+            print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "ошибка времени загрузки страницы, повторяю")
             remove_track()
 
         except WebDriverException as err:
-            print("ID:", self.id_browser, ", cтр:", self.page_counter, "ошибка драйвера", err)
+            print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "ошибка драйвера", err)
             remove_track()
         finally:
             sleep(1)
@@ -118,21 +118,21 @@ class Chrome:
             check_ok = bool(self.browser.find_element(By.CSS_SELECTOR, 'div.css-184qm5b.ergwwjd0'))
             sleep(1)
         except NoSuchElementException:
-            print("ID:", self.id_browser, ", cтр:", self.page_counter, "почемуто_не_появился_логотип_дрома")
+            print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "почемуто_не_появился_логотип_дрома")
             remove_track()
 
         if check_ok:
             self.page_counter += 1
             source_page = self.browser.page_source
             if self.page_counter % max_page == 0 and self.page_counter != 0:
-                print("ID:", self.id_browser, ", стр:", self.page_counter, ", меняю агента")
+                print("ID:", self.id_browser, "link:", link,  ", стр:", self.page_counter, ", меняю агента")
                 self.clear_cache()
                 sleep(1)
                 self.change_fake_agent()
                 sleep(1)
             return source_page
         else:
-            print("ID:", self.id_browser, ", cтр:", self.page_counter, "почемуто_не_появился_логотип_дрома")
+            print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "почемуто_не_появился_логотип_дрома")
             remove_track()
 
     # def parsing_list_with_surf(self, links_list, key_func):
