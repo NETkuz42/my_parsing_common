@@ -106,7 +106,7 @@ class Chrome:
                 self.change_fake_agent()
                 sleep(1)
                 self.error_counter = 0
-            self.simple_check(link, reset_counter)
+            self.simple_check(link, verif_note, reset_counter)
 
         max_page = reset_counter-self.random_delimiter
         try:
