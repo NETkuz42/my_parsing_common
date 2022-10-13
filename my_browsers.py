@@ -21,6 +21,7 @@ class Chrome:
         self.path_to_dir = path.dirname(__file__)  # Путь к текущей папке
         self.id_browser = id_browser
         self.page_counter = 0
+        self.error_counter = 0
         self.random_delimiter = random.randrange(1, 10)
 
     # Запускает Хром
@@ -58,6 +59,7 @@ class Chrome:
     # Устанавливает рандомный юзер агент
     def change_fake_agent(self):
         fake_user_agent = generate_user_agent(device_type="desktop", navigator='chrome')  # Создаёт фиктивного рандомного юзер агента
+        sleep(1)
         self.browser.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": f'{fake_user_agent}'})  # Заносит юзер агента в систему
         sleep(1)
         agent_info = self.info_user_agent()  # сохраняет данные о полученном юзер агенте
@@ -74,12 +76,13 @@ class Chrome:
     # переключается на окно с настройками и удаляет кэш
     def clear_cache(self):
         self.browser.get('chrome://settings/clearBrowserData')  # Открывает настройки
-        sleep(2)
+        sleep(3)
         actions = ActionChains(self.browser)  # Определяет начала действия
-        sleep(1)
+        sleep(2)
         actions.send_keys(Keys.TAB * 7 + Keys.ENTER)  # Переключается на кнопку "выполнить сброс"
-        sleep(1)
+        sleep(2)
         actions.perform()  # Подтверждает сброс
+        sleep(2)
 
     # Открывает новую вкладку и определяет её ID
     def new_tab(self, tab_number):  # Функция запускающая новое окно и возвращающая его ID
@@ -91,16 +94,20 @@ class Chrome:
         return tab_id  # Возвращает ID окна
 
     # Проверяет страница на ошибки возвращает содержимое
-    def simple_check(self, link, reset_counter=30):
+    def simple_check(self, link, verif_note, reset_counter=100):
         def remove_track():
-            sleep(1)
-            self.clear_cache()
-            sleep(1)
-            self.change_fake_agent()
-            sleep(1)
+            self.error_counter += 1
+            if self.error_counter == 5:
+                print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter,
+                      "больше 5 ошибок, меняю лицо")
+                sleep(1)
+                self.clear_cache()
+                sleep(1)
+                self.change_fake_agent()
+                sleep(1)
+                self.error_counter = 0
             self.simple_check(link, reset_counter)
 
-        check_ok = False
         max_page = reset_counter-self.random_delimiter
         try:
             self.browser.get(link)
@@ -115,25 +122,22 @@ class Chrome:
             sleep(1)
 
         try:
-            check_ok = bool(self.browser.find_element(By.CSS_SELECTOR, 'div.css-184qm5b.ergwwjd0'))
+            self.browser.find_element(By.CSS_SELECTOR, verif_note)
             sleep(1)
         except NoSuchElementException:
-            print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "почемуто_не_появился_логотип_дрома")
+            print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "нет_контрольной_надписи")
             remove_track()
 
-        if check_ok:
-            self.page_counter += 1
-            source_page = self.browser.page_source
-            if self.page_counter % max_page == 0 and self.page_counter != 0:
-                print("ID:", self.id_browser, "link:", link,  ", стр:", self.page_counter, ", меняю агента")
-                self.clear_cache()
-                sleep(1)
-                self.change_fake_agent()
-                sleep(1)
-            return source_page
-        else:
-            print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "почемуто_не_появился_логотип_дрома")
-            remove_track()
+        self.page_counter += 1
+        self.error_counter = 0
+        source_page = self.browser.page_source
+        if self.page_counter % max_page == 0 and self.page_counter != 0:
+            print("ID:", self.id_browser, "link:", link,  ", стр:", self.page_counter, ", меняю агента")
+            self.clear_cache()
+            sleep(1)
+            self.change_fake_agent()
+            sleep(1)
+        return source_page
 
     # def parsing_list_with_surf(self, links_list, key_func):
     #     number_pages = 0
