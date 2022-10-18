@@ -1,4 +1,6 @@
 from base64 import encode
+
+import numpy as np
 import pandas as pd
 import os
 import shutil
@@ -88,9 +90,10 @@ def merge_files(papka_files, path_to_save):
         result_frame = pd.concat([result_frame, small_frame], ignore_index=True)
     result_frame.to_csv(path_to_save, encoding="UTF-8", sep=";", index=False)
 
-def delete_ferst_column(papka_files):
+
+def delete_first_column(papka_files):
     list_paths = path_cheker(papka_files)
     for path in list_paths:
         frame = pd.read_csv(path, sep=";", encoding="UTF-8", dtype=str, low_memory=False)
-        frame.drop(columns=[""], axis=1, inplace=True)
+        frame.drop(columns=["Unnamed: 0"], axis=1, inplace=True)
         frame.to_csv(path, sep=";", encoding="UTF-8", index=False)
