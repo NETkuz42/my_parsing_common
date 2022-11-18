@@ -94,7 +94,7 @@ class Chrome:
         return tab_id  # Возвращает ID окна
 
     # Проверяет страница на ошибки возвращает содержимое
-    def simple_check(self, link, verif_note, reset_counter=100):
+    def simple_check(self, link, verif_note, sleep_time=0, reset_counter=100):
         def remove_track():
             self.error_counter += 1
             if self.error_counter == 5:
@@ -137,6 +137,7 @@ class Chrome:
 
         self.page_counter += 1
         self.error_counter = 0
+        sleep(sleep_time)
         source_page = self.browser.page_source
         if self.page_counter % max_page == 0 and self.page_counter != 0:
             print("ID:", self.id_browser, "link:", link,  ", стр:", self.page_counter, ", меняю агента")
