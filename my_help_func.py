@@ -5,9 +5,8 @@ import pandas as pd
 import os
 import shutil
 
-#Сканирует директорию и определяет пути ко всем файлам
 
-
+# Сканирует директорию и определяет пути ко всем файлам
 def path_cheker(papka, result_list=None):
     if result_list==None:
         result_list=[]
