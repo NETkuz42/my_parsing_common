@@ -108,6 +108,23 @@ class Chrome:
                 self.error_counter = 0
             self.simple_check(link, verif_note, sleep_time, reset_counter)
 
+        def check_verif_note():
+            try:
+                self.browser.find_element(By.CSS_SELECTOR, verif_note)
+                sleep(1)
+
+            except NoSuchElementException:
+                print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "нет_контрольной_надписи")
+                remove_track()
+            except TimeoutException as err:
+                print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "ошибка в момент проверки",
+                      err)
+                remove_track()
+            except WebDriverException as err:
+                print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "ошибка в момент проверки",
+                      err)
+                remove_track()
+
         max_page = reset_counter-self.random_delimiter
         try:
             self.browser.get(link)
@@ -121,23 +138,14 @@ class Chrome:
         finally:
             sleep(1)
 
-        try:
-            self.browser.find_element(By.CSS_SELECTOR, verif_note)
-            sleep(1)
-
-        except NoSuchElementException:
-            print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "нет_контрольной_надписи")
-            remove_track()
-        except TimeoutException as err:
-            print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "ошибка в момент проверки", err)
-            remove_track()
-        except WebDriverException as err:
-            print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "ошибка в момент проверки", err)
-            remove_track()
+        check_verif_note()
 
         self.page_counter += 1
         self.error_counter = 0
         sleep(sleep_time)
+
+        check_verif_note()
+
         source_page = self.browser.page_source
         if self.page_counter % max_page == 0 and self.page_counter != 0:
             print("ID:", self.id_browser, "link:", link,  ", стр:", self.page_counter, ", меняю агента")
