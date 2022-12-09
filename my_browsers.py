@@ -126,6 +126,13 @@ class Chrome:
                 remove_track()
 
         max_page = reset_counter-self.random_delimiter
+        if self.page_counter % max_page == 0 and self.page_counter != 0:
+            print("ID:", self.id_browser, "link:", link,  ", стр:", self.page_counter, ", меняю агента")
+            self.clear_cache()
+            sleep(1)
+            self.change_fake_agent()
+            sleep(1)
+
         try:
             self.browser.get(link)
         except TimeoutException:
@@ -139,20 +146,13 @@ class Chrome:
             sleep(1)
 
         check_verif_note()
-
+        sleep(sleep_time)
+        check_verif_note()
         self.page_counter += 1
         self.error_counter = 0
-        sleep(sleep_time)
-
-        check_verif_note()
 
         source_page = self.browser.page_source
-        if self.page_counter % max_page == 0 and self.page_counter != 0:
-            print("ID:", self.id_browser, "link:", link,  ", стр:", self.page_counter, ", меняю агента")
-            self.clear_cache()
-            sleep(1)
-            self.change_fake_agent()
-            sleep(1)
+
         return source_page
 
     # def parsing_list_with_surf(self, links_list, key_func):
