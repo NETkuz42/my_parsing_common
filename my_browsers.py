@@ -116,13 +116,13 @@ class Chrome:
             except NoSuchElementException:
                 print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "нет_контрольной_надписи")
                 remove_track()
-            except TimeoutException as err:
+            except TimeoutException as er:
                 print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "ошибка в момент проверки",
-                      err)
+                      er)
                 remove_track()
-            except WebDriverException as err:
+            except WebDriverException as er:
                 print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "ошибка в момент проверки",
-                      err)
+                      er)
                 remove_track()
 
         max_page = reset_counter-self.random_delimiter
