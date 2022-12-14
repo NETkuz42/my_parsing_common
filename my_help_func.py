@@ -96,3 +96,11 @@ def delete_first_column(papka_files):
         frame = pd.read_csv(path, sep=";", encoding="UTF-8", dtype=str, low_memory=False)
         frame.drop(columns=["Unnamed: 0"], axis=1, inplace=True)
         frame.to_csv(path, sep=";", encoding="UTF-8", index=False)
+
+
+# Сортирует файлы в папке по дате от старых к новым
+def sorted_files_by_date(path_to_folder):
+    list_file = os.listdir(path_to_folder)
+    list_path_files = (os.path.join(path_to_folder, file) for file in list_file)
+    list_path_sorted = sorted(list_path_files, key=os.path.getmtime)
+    return list_path_sorted
