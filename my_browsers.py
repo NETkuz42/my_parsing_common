@@ -26,7 +26,7 @@ class Chrome:
 
     # Запускает Хром
     def start_chrome(self, header=True):  # Принимает номер профиля, по умолчанию 0)
-        sleep(self.id_browser*2)
+        sleep(self.id_browser*1)
         ser = Service(executable_path=path.join(self.path_to_dir, 'browsers\\chromedriver.exe'))  # путь к chromedriver
         op = webdriver.ChromeOptions()  # опции для не разлоченного селениума
         if header:
