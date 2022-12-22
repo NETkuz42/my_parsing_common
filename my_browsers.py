@@ -25,10 +25,11 @@ class Chrome:
         self.random_delimiter = random.randrange(1, 10)
 
     # Запускает Хром
-    def start_chrome(self, header=True):  # Принимает номер профиля, по умолчанию 0)
+    def start_chrome(self, header=True, control_window=True):  # Принимает номер профиля, по умолчанию 0)
         sleep(self.id_browser*2)
         ser = Service(executable_path=path.join(self.path_to_dir, 'browsers\\chromedriver.exe'))  # путь к chromedriver
         op = webdriver.ChromeOptions()  # опции для не разлоченного селениума
+        header = False if control_window and self.id_browser==0 else header
         if header:
             op.add_argument('--headless')  # Параметр запуска безголового режима
         op.binary_location = path.join(self.path_to_dir, 'browsers\\chrome\\Chrome 105.0.5195.127\\chrome.exe')  # Путь к старой версии хрома
