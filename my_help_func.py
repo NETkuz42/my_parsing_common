@@ -88,6 +88,7 @@ def merge_files(papka_files, path_to_save):
         small_frame = pd.read_csv(file, sep=";", encoding="UTF-8", dtype=str, low_memory=False)
         result_frame = pd.concat([result_frame, small_frame], ignore_index=True)
     result_frame.to_csv(path_to_save, encoding="UTF-8", sep=";", index=False)
+    return result_frame
 
 
 def delete_first_column(papka_files):
