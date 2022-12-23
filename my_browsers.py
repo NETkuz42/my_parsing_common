@@ -156,6 +156,20 @@ class Chrome:
 
         return source_page
 
+    def test_worked_change_agent(self, number_tests):
+        url_for_test = "https://intoli.com/blog/not-possible-to-block-chrome-headless/chrome-headless-test.html"
+        worked_chrome = Chrome(self.id_browser).start_chrome(header=False, control_window=False)
+        sleep(2)
+        worked_chrome.browser.get(url_for_test)
+        sleep(5)
+        for test in range(number_tests):
+            worked_chrome.clear_cache()
+            worked_chrome.change_fake_agent()
+            sleep(1)
+            print(worked_chrome.info_user_agent())
+            worked_chrome.browser.get(url_for_test)
+            sleep(5)
+
     # def parsing_list_with_surf(self, links_list, key_func):
     #     number_pages = 0
     #     successful_page = 0
