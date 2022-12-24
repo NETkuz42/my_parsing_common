@@ -95,13 +95,13 @@ class Chrome:
         return tab_id  # Возвращает ID окна
 
     # Проверяет страница на ошибки возвращает содержимое
-    def simple_check(self, link, verif_note, sleep_time=0, reset_counter=100):
+    def simple_check(self, link, verif_note, sleep_time=0, error_sleep_time=300, reset_counter=100):
         def remove_track():
             self.error_counter += 1
             if self.error_counter == 5:
                 print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter,
-                      "больше 5 ошибок, меняю лицо")
-                sleep(1)
+                      f"больше 5 ошибок, сплю {error_sleep_time} секунд, потом меняю лицо")
+                sleep(error_sleep_time)
                 self.clear_cache()
                 sleep(1)
                 self.change_fake_agent()
