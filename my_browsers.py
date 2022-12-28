@@ -95,36 +95,38 @@ class Chrome:
         return tab_id  # Возвращает ID окна
 
     # Проверяет страница на ошибки возвращает содержимое
-    def simple_check(self, link, verif_note, sleep_time=0, error_sleep_time=300, reset_counter=100):
+    def simple_check(self, link, verif_note, sleep_time=3, mass_error_sleep_time=300, reset_counter=150):
         def remove_track():
             self.error_counter += 1
             if self.error_counter == 5:
                 print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter,
-                      f"больше 5 ошибок, сплю {error_sleep_time} секунд, потом меняю лицо")
-                sleep(error_sleep_time)
+                      f"больше 5 ошибок, сплю {mass_error_sleep_time} секунд, потом меняю лицо")
+                sleep(mass_error_sleep_time)
                 self.clear_cache()
                 sleep(1)
                 self.change_fake_agent()
                 sleep(1)
                 self.error_counter = 0
-            self.simple_check(link, verif_note, sleep_time, reset_counter)
+            source = self.simple_check(link, verif_note, sleep_time, reset_counter)
+            return source
 
         def check_verif_note():
             try:
                 self.browser.find_element(By.CSS_SELECTOR, verif_note)
                 sleep(1)
-
+                source = self.browser.page_source
             except NoSuchElementException:
                 print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "нет_контрольной_надписи")
-                remove_track()
+                source = remove_track()
             except TimeoutException as er:
                 print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "ошибка в момент проверки",
                       er)
-                remove_track()
+                source = remove_track()
             except WebDriverException as er:
                 print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "ошибка в момент проверки",
                       er)
-                remove_track()
+                source = remove_track()
+            return source
 
         max_page = reset_counter-self.random_delimiter
         if self.page_counter % max_page == 0 and self.page_counter != 0:
@@ -136,23 +138,20 @@ class Chrome:
 
         try:
             self.browser.get(link)
+            sleep(1)
+            check_verif_note()
+            sleep(sleep_time)
+            source_page = check_verif_note()
+            self.page_counter += 1
+            self.error_counter = 0
+
         except TimeoutException:
             print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "ошибка времени загрузки страницы, повторяю")
-            remove_track()
+            source_page = remove_track()
 
         except WebDriverException as err:
             print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "ошибка драйвера", err)
-            remove_track()
-        finally:
-            sleep(1)
-
-        check_verif_note()
-        sleep(sleep_time)
-        check_verif_note()
-        self.page_counter += 1
-        self.error_counter = 0
-
-        source_page = self.browser.page_source
+            source_page = remove_track()
 
         return source_page
 
