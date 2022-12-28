@@ -95,7 +95,7 @@ class Chrome:
         return tab_id  # Возвращает ID окна
 
     # Проверяет страница на ошибки возвращает содержимое
-    def simple_check(self, link, verif_note, sleep_time=3, mass_error_sleep_time=300, reset_counter=150):
+    def simple_check(self, link, verif_note, sleep_time=3, mass_error_sleep_time=300, reset_counter=100):
         def remove_track():
             self.error_counter += 1
             if self.error_counter == 5:
