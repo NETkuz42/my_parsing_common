@@ -111,11 +111,12 @@ class Chrome:
             source = self.simple_check(link, verif_note, sleep_time, reset_counter)
             return source
 
-        def check_verif_note():
+        def check_verif_note(time_to_sleep):
             try:
                 self.browser.find_element(By.CSS_SELECTOR, verif_note)
                 sleep(1)
                 source = self.browser.page_source
+                sleep(time_to_sleep)
             except NoSuchElementException:
                 print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "нет_контрольной_надписи")
                 source = remove_track()
@@ -140,9 +141,8 @@ class Chrome:
         try:
             self.browser.get(link)
             sleep(1)
-            check_verif_note()
-            sleep(sleep_time)
-            source_page = check_verif_note()
+            check_verif_note(sleep_time)
+            source_page = check_verif_note(1)
             self.page_counter += 1
             self.error_counter = 0
 
