@@ -16,25 +16,26 @@ from typing import Optional
 
 class Chrome:
     # Определяет браузер в классе
-    def __init__(self, id_browser,):
+    def __init__(self, id_browser, path_to_profiles=r"D:\DISTRIB_LOCAL\PARSING\\CHROME"):
         self.browser: webdriver.Chrome = None
         self.path_to_dir = path.dirname(__file__)  # Путь к текущей папке
         self.id_browser = id_browser
         self.page_counter = 0
         self.error_counter = 0
         self.random_delimiter = random.randrange(1, 10)
+        self.path_to_profiles = path_to_profiles
 
     # Запускает Хром
     def start_chrome(self, header=True, control_window=True):  # Принимает номер профиля, по умолчанию 0)
         sleep(self.id_browser*2)
         ser = Service(executable_path=path.join(self.path_to_dir, 'browsers\\chromedriver.exe'))  # путь к chromedriver
         op = webdriver.ChromeOptions()  # опции для не разлоченного селениума
-        header = False if control_window and self.id_browser==0 else header
+        header = False if control_window and self.id_browser == 0 else header
         if header:
             op.add_argument('--headless')  # Параметр запуска безголового режима
         op.binary_location = path.join(self.path_to_dir, 'browsers\\chrome\\Chrome 105.0.5195.127\\chrome.exe')  # Путь к старой версии хрома
         op.add_argument(
-            f"--user-data-dir=D:\\DISTRIB_LOCAL\\PARSING\\CHROME\\FAKE_USER_DATA_{str(self.id_browser)}")  # Путь к папке с профилями
+            fr"--user-data-dir={self.path_to_profiles}\FAKE_USER_DATA_{str(self.id_browser)}")  # Путь к папке с профилями
         op.add_argument("--profile-directory=default")  # Загружает нужный профиль
         op.add_argument(
             'log-level=3')  # Отображает только критические ошибки в логе, вылазили некритичные ошибки в VC code
