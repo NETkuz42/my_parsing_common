@@ -40,7 +40,7 @@ class Chrome:
         op.add_argument(
             'log-level=3')  # Отображает только критические ошибки в логе, вылазили некритичные ошибки в VC code
         op.add_argument("--disable-blink-features=AutomationControlled")  # Убирает данные что хром в авто режиме
-        op.add_argument("--ignore-certificate-error")
+        op.add_argument("--ignore-certificate-errors-spki-list")
         op.add_argument("--ignore-ssl-errors")
         # op.add_argument("--disk-cache-size=0")
 
