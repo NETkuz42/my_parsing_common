@@ -152,7 +152,7 @@ class Chrome:
             source_page = remove_track()
 
         except WebDriverException as err:
-            print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "ошибка драйвера", err)
+            print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "ошибка драйвера")
             source_page = remove_track()
 
         return source_page
