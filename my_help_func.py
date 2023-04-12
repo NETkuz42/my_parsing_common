@@ -45,7 +45,7 @@ def lower_case(path_to_file,path_to_save):
 
 
 # Управляет профилями, создаёт или удаляет папки.
-def profile_manager(cloning_numbers: int, sample_profile=r"my_parsing_common\browsers\chrome\optim_user", cloning_path=r"D:\DISTRIB_LOCAL\PARSING\CHROME"):
+def profile_manager(cloning_numbers: int, sample_profile=r"my_parsing_common\browsers\chrome\112.0.5615.50\optim_user", cloning_path=r"D:\DISTRIB_LOCAL\PARSING\CHROME"):
 
     list_items = os.listdir(cloning_path)
 
