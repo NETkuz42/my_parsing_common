@@ -82,7 +82,7 @@ class Chrome:
         sleep(3)
         actions = ActionChains(self.browser)  # Определяет начала действия
         sleep(2)
-        actions.send_keys(Keys.TAB * 7 + Keys.ENTER)  # Переключается на кнопку "выполнить сброс"
+        actions.send_keys(Keys.TAB * 1 + Keys.ENTER)  # Переключается на кнопку "выполнить сброс"
         sleep(2)
         actions.perform()  # Подтверждает сброс
         sleep(2)
