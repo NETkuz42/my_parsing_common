@@ -38,7 +38,7 @@ class Chrome:
             fr"--user-data-dir={self.path_to_profiles}\FAKE_USER_DATA_{str(self.id_browser)}")  # Путь к папке с профилями
         op.add_argument("--profile-directory=default")  # Загружает нужный профиль
         op.add_argument(
-            'log-level=3')  # Отображает только критические ошибки в логе, вылазили некритичные ошибки в VC code
+            '--log-level=3')  # Отображает только критические ошибки в логе, вылазили некритичные ошибки в VC code
         op.add_argument("--disable-blink-features=AutomationControlled")  # Убирает данные что хром в авто режиме
         op.add_argument("--ignore-certificate-errors-spki-list")
         op.add_argument("--ignore-ssl-errors")
