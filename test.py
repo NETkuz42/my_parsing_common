@@ -13,24 +13,25 @@ def close_popup_another_vpn(surf_windows):
     return True
 
 
-start = Application(backend="uia").start(r"C:\Program Files (x86)\Surfshark\Surfshark.exe")
+Application(backend="uia").start(r"C:\Program Files (x86)\Surfshark\Surfshark.exe")
 sleep(2)
-app = findwindows.find_window(title="Surfshark 4.10.1")
-app = Application(backend="uia").connect(handle=app)
+app = Application(backend="uia", allow_magic_lookup=False).connect(path="Surfshark.exe")
 surf = app["Surfshark"]
-surf.print_control_identifiers()
+albania = surf['ListBox3'].child_window(title="United States St. Louis", control_type="ListItem").
+albania.select()
+# surf["ListBox"].print_control_identifiers()
 # test = app_window.print_control_identifiers()
 # app_window.print_control_identifiers()
 
-albania = surf.child_window(title="Albania", auto_id="location_albania", control_type="Button").wrapper_object()
-albania.click_input()
-
-test = close_popup_another_vpn(surf)
-print(test)
-
-
-sleep(1)
-close_button = surf.child_window(title="Close application", control_type="Button").wrapper_object()
-close_button.click_input()
+# albania = surf.child_window(title="Albania", auto_id="location_albania", control_type="Button").wrapper_object()
+# albania.click_input()
+#
+# test = close_popup_another_vpn(surf)
+# print(test)
+#
+#
+# sleep(1)
+# close_button = surf.child_window(title="Close application", control_type="Button").wrapper_object()
+# close_button.click_input()
 
 
