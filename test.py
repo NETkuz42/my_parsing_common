@@ -1,4 +1,4 @@
-from pywinauto import Desktop, Application, timings
+from pywinauto import Desktop, Application, timings, application
 from pywinauto import findwindows, ElementNotFoundError
 from pywinauto.timings import always_wait_until_passes
 from time import sleep
@@ -42,20 +42,14 @@ def run_speedtest(path_result):
 
 class SurfWindowControl:
     def __init__(self):
-        path_to_surf = r"C:\Program Files (x86)\Surfshark\Surfshark.exe"
-        test = Application(backend="uia").start(path_to_surf)
-        sleep(2)
-        app = Application(backend="uia").connect(path="Surfshark.exe")
-        self.surf = app["Surfshark"]
-        self.surf.set_focus()
-        test = self.surf.child_window(auto_id="vpn_page").wait("exists", 30, 2)
-        # test_visible = self.surf.child_window(title="Armenia", auto_id="location_armenia", control_type="Button").wait("exists", 20, 10)
-        print("элемент появился")
-        self.check_popup_another_vpn()
-        # self.country_list = []
-        # self.result_country = []
+        self.path_to_surf = r"C:\Program Files (x86)\Surfshark\Surfshark.exe"
+        self.path_to_log_ip = r""
+        self.surf: application.WindowSpecification = None
+        self.country_list = []
+        self.result_country = []
+        self.log_ip = {}
 
-    def check_popup_another_vpn(self):
+    def __check_popup_another_vpn(self):
         try:
             close_click = self.surf.child_window(title="Close pop up", auto_id="popup_close_button",
                                                     control_type="Button")
@@ -65,16 +59,16 @@ class SurfWindowControl:
             return False
         return True
 
-    def get_country_list(self):
+    def __get_country_list(self):
         country_tree_list = self.surf.child_window(title="Armenia", auto_id="location_armenia", control_type="Button").parent().parent().texts()
         country_list = []
         for country_row in country_tree_list:
             country = country_row[0]
             country_list.append(country)
         self.country_list = country_list
-        return country_list
+        return self.country_list
 
-    def connect_to_country(self, country):
+    def __connect_to_country(self, country):
         select_country = self.surf.child_window(title=country, control_type="Button")
         select_country.wrapper_object().click_input()
         try:
@@ -101,11 +95,23 @@ class SurfWindowControl:
         print("Отключился от страны")
 
     def get_test(self):
-        self.get_country_list()
-        self.connect_to_country(self.country_list[0])
+        self.__get_interface()
+        self.__get_country_list()
+        self.__connect_to_country(self.country_list[0])
+
+    def __get_interface(self):
+        Application().start(self.path_to_surf)
+        sleep(2)
+        app = Application(backend="uia").connect(path="Surfshark.exe")
+        self.surf = app["Surfshark"]
+        self.surf.set_focus()
+        self.surf.child_window(auto_id="vpn_page").wait("exists", 30, 2)
+        print("Интерфейс сурфа выведен и готов")
+        self.__check_popup_another_vpn()
+        return self.surf
 
 
-SurfWindowControl()
+SurfWindowControl().get_test()
 
 # run_speedtest(r"C:\PYTHON\my_parsing_common\speedtest_result.csv")
 
