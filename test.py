@@ -2,27 +2,58 @@ from pywinauto import Desktop, Application, timings
 from pywinauto import findwindows, ElementNotFoundError
 from pywinauto.timings import always_wait_until_passes
 from time import sleep
+import subprocess
+import pandas as pd
+from datetime import datetime
 
 
+def run_speedtest(path_result):
+    path_to_speedtest = r"D:\DISTRIB_LOCAL\PROGRAM\speedtest\speedtest.exe"
+    servers = {"mts_mos": "librarian.comstar.ru", "dom_spb": "speedtest.spb.ertelecom.ru"}
+    try:
+        result_frame = pd.read_csv(path_result, encoding="UTF-8", sep=";")
+    except FileNotFoundError:
+        result_frame = pd.DataFrame()
 
+    for server in servers.values():
+        run_test = subprocess.run([path_to_speedtest, "-o", server, "-u", "Mbps"], capture_output=True)
+        results_list = str(run_test).split(r"\n")
 
+        clean_list = [result.replace('  ', '').replace(r'\r', "") for result in results_list]
+        result_dict = {"server": {"full": clean_list[3], "shot": int(clean_list[3].split("id:")[1].replace(")", "").strip())},
+                       "provider": {"full": clean_list[4], "shot": clean_list[4].replace('ISP:', '').strip()},
+                       "idle_letancy": {"full": clean_list[5], "shot": float(clean_list[5].split(" ms")[0].replace("Idle Latency:", "").strip())},
+                       "down_speed": {"full": clean_list[6], "shot": float(clean_list[6].split(" Mbps")[0].replace("Download:", "").strip())},
+                       "down_letancy": {"full": clean_list[7], "shot": float(clean_list[7].split(" ms")[0].strip())},
+                       "up_speed": {"full": clean_list[8], "shot": float(clean_list[8].split(" Mbps")[0].replace("Upload: ", "").strip())},
+                       "up_letancy": {"full": clean_list[9], "shot": float(clean_list[9].split(" ms")[0].strip())},
+                       "packet_loss": {"full": clean_list[10], "shot": clean_list[10].replace(" Packet Loss: ", "").replace("%", "").strip()}}
 
-# @always_wait_until_passes(4, 2)
-# def ensure_text_changed(ctrl):
-#     if previous_text == ctrl.window_text():
-#         raise ValueError('The ctrl text remains the same while change is expected')
+        index_row = len(result_frame)
 
+        result_frame.loc[index_row, "test_time"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        for param, vol in result_dict.items():
+            for type_result, result in vol.items():
+                name_result = f"{param}_{type_result}"
+                result_frame.loc[index_row, name_result] = result
 
-# Application(backend="uia").start(r"C:\Program Files (x86)\Surfshark\Surfshark.exe")
-# sleep(2)
+    result_frame.to_csv("speedtest_result.csv", encoding="UTF-8", sep=";")
 
 
 class SurfWindowControl:
     def __init__(self):
+        path_to_surf = r"C:\Program Files (x86)\Surfshark\Surfshark.exe"
+        test = Application(backend="uia").start(path_to_surf)
+        sleep(2)
         app = Application(backend="uia").connect(path="Surfshark.exe")
         self.surf = app["Surfshark"]
-        self.country_list = []
-        self.result_country=[]
+        self.surf.set_focus()
+        test = self.surf.child_window(auto_id="vpn_page").wait("exists", 30, 2)
+        # test_visible = self.surf.child_window(title="Armenia", auto_id="location_armenia", control_type="Button").wait("exists", 20, 10)
+        print("элемент появился")
+        self.check_popup_another_vpn()
+        # self.country_list = []
+        # self.result_country = []
 
     def check_popup_another_vpn(self):
         try:
@@ -74,48 +105,8 @@ class SurfWindowControl:
         self.connect_to_country(self.country_list[0])
 
 
-SurfWindowControl().disconnect_country()
+SurfWindowControl()
 
-
-# surf.child_window(title="Back", auto_id="BackButton", control_type="Button").wrapper_object().click_input()
-# current_ip = surf.child_window(title="Real:", control_type="Text").parent().children()[10].texts()[0]
-# test = surf.children()[10].texts()
-# print(test)
-# test = surf.select(5).draw_outline()
-# print(test)
-# finland = surf.child_window(title="Finland", auto_id="location_finland", control_type="Button").wrapper_object()
-# finland.set_focus()dr
-# finland.click_input()
-# ip_button = surf.child_window(auto_id="homeinfo_ipaddress_button", control_type="Button").wrapper_object()
-# ip_button.click_input()
-# ip_loc = surf.child_window(auto_id="UserControl", control_type="Custom").draw_outline()
-# text = ip_loc.child_window(auto_id="homeinfo_ipaddress_text", control_type="Custom").texts()
-# print(text)
-# sleep(5)
-# test = surf.child_window(title="Home info", auto_id="homeinfo_connectionlabel", control_type="Button").wrapper_object().click_input()
-# print(test)
-# surf_window = app["Surfshark"].print_control_identifiers()
-# country_list = surf_window['ListBox3']
-#
-# slovenia = country_list["Slovenia"].set_focus()
-# sleep(2)
-# belize = country_list["Belize"].set_focus()
-# test = slovenia.wrapper_object()
-# print(type(test))
-# albania.select()
-# surf["ListBox"].print_control_identifiers()
-# test = app_window.print_control_identifiers()
-# app_window.print_control_identifiers()
-
-# albania = surf.child_window(title="Albania", auto_id="location_albania", control_type="Button").wrapper_object()
-# albania.click_input()
-#
-# test = close_popup_another_vpn(surf)
-# print(test)
-#
-#
-# sleep(1)
-# close_button = surf.child_window(title="Close application", control_type="Button").wrapper_object()
-# close_button.click_input()
+# run_speedtest(r"C:\PYTHON\my_parsing_common\speedtest_result.csv")
 
 

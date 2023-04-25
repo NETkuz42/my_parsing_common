@@ -4,19 +4,14 @@ import pandas as pd
 
 def run_speedtest(path_result):
     path_to_speedtest = r"D:\DISTRIB_LOCAL\PROGRAM\speedtest\speedtest.exe"
-    servers = {"mts_mos": "librarian.comstar.ru", "dom_spb": "speedtest.spb.ertelecom.ru", "near": ""}
+    servers = {"mts_mos": "librarian.comstar.ru", "dom_spb": "speedtest.spb.ertelecom.ru"}
     try:
         result_frame = pd.read_csv(path_result, encoding="UTF-8", sep=";")
     except FileNotFoundError:
         result_frame = pd.DataFrame()
 
-    for server in servers:
-        run_test = subprocess.run([path_to_speedtest, "-o", servers["dom_spb"], "-u", "Mbps"], capture_output=True)
-        dataframe = pd.DataFrame()
-        dataframe.loc[len(dataframe), "result"] = str(run_test)
-        dataframe.to_csv("speedtest.csv", sep=";", encoding="UTF-8")
-
-        run_test = pd.read_csv("speedtest.csv", encoding='UTF-8', sep=";").loc[0, "result"]
+    for server in servers.values():
+        run_test = subprocess.run([path_to_speedtest, "-o", server, "-u", "Mbps"], capture_output=True)
         results_list = str(run_test).split(r"\n")
 
         clean_list = [result.replace('  ', '').replace(r'\r', "") for result in results_list]
