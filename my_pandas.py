@@ -22,6 +22,7 @@ class My_file_work:
         pass
 
     #Сканирует результаты всех поток и сохраняет итоги
+
     def save_county_test(self,name_test_folder,time_to_sleep=5):
         name_dir=f"data\\available_countries\\{name_test_folder}\\" #Папка где лежат итоги
         name_files=os.listdir(name_dir) #Список файлов с результатами
