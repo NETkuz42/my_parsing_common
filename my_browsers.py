@@ -23,7 +23,7 @@ class Chrome:
         self.page_counter = 0
         self.error_counter = 0
         self.random_delimiter = random.randrange(1, 10)
-        self.path_to_profiles = path_to_profiles
+        self.path_to_profiles = fr"{path_to_profiles}\FAKE_USER_DATA_{str(self.id_browser)}"
 
     # Запускает Хром
     def start_chrome(self, header=True, control_window=True):  # Принимает номер профиля, по умолчанию 0)
@@ -35,7 +35,7 @@ class Chrome:
             op.add_argument('--headless')  # Параметр запуска безголового режима
         op.binary_location = path.join(self.path_to_dir, r"browsers\chrome\112.0.5615.50\Chrome 112.0.5615.50\chrome.exe")  # Путь к старой версии хрома
         op.add_argument(
-            fr"--user-data-dir={self.path_to_profiles}\FAKE_USER_DATA_{str(self.id_browser)}")  # Путь к папке с профилями
+            fr"--user-data-dir={self.path_to_profiles}")  # Путь к папке с профилями
         op.add_argument("--profile-directory=default")  # Загружает нужный профиль
         op.add_argument(
             '--log-level=3')  # Отображает только критические ошибки в логе, вылазили некритичные ошибки в VC code
