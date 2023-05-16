@@ -94,9 +94,8 @@ class Chrome:
 
         def clear_file():  # Сбрасывает кэш и куки удалением файлов
             full_cash_path = fr"{self.path_to_profile}\Default\Cache\Cache_Data"  # Путь к папке кэша
-            full_cookies_path = fr"{self.path_to_profile}\Default\Network\Cookies"  # Путь к файлу куки
             shutil.rmtree(full_cash_path)  # Удаляет кэш
-            os.remove(full_cookies_path)  # Удаляет куки
+            self.browser.delete_all_cookies()
 
         if self.header is False:
             clear_from_interface()
