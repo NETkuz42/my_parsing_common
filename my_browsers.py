@@ -20,7 +20,7 @@ from my_help_func import path_cheker
 
 class Chrome:
     # Определяет браузер в классе
-    def __init__(self, id_browser, path_to_profiles=r"D:\DISTRIB_LOCAL\PARSING\\CHROME"):
+    def __init__(self, id_browser, path_to_profiles=r"E:\DISTRIB_LOCAL\PARSING\\CHROME"):
         self.browser: webdriver.Chrome = None
         self.path_to_dir = path.dirname(__file__)  # Путь к текущей папке
         self.id_browser = id_browser
