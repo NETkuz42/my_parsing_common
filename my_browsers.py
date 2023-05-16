@@ -1,3 +1,5 @@
+import os
+
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
@@ -9,9 +11,11 @@ from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import NoSuchElementException
 from os import path
+import shutil
 import pandas as pd
 import random
 from typing import Optional
+from my_help_func import path_cheker
 
 
 class Chrome:
@@ -23,19 +27,20 @@ class Chrome:
         self.page_counter = 0
         self.error_counter = 0
         self.random_delimiter = random.randrange(1, 10)
-        self.path_to_profiles = fr"{path_to_profiles}\FAKE_USER_DATA_{str(self.id_browser)}"
+        self.path_to_profile = fr"{path_to_profiles}\FAKE_USER_DATA_{str(self.id_browser)}"
+        self.header = None
 
     # Запускает Хром
     def start_chrome(self, header=True, control_window=True):  # Принимает номер профиля, по умолчанию 0)
         sleep(self.id_browser*2)
         ser = Service(executable_path=path.join(self.path_to_dir, r"browsers\chrome\112.0.5615.50\chromedriver_112.0.5615.50.exe"))  # путь к chromedriver
         op = webdriver.ChromeOptions()  # опции для не разлоченного селениума
-        header = False if control_window and self.id_browser == 0 else header
+        self.header = False if control_window and self.id_browser == 0 else header
         if header:
             op.add_argument('--headless')  # Параметр запуска безголового режима
         op.binary_location = path.join(self.path_to_dir, r"browsers\chrome\112.0.5615.50\Chrome 112.0.5615.50\chrome.exe")  # Путь к старой версии хрома
         op.add_argument(
-            fr"--user-data-dir={self.path_to_profiles}")  # Путь к папке с профилями
+            fr"--user-data-dir={self.path_to_profile}")  # Путь к папке с профилями
         op.add_argument("--profile-directory=default")  # Загружает нужный профиль
         op.add_argument(
             '--log-level=3')  # Отображает только критические ошибки в логе, вылазили некритичные ошибки в VC code
@@ -78,14 +83,28 @@ class Chrome:
 
     # переключается на окно с настройками и удаляет кэш
     def clear_cache(self):
-        self.browser.get('chrome://settings/clearBrowserData')  # Открывает настройки
-        sleep(3)
-        actions = ActionChains(self.browser)  # Определяет начала действия
+        def clear_from_interface():
+            self.browser.get('chrome://settings/clearBrowserData')  # Открывает настройки
+            sleep(3)
+            actions = ActionChains(self.browser)  # Определяет начала действия
+            sleep(2)
+            actions.send_keys(Keys.TAB * 1 + Keys.ENTER)  # Переключается на кнопку "выполнить сброс"
+            sleep(2)
+            actions.perform()  # Подтверждает сброс
+            sleep(2)
+
+        def clear_file():
+            full_cash_path = fr"{self.path_to_profile}\Default\Cache\Cache_Data"
+            full_cookies_path = fr"{self.path_to_profile}\Default\Network\Cookies"
+            shutil.rmtree(full_cash_path)
+            os.remove(full_cookies_path)
+
+        if self.header is False:
+            clear_from_interface()
+
         sleep(2)
-        actions.send_keys(Keys.TAB * 1 + Keys.ENTER)  # Переключается на кнопку "выполнить сброс"
-        sleep(2)
-        actions.perform()  # Подтверждает сброс
-        sleep(2)
+        clear_file()
+
 
     # Открывает новую вкладку и определяет её ID
     def new_tab(self, tab_number):  # Функция запускающая новое окно и возвращающая его ID
