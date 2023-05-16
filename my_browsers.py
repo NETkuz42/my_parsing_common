@@ -15,7 +15,6 @@ import shutil
 import pandas as pd
 import random
 from typing import Optional
-from my_help_func import path_cheker
 
 
 class Chrome:
@@ -36,7 +35,7 @@ class Chrome:
         ser = Service(executable_path=path.join(self.path_to_dir, r"browsers\chrome\112.0.5615.50\chromedriver_112.0.5615.50.exe"))  # путь к chromedriver
         op = webdriver.ChromeOptions()  # опции для не разлоченного селениума
         self.header = False if control_window and self.id_browser == 0 else header
-        if header:
+        if self.header:
             op.add_argument('--headless')  # Параметр запуска безголового режима
         op.binary_location = path.join(self.path_to_dir, r"browsers\chrome\112.0.5615.50\Chrome 112.0.5615.50\chrome.exe")  # Путь к старой версии хрома
         op.add_argument(
