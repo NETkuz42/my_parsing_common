@@ -25,7 +25,7 @@ class Chrome:
         self.id_browser = id_browser
         self.page_counter = 0
         self.error_counter = 0
-        self.random_delimiter = random.randrange(1, 10)
+        self.random_delimiter = random.randrange(1, 30)
         self.path_to_profile = fr"{path_to_profiles}\FAKE_USER_DATA_{str(self.id_browser)}"
         self.header = None
 
@@ -82,7 +82,7 @@ class Chrome:
 
     # переключается на окно с настройками и удаляет кэш
     def clear_cache(self):
-        def clear_from_interface():
+        def clear_from_interface():  # Сбрасывает куки через интерфейс
             self.browser.get('chrome://settings/clearBrowserData')  # Открывает настройки
             sleep(3)
             actions = ActionChains(self.browser)  # Определяет начала действия
@@ -92,11 +92,11 @@ class Chrome:
             actions.perform()  # Подтверждает сброс
             sleep(2)
 
-        def clear_file():
-            full_cash_path = fr"{self.path_to_profile}\Default\Cache\Cache_Data"
-            full_cookies_path = fr"{self.path_to_profile}\Default\Network\Cookies"
-            shutil.rmtree(full_cash_path)
-            os.remove(full_cookies_path)
+        def clear_file():  # Сбрасывает кэш и куки удалением файлов
+            full_cash_path = fr"{self.path_to_profile}\Default\Cache\Cache_Data"  # Путь к папке кэша
+            full_cookies_path = fr"{self.path_to_profile}\Default\Network\Cookies"  # Путь к файлу куки
+            shutil.rmtree(full_cash_path)  # Удаляет кэш
+            os.remove(full_cookies_path)  # Удаляет куки
 
         if self.header is False:
             clear_from_interface()
@@ -115,7 +115,7 @@ class Chrome:
         return tab_id  # Возвращает ID окна
 
     # Проверяет страница на ошибки возвращает содержимое
-    def simple_check(self, link, verif_note, sleep_time=3, mass_error_sleep_time=300, reset_counter=100):
+    def simple_check(self, link, verif_note, sleep_time=3, mass_error_sleep_time=300, reset_counter=60):
         def remove_track():
             self.error_counter += 1
             if self.error_counter == 5:
