@@ -95,8 +95,18 @@ class Chrome:
 
         def clear_file():  # Сбрасывает кэш и куки удалением файлов
             full_cash_path = fr"{self.path_to_profile}\Default\Cache\Cache_Data"  # Путь к папке кэша
+            js_cache = fr"{self.path_to_profile}\Default\Code Cache\js"
+            wasm_cache = fr"{self.path_to_profile}\Default\Code Cache\wasm"
+            webui_js = fr"{self.path_to_profile}\Default\Code Cache\webui_js"
             if os.path.exists(full_cash_path):
                 shutil.rmtree(full_cash_path)  # Удаляет кэш
+            if os.path.exists(js_cache):
+                shutil.rmtree(js_cache)  # Удаляет кэш
+            if os.path.exists(wasm_cache):
+                shutil.rmtree(wasm_cache)  # Удаляет кэш
+            if os.path.exists(webui_js):
+                shutil.rmtree(webui_js)  # Удаляет кэш
+
             sleep(2)
             self.browser.delete_all_cookies()
             sleep(2)
