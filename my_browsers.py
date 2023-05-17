@@ -10,6 +10,7 @@ from user_agent import generate_user_agent
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import InvalidSessionIdException
 from os import path
 import shutil
 import pandas as pd
@@ -171,7 +172,11 @@ class Chrome:
             print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "ошибка времени загрузки страницы, повторяю")
             source_page = remove_track()
 
-        except WebDriverException as err:
+        except InvalidSessionIdException:
+            print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "непонятная ошибка InvalidSession")
+            source_page = remove_track()
+
+        except WebDriverException:
             print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "ошибка драйвера")
             source_page = remove_track()
 
