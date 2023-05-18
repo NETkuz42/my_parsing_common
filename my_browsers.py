@@ -100,7 +100,7 @@ class Chrome:
                 item_path = fr"{self.path_to_profile}{item}"
                 list_child_items = os.listdir(item_path)
                 for child_item in list_child_items:
-                    final_path = fr"{item_path}{child_item}"
+                    final_path = fr"{item_path}\{child_item}"
                     shutil.rmtree(final_path)
 
             sleep(2)
