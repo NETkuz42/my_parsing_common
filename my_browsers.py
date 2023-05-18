@@ -97,10 +97,10 @@ class Chrome:
             list_cleaning_folder = [r"\Default\Cache", r"\Default\Code Cache"]
 
             for item in list_cleaning_folder:
-                item_path = os.path.join(self.path_to_profile, item)
+                item_path = fr"{self.path_to_profile}{item}"
                 list_child_items = os.listdir(item_path)
                 for child_item in list_child_items:
-                    final_path = os.path.join(item_path, child_item)
+                    final_path = fr"{item_path}{child_item}"
                     shutil.rmtree(final_path)
 
             sleep(2)
