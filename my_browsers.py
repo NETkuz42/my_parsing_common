@@ -101,7 +101,10 @@ class Chrome:
                 list_child_items = os.listdir(item_path)
                 for child_item in list_child_items:
                     final_path = fr"{item_path}\{child_item}"
-                    shutil.rmtree(final_path)
+                    try:
+                        shutil.rmtree(final_path)
+                    except PermissionError:
+                        pass
 
             sleep(2)
             self.browser.delete_all_cookies()
