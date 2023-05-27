@@ -31,14 +31,14 @@ class Chrome:
         self.header = None
 
     # Запускает Хром
-    def start_chrome(self, header=True, control_window=True):  # Принимает номер профиля, по умолчанию 0)
+    def start_chrome(self, header=True, control_window=True, path_brow_folder=r"browsers\chrome"):  # Принимает номер профиля, по умолчанию 0)
         sleep(self.id_browser*2)
-        ser = Service(executable_path=path.join(self.path_to_dir, r"browsers\chrome\112.0.5615.50\chromedriver_112.0.5615.50.exe"))  # путь к chromedriver
+        ser = Service(executable_path=path.join(self.path_to_dir, fr"{path_brow_folder}\112.0.5615.50\chromedriver_112.0.5615.50.exe"))  # путь к chromedriver
         op = webdriver.ChromeOptions()  # опции для не разлоченного селениума
         self.header = False if control_window and self.id_browser == 0 else header
         if self.header:
             op.add_argument('--headless')  # Параметр запуска безголового режима
-        op.binary_location = path.join(self.path_to_dir, r"browsers\chrome\112.0.5615.50\Chrome 112.0.5615.50\chrome.exe")  # Путь к старой версии хрома
+        op.binary_location = path.join(self.path_to_dir, fr"{path_brow_folder}\112.0.5615.50\Chrome 112.0.5615.50\chrome.exe")  # Путь к старой версии хрома
         op.add_argument(
             fr"--user-data-dir={self.path_to_profile}")  # Путь к папке с профилями
         op.add_argument("--profile-directory=default")  # Загружает нужный профиль
