@@ -12,6 +12,7 @@ from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import InvalidSessionIdException
 from os import path
+import my_help_func
 import shutil
 import pandas as pd
 import random
@@ -98,11 +99,11 @@ class Chrome:
 
             for item in list_cleaning_folder:
                 item_path = fr"{self.path_to_profile}{item}"
-                list_child_items = os.listdir(item_path)
-                for child_item in list_child_items:
-                    final_path = fr"{item_path}\{child_item}"
+                list_files_patches = my_help_func.path_cheker(item_path)
+                for child_item_path in list_files_patches:
+                    # final_path = fr"{item_path}\{child_item}"
                     try:
-                        shutil.rmtree(final_path)
+                        os.remove(child_item_path)
                     except PermissionError:
                         pass
                     except OSError:

@@ -13,7 +13,7 @@ def path_cheker(papka, result_list=None):
     for item in os.listdir(papka):
         full_path=os.path.join(papka,item)
         if os.path.isdir(full_path):
-            path_cheker(full_path,result_list)
+            path_cheker(full_path, result_list)
         elif os.path.isfile(full_path):
             result_list.append(full_path)
     return result_list
