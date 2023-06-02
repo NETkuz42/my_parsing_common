@@ -105,6 +105,8 @@ class Chrome:
                         shutil.rmtree(final_path)
                     except PermissionError:
                         pass
+                    except OSError:
+                        pass
 
             sleep(2)
             self.browser.delete_all_cookies()
