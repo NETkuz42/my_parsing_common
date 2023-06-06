@@ -48,7 +48,7 @@ class Chrome:
         op.add_argument("--disable-blink-features=AutomationControlled")  # Убирает данные что хром в авто режиме
         op.add_argument("--ignore-certificate-errors-spki-list")
         op.add_argument("--ignore-ssl-errors")
-        # op.add_argument("--disk-cache-size=0")
+        op.add_argument("--disk-cache-size=0")
 
         fake_user_agent = generate_user_agent(device_type="desktop", navigator='chrome')  # генерит рандомного юзер агента
         op.add_argument(f"user-agent={fake_user_agent}")  # устанавливает фиктивный юзер агент
