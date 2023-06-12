@@ -81,13 +81,14 @@ def find_values(value_type, table, clarification):
 
 
 #Объеденяет все .csv файлы в папке в один датафрейм.
-def merge_files(papka_files, path_to_save):
+def merge_files(papka_files, path_to_save=None):
     list_paths = path_cheker(papka_files)
     result_frame = pd.DataFrame()
     for file in list_paths:
         small_frame = pd.read_csv(file, sep=";", encoding="UTF-8", dtype=str, low_memory=False)
         result_frame = pd.concat([result_frame, small_frame], ignore_index=True)
-    result_frame.to_csv(path_to_save, encoding="UTF-8", sep=";", index=False)
+    if path_to_save is not None:
+        result_frame.to_csv(path_to_save, encoding="UTF-8", sep=";", index=False)
     return result_frame
 
 
