@@ -94,30 +94,31 @@ class Chrome:
             actions.perform()  # Подтверждает сброс
             sleep(2)
 
-        def clear_file():  # Сбрасывает кэш и куки удалением файлов
-            list_cleaning_folder = [r"\Default\Cache", r"\Default\Code Cache"]
-
-            for item in list_cleaning_folder:
-                item_path = fr"{self.path_to_profile}{item}"
-                list_files_patches = my_help_func.path_cheker(item_path)
-                for child_item_path in list_files_patches:
-                    # final_path = fr"{item_path}\{child_item}"
-                    try:
-                        os.remove(child_item_path)
-                    except PermissionError:
-                        pass
-                    except OSError:
-                        pass
-
-            sleep(2)
-            self.browser.delete_all_cookies()
-            sleep(2)
-
         if self.header is False:
             clear_from_interface()
 
         sleep(2)
-        clear_file()
+        self.clear_file_in_cache()
+        sleep(2)
+        self.browser.delete_all_cookies()
+        sleep(2)
+
+    def clear_file_in_cache(self, path_to_profile=None):  # Сбрасывает кэш и куки удалением файлов
+        list_cleaning_folder = [r"\Default\Cache", r"\Default\Code Cache"]
+        if path_to_profile is None:
+            path_to_profile = self.path_to_profile
+
+        for item in list_cleaning_folder:
+            item_path = fr"{path_to_profile}{item}"
+            list_files_patches = my_help_func.path_cheker(item_path)
+            for child_item_path in list_files_patches:
+                # final_path = fr"{item_path}\{child_item}"
+                try:
+                    os.remove(child_item_path)
+                except PermissionError:
+                    pass
+                except OSError:
+                    pass
 
 
     # Открывает новую вкладку и определяет её ID
