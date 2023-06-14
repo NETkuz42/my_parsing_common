@@ -8,6 +8,7 @@ pandas = "*"
 selenium = "*"
 user-agent = "*"
 pywinauto = "*"
+adrenaline = "*"
 
 [dev-packages]
 
