@@ -73,7 +73,8 @@ class SurfWindowControl:
             return False
         return True
 
-    def __check_popup_cancel_connection(self):
+    def __cancel_incomplete_connection(self):
+        self.surf.child_window(title="Cancel connecting", auto_id="connect_button", control_type="Button").click_input()
         try:
             close_click = self.surf.child_window(title="Cancel connection", auto_id="popup_secondary_button", control_type="Button").wait("exists", 10, 1)
             close_click.click_input()
@@ -92,20 +93,25 @@ class SurfWindowControl:
         self.country_list = country_list
         return self.country_list
 
+    def check_notification_rotation_ip(self):
+        self.surf.child_window(auto_id="notifications_label", control_type="Text").wait("exists", 5, 1) #Закавыка тут, надо разобарть.
+        print("появилась надпись о ротации")
+
     def __connect_to_country(self, country):
         """Коннектится у казанной стране"""
         select_country = self.surf.child_window(title=country, control_type="Button")
         print("Подключаюсь к", country)
         select_country.wrapper_object().click_input()
-        self.__check_popup_another_vpn()
-        try:
-            self.surf.child_window(title="Disconnect", auto_id="connect_button", control_type="Button").wait("exists", 10, 1)
-            print("Успешно подключился к", country)
-        except timings.TimeoutError:
-            print("коннект к", country, "не удался")
-            self.surf.child_window(title="Cancel connecting", auto_id="connect_button", control_type="Button").wrapper_object().click_input()
-            self.__check_popup_cancel_connection()
-            return False
+        # self.__check_popup_another_vpn()
+        # try:
+        #     self.surf.child_window(title="Disconnect", auto_id="connect_button", control_type="Button").wait("exists", 1, 1)
+        #     print("Успешно подключился к", country)
+        # except timings.TimeoutError:
+        #     print("коннект к", country, "не удался")
+        #     self.__cancel_incomplete_connection()
+        #     return False
+
+        self.check_notification_rotation_ip()
 
         select_details = self.surf.child_window(title="Home info", auto_id="homeinfo_connectionlabel", control_type="Button")
         select_details.wrapper_object().click_input()
