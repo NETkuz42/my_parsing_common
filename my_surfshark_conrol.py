@@ -94,7 +94,9 @@ class SurfWindowControl:
         return self.country_list
 
     def check_notification_rotation_ip(self):
-        self.surf.child_window(auto_id="notifications_label", control_type="Text").wait("exists", 5, 1) #Закавыка тут, надо разобарть.
+        # self.surf.child_window(auto_id="notifications_label", control_type="Text").wait("exists", 5, 1) #Закавыка тут, надо разобарть.
+        test = self.surf.child_window(class_name="NotificationsHeaderView").wait("exists", 5, 1)  # Закавыка тут, надо разобарть.
+        print(test)
         print("появилась надпись о ротации")
 
     def __connect_to_country(self, country):
