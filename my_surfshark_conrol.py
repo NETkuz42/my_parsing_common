@@ -97,13 +97,17 @@ class SurfWindowControl:
 
     def __get_country_list(self):
         """Получает список стран из списка"""
-        country_tree_list = self.surf.child_window(title="Armenia", auto_id="location_armenia",
-                                                   control_type="Button").parent().parent().texts()
+        country_tree_object = self.surf.child_window(title="Armenia", auto_id="location_armenia",
+                                                   control_type="Button").parent().parent()
+        country_tree_list = country_tree_object.texts()
         country_list = []
         for country_row in country_tree_list:
             country = country_row[0]
             country_list.append(country)
         self.country_list = country_list
+        print(country_list)
+        self.country_tree_object = country_tree_object
+
         return self.country_list
 
     def __check_ip(self):
@@ -115,8 +119,10 @@ class SurfWindowControl:
 
     def __connect_to_country(self, country):
         """Коннектится у казанной стране"""
-        select_country = self.surf.child_window(title=country, control_type="Button")
+        select_country = self.surf.child_window(title="Albania", auto_id="location_albania", control_type="Button").set_focus()
+        # select_country = self.surf.child_window(title="Poland Gdansk", auto_id="location_poland_gdansk", control_type="Button").set_focus()
         print("Подключаюсь к", country)
+        input("жду")
         select_country.set_focus()
         select_country.click_input()
         self.__check_popup_another_vpn()
