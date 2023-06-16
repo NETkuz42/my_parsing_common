@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import os
 import shutil
-from my_parsing_common import my_browsers
+import my_browsers
 
 
 # Сканирует директорию и определяет пути ко всем файлам

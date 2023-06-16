@@ -6,6 +6,9 @@ import subprocess
 import pandas as pd
 from datetime import datetime
 from adrenaline import prevent_sleep
+import my_help_func
+from my_browsers import Chrome
+from selenium.webdriver.common.by import By
 
 
 def run_speedtest(path_result):
@@ -49,6 +52,9 @@ class SurfWindowControl:
         self.country_list = []
         self.result_country = []
         self.log_ip = {}
+        self.path_to_result = None
+        self.path_to_browser_optim_user = r"\browsers\chrome\112.0.5615.50\optim_user"
+        self.opened_browser : Chrome = None
 
     def __get_interface(self):
         """Запускает сурф, выводит интерфейс на передний план"""
@@ -93,6 +99,13 @@ class SurfWindowControl:
         self.country_list = country_list
         return self.country_list
 
+    def __check_ip(self):
+        """Проверяет номер ip адреса на внутренней старнице"""
+        ip_details = self.surf.child_window(title="Real:", control_type="Text").wait("exists", 10, 1)
+        current_ip = ip_details.parent().children()[10].texts()[0]
+        print("Текущий IP:", current_ip)
+        return current_ip
+
     def __connect_to_country(self, country):
         """Коннектится у казанной стране"""
         select_country = self.surf.child_window(title=country, control_type="Button")
@@ -111,12 +124,10 @@ class SurfWindowControl:
         select_details.wrapper_object().click_input()
 
         ip_button = self.surf.child_window(auto_id="homeinfo_ipaddress_button", control_type="Button").wait("exists", 10, 1)
+        print(ip_button)
         ip_button.click_input()
 
-        ip_details = self.surf.child_window(title="Real:", control_type="Text").wait("exists", 10, 1)
-        current_ip = ip_details.parent().children()[10].texts()[0]
-        print("Текущий IP:", current_ip)
-        return current_ip
+        return True
 
     def disconnect_country(self):
         """Разрывает соединение"""
@@ -125,13 +136,54 @@ class SurfWindowControl:
         disconnect_button.click_input()
         print("Отключился от страны")
 
+    def start_browser(self):
+        print("Запускаю браузер")
+        my_help_func.profile_manager(1, r"browsers\chrome\112.0.5615.50\optim_user", cloning_path = r"D:\DISTRIB_LOCAL\PARSING\CHROME")
+        self.opened_browser = Chrome(0, path_to_profiles=r"D:\DISTRIB_LOCAL\PARSING\\CHROME").start_chrome()
+
+    def check_popular_pages(self):
+        dict_checked = {"https://www.drom.ru/": "div.css-184qm5b",
+                        "https://www.avito.ru/": "div.index-navigation-gCayT",
+                        "https://www.farpost.ru/": "td.col_logo.js-show-additional-navigation",
+                        "https://auto.ru/": "div.Header__logo",
+                        "https://www.wildberries.ru/": "div.header__nav-element.nav-element",
+                        "https://www.ozon.ru/": "div.ed6"}
+
+        result_dict = {}
+        brow = self.opened_browser.browser
+        for link, check_row in dict_checked.items():
+            try:
+                brow.get(link)
+                brow.find_element(By.CSS_SELECTOR, check_row)
+                result_dict.update({link: "ok"})
+            except Exception as error:
+                result_dict.update({link: error})
+
+            sleep(1)
+        return result_dict
+
     def get_test(self):
+        self.start_browser()
         self.__get_interface()
         self.__get_country_list()
-        connect_status = False
-        while connect_status is False:
-            self.__connect_to_country(self.country_list[0])
-            sleep(10)
+
+        sleep_time = 330
+        intermediate_results_frame = pd.DataFrame()
+        country_to_connect = None
+
+        for country in self.country_list:
+
+            connect_status = False
+            while connect_status is False:
+                connect_status = self.__connect_to_country(country)
+
+            ip_address = self.__check_ip()
+            sleep(1)
+            sites_result = self.check_popular_pages()
+            print(sites_result)
+            sleep(1)
+            self.disconnect_country()
+            sleep(5)
 
 
 if __name__ == "__main__":
