@@ -11,7 +11,7 @@ from my_browsers import Chrome
 from selenium.webdriver.common.by import By
 
 
-def run_speedtest(path_result):
+def test_speedtest(path_result):
     path_to_speedtest = r"D:\DISTRIB_LOCAL\PROGRAM\speedtest\speedtest.exe"
     servers = {"mts_mos": "librarian.comstar.ru", "dom_spb": "speedtest.spb.ertelecom.ru"}
     try:
@@ -24,14 +24,19 @@ def run_speedtest(path_result):
         results_list = str(run_test).split(r"\n")
 
         clean_list = [result.replace('  ', '').replace(r'\r', "") for result in results_list]
-        result_dict = {"server": {"full": clean_list[3], "shot": int(clean_list[3].split("id:")[1].replace(")", "").strip())},
-                       "provider": {"full": clean_list[4], "shot": clean_list[4].replace('ISP:', '').strip()},
-                       "idle_letancy": {"full": clean_list[5], "shot": float(clean_list[5].split(" ms")[0].replace("Idle Latency:", "").strip())},
-                       "down_speed": {"full": clean_list[6], "shot": float(clean_list[6].split(" Mbps")[0].replace("Download:", "").strip())},
-                       "down_letancy": {"full": clean_list[7], "shot": float(clean_list[7].split(" ms")[0].strip())},
-                       "up_speed": {"full": clean_list[8], "shot": float(clean_list[8].split(" Mbps")[0].replace("Upload: ", "").strip())},
-                       "up_letancy": {"full": clean_list[9], "shot": float(clean_list[9].split(" ms")[0].strip())},
-                       "packet_loss": {"full": clean_list[10], "shot": clean_list[10].replace(" Packet Loss: ", "").replace("%", "").strip()}}
+        result_dict = {
+            "server": {"full": clean_list[3], "shot": int(clean_list[3].split("id:")[1].replace(")", "").strip())},
+            "provider": {"full": clean_list[4], "shot": clean_list[4].replace('ISP:', '').strip()},
+            "idle_letancy": {"full": clean_list[5],
+                             "shot": float(clean_list[5].split(" ms")[0].replace("Idle Latency:", "").strip())},
+            "down_speed": {"full": clean_list[6],
+                           "shot": float(clean_list[6].split(" Mbps")[0].replace("Download:", "").strip())},
+            "down_letancy": {"full": clean_list[7], "shot": float(clean_list[7].split(" ms")[0].strip())},
+            "up_speed": {"full": clean_list[8],
+                         "shot": float(clean_list[8].split(" Mbps")[0].replace("Upload: ", "").strip())},
+            "up_letancy": {"full": clean_list[9], "shot": float(clean_list[9].split(" ms")[0].strip())},
+            "packet_loss": {"full": clean_list[10],
+                            "shot": clean_list[10].replace(" Packet Loss: ", "").replace("%", "").strip()}}
 
         index_row = len(result_frame)
 
@@ -54,7 +59,7 @@ class SurfWindowControl:
         self.log_ip = {}
         self.path_to_result = None
         self.path_to_browser_optim_user = r"\browsers\chrome\112.0.5615.50\optim_user"
-        self.opened_browser : Chrome = None
+        self.opened_browser: Chrome = None
 
     def __get_interface(self):
         """Запускает сурф, выводит интерфейс на передний план"""
@@ -72,7 +77,7 @@ class SurfWindowControl:
         """Проверяет наличие вслывающего окна о другом впн, закрывает окно"""
         try:
             close_click = self.surf.child_window(title="Close pop up", auto_id="popup_close_button",
-                                                    control_type="Button")
+                                                 control_type="Button")
             close_click.click_input()
             print("Выведено предупреждение о другом впн, закрываю")
         except ElementNotFoundError:
@@ -82,7 +87,8 @@ class SurfWindowControl:
     def __cancel_incomplete_connection(self):
         self.surf.child_window(title="Cancel connecting", auto_id="connect_button", control_type="Button").click_input()
         try:
-            close_click = self.surf.child_window(title="Cancel connection", auto_id="popup_secondary_button", control_type="Button").wait("exists", 10, 1)
+            close_click = self.surf.child_window(title="Cancel connection", auto_id="popup_secondary_button",
+                                                 control_type="Button").wait("exists", 10, 1)
             close_click.click_input()
             print("Выведено окно о продлении времени")
         except ElementNotFoundError:
@@ -91,7 +97,8 @@ class SurfWindowControl:
 
     def __get_country_list(self):
         """Получает список стран из списка"""
-        country_tree_list = self.surf.child_window(title="Armenia", auto_id="location_armenia", control_type="Button").parent().parent().texts()
+        country_tree_list = self.surf.child_window(title="Armenia", auto_id="location_armenia",
+                                                   control_type="Button").parent().parent().texts()
         country_list = []
         for country_row in country_tree_list:
             country = country_row[0]
@@ -110,20 +117,24 @@ class SurfWindowControl:
         """Коннектится у казанной стране"""
         select_country = self.surf.child_window(title=country, control_type="Button")
         print("Подключаюсь к", country)
-        select_country.wrapper_object().click_input()
+        select_country.set_focus()
+        select_country.click_input()
         self.__check_popup_another_vpn()
         try:
-            self.surf.child_window(title="Disconnect", auto_id="connect_button", control_type="Button").wait("exists", 10, 1)
+            self.surf.child_window(title="Disconnect", auto_id="connect_button", control_type="Button").wait("exists",
+                                                                                                             10, 1)
             print("Успешно подключился к", country)
         except timings.TimeoutError:
             print("коннект к", country, "не удался")
             self.__cancel_incomplete_connection()
             return False
 
-        select_details = self.surf.child_window(title="Home info", auto_id="homeinfo_connectionlabel", control_type="Button")
+        select_details = self.surf.child_window(title="Home info", auto_id="homeinfo_connectionlabel",
+                                                control_type="Button")
         select_details.wrapper_object().click_input()
 
-        ip_button = self.surf.child_window(auto_id="homeinfo_ipaddress_button", control_type="Button").wait("exists", 10, 1)
+        ip_button = self.surf.child_window(auto_id="homeinfo_ipaddress_button", control_type="Button").wait("exists",
+                                                                                                            10, 1)
         print(ip_button)
         ip_button.click_input()
 
@@ -132,13 +143,15 @@ class SurfWindowControl:
     def disconnect_country(self):
         """Разрывает соединение"""
         self.surf.child_window(title="Back", auto_id="BackButton", control_type="Button").wrapper_object().click_input()
-        disconnect_button = self.surf.child_window(title="Disconnect", auto_id="connect_button", control_type="Button").wait("exists", 10, 1)
+        disconnect_button = self.surf.child_window(title="Disconnect", auto_id="connect_button",
+                                                   control_type="Button").wait("exists", 10, 1)
         disconnect_button.click_input()
         print("Отключился от страны")
 
     def start_browser(self):
         print("Запускаю браузер")
-        my_help_func.profile_manager(1, r"browsers\chrome\112.0.5615.50\optim_user", cloning_path = r"D:\DISTRIB_LOCAL\PARSING\CHROME")
+        my_help_func.profile_manager(1, r"browsers\chrome\112.0.5615.50\optim_user",
+                                     cloning_path=r"D:\DISTRIB_LOCAL\PARSING\CHROME")
         self.opened_browser = Chrome(0, path_to_profiles=r"D:\DISTRIB_LOCAL\PARSING\\CHROME").start_chrome()
 
     def check_popular_pages(self):
@@ -148,27 +161,46 @@ class SurfWindowControl:
                         "https://auto.ru/": "div.Header__logo",
                         "https://www.wildberries.ru/": "div.header__nav-element.nav-element",
                         "https://www.ozon.ru/": "div.ed6"}
-
-        result_dict = {}
+        result_columns = ["link", "pass_number", "load_status", "load_correctness", "load_speed"]
+        frame_site_result = pd.DataFrame(columns = result_columns)
         brow = self.opened_browser.browser
+        number_tests_on_page = 1
         for link, check_row in dict_checked.items():
-            try:
-                brow.get(link)
-                brow.find_element(By.CSS_SELECTOR, check_row)
-                result_dict.update({link: "ok"})
-            except Exception as error:
-                result_dict.update({link: error})
+            for pass_number in range(number_tests_on_page):
+                number_row = len(frame_site_result)
+                try:
+                    brow.get(link)
+                    load_status = "ok"
+                except Exception as error:
+                    load_status = error
 
-            sleep(1)
-        return result_dict
+                try:
+                    brow.find_element(By.CSS_SELECTOR, check_row)
+                    load_correctness = "ok"
+                except Exception as error:
+                    load_correctness = error
+
+                load_speed = brow.execute_script(
+                    "return ( window.performance.timing.loadEventEnd - window.performance.timing.navigationStart )")
+
+                collation_dict = {"link": link, "pass_number": pass_number, "load_status": load_status,
+                                  "load_correctness": load_correctness, "load_speed": load_speed}
+
+                for column, mean in collation_dict.items():
+                    frame_site_result.loc[number_row, column] = mean
+
+                sleep(2)
+
+        return frame_site_result
 
     def get_test(self):
         self.start_browser()
         self.__get_interface()
         self.__get_country_list()
+        path_to_save = r"C:\PYTHON\my_parsing_common\data\country_tests\result_tests.csv"
 
         sleep_time = 330
-        intermediate_results_frame = pd.DataFrame()
+        results_frame = pd.DataFrame()
         country_to_connect = None
 
         for country in self.country_list:
@@ -180,7 +212,10 @@ class SurfWindowControl:
             ip_address = self.__check_ip()
             sleep(1)
             sites_result = self.check_popular_pages()
-            print(sites_result)
+            sites_result.loc[:, "country"] = country
+            sites_result.loc[:, "ip_addres"] = ip_address
+            results_frame = pd.concat([results_frame, sites_result])
+            results_frame.to_csv(path_to_save, encoding="UTF-8", sep=";")
             sleep(1)
             self.disconnect_country()
             sleep(5)
@@ -191,5 +226,3 @@ if __name__ == "__main__":
         SurfWindowControl().get_test()
 
 # run_speedtest(r"C:\PYTHON\my_parsing_common\speedtest_result.csv")
-
-
