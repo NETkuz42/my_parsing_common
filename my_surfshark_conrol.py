@@ -9,6 +9,7 @@ from adrenaline import prevent_sleep
 import my_help_func
 from my_browsers import Chrome
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException
 from datetime import datetime, timedelta
 
 
@@ -161,9 +162,12 @@ class SurfWindowControl:
 
     def check_popular_pages(self):
         def check_ip_on_2ip():
-            if brow.find_element(By.CSS_SELECTOR, "a.notice__container__ok"):
-                brow.find_element(By.CSS_SELECTOR, "a.notice__container__ok").click()
+            try:
+                cookie_popup = brow.find_element(By.CSS_SELECTOR, "a.notice__container__ok")
+                cookie_popup.click()
                 sleep(2)
+            except NoSuchElementException:
+                pass
 
             trash_list = ["Уточнить?", "Исправить?", "\n"]
             result_dict = {}
