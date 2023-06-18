@@ -54,12 +54,12 @@ class SurfWindowControl:
         self.path_to_surf = r"C:\Program Files (x86)\Surfshark\Surfshark.exe"
         self.path_to_log_ip = r""
         self.surf: application.WindowSpecification = None
-        self.country_list = []
-        self.result_country = []
+        self.country_name_list = []
         self.log_ip = {}
         self.path_to_result = None
         self.path_to_browser_optim_user = r"\browsers\chrome\112.0.5615.50\optim_user"
         self.opened_browser: Chrome = None
+        self.country_tree_objects = None
 
     def __get_interface(self):
         """Запускает сурф, выводит интерфейс на передний план"""
@@ -95,20 +95,20 @@ class SurfWindowControl:
             return False
         return True
 
+    def __close_surf(self):
+        self.surf.child_window(title="Close application", control_type="Button").click_input()
+
     def __get_country_list(self):
         """Получает список стран из списка"""
-        country_tree_object = self.surf.child_window(title="Armenia", auto_id="location_armenia",
+        self.country_tree_objects = self.surf.child_window(title="Armenia", auto_id="location_armenia",
                                                    control_type="Button").parent().parent()
-        country_tree_list = country_tree_object.texts()
-        country_list = []
-        for country_row in country_tree_list:
+        country_name_list = []
+        for country_row in self.country_tree_objects.texts():
             country = country_row[0]
-            country_list.append(country)
-        self.country_list = country_list
-        print(country_list)
-        self.country_tree_object = country_tree_object
+            self.country_name_list.append(country)
+        print(self.country_name_list)
 
-        return self.country_list
+        return self.country_name_list
 
     def __check_ip(self):
         """Проверяет номер ip адреса на внутренней старнице"""
@@ -119,11 +119,9 @@ class SurfWindowControl:
 
     def __connect_to_country(self, country):
         """Коннектится у казанной стране"""
-        select_country = self.surf.child_window(title="Albania", auto_id="location_albania", control_type="Button").set_focus()
+        select_country = self.country_tree_objects.get_item(country).set_focus()
         # select_country = self.surf.child_window(title="Poland Gdansk", auto_id="location_poland_gdansk", control_type="Button").set_focus()
         print("Подключаюсь к", country)
-        input("жду")
-        select_country.set_focus()
         select_country.click_input()
         self.__check_popup_another_vpn()
         try:
@@ -161,7 +159,28 @@ class SurfWindowControl:
         self.opened_browser = Chrome(0, path_to_profiles=r"D:\DISTRIB_LOCAL\PARSING\\CHROME").start_chrome()
 
     def check_popular_pages(self):
-        dict_checked = {"https://www.drom.ru/": "div.css-184qm5b",
+        def check_ip_on_2ip():
+            if brow.find_element(By.CSS_SELECTOR, "a.notice__container__ok"):
+                brow.find_element(By.CSS_SELECTOR, "a.notice__container__ok").click()
+                sleep(2)
+
+            trash_list = ["Уточнить?","Исправить?","\n"]
+            result_series = pd.Series()
+
+            table_details = brow.find_element(By.CLASS_NAME, "data_table")
+            list_elements = table_details.find_elements(By.CLASS_NAME, "data_item")
+            for element in list_elements:
+                element = element.text
+                for word in trash_list:
+                    element = element.replace(word, "")
+                element_params = element.split(":")
+                result_series[element_params[0].strip()] = element_params[1].strip()
+
+            print(result_series)
+            input("жду")
+
+        dict_checked = {"https://2ip.ru/": "div.page-wrapper",
+                        "https://www.drom.ru/": "div.css-184qm5b",
                         "https://www.avito.ru/": "div.index-navigation-gCayT",
                         "https://www.farpost.ru/": "td.col_logo.js-show-additional-navigation",
                         "https://auto.ru/": "div.Header__logo",
@@ -177,6 +196,7 @@ class SurfWindowControl:
                 try:
                     brow.get(link)
                     load_status = "ok"
+                    sleep(3)
                 except Exception as error:
                     load_status = error
 
@@ -184,10 +204,16 @@ class SurfWindowControl:
                     brow.find_element(By.CSS_SELECTOR, check_row)
                     load_correctness = "ok"
                 except Exception as error:
+                    print(error)
+                    input("вылезла ошибка, проверь и нажми на кнопку")
                     load_correctness = error
 
                 load_speed = brow.execute_script(
                     "return ( window.performance.timing.loadEventEnd - window.performance.timing.navigationStart )")
+
+                if link == "https://2ip.ru/" and load_correctness == "ok":
+                    print("Запускаю тест")
+                    check_ip_on_2ip()
 
                 collation_dict = {"link": link, "pass_number": pass_number, "load_status": load_status,
                                   "load_correctness": load_correctness, "load_speed": load_speed}
@@ -209,8 +235,7 @@ class SurfWindowControl:
         results_frame = pd.DataFrame()
         country_to_connect = None
 
-        for country in self.country_list:
-
+        for country in self.country_name_list:
             connect_status = False
             while connect_status is False:
                 connect_status = self.__connect_to_country(country)
