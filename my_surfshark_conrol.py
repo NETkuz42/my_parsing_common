@@ -9,6 +9,7 @@ from adrenaline import prevent_sleep
 import my_help_func
 from my_browsers import Chrome
 from selenium.webdriver.common.by import By
+from datetime import datetime, timedelta
 
 
 def test_speedtest(path_result):
@@ -164,8 +165,8 @@ class SurfWindowControl:
                 brow.find_element(By.CSS_SELECTOR, "a.notice__container__ok").click()
                 sleep(2)
 
-            trash_list = ["Уточнить?","Исправить?","\n"]
-            result_series = pd.Series()
+            trash_list = ["Уточнить?", "Исправить?", "\n"]
+            result_dict = {}
 
             table_details = brow.find_element(By.CLASS_NAME, "data_table")
             list_elements = table_details.find_elements(By.CLASS_NAME, "data_item")
@@ -174,10 +175,15 @@ class SurfWindowControl:
                 for word in trash_list:
                     element = element.replace(word, "")
                 element_params = element.split(":")
-                result_series[element_params[0].strip()] = element_params[1].strip()
+                result_dict.update({element_params[0].strip(): element_params[1].strip()})
 
-            print(result_series)
-            input("жду")
+            return result_dict
+
+        def confirm_policy_auto_ru():
+            if brow.find_element(By.CSS_SELECTOR, "#confirm-button"):
+                brow.find_element(By.CSS_SELECTOR, "#confirm-button").click()
+                sleep(2)
+
 
         dict_checked = {"https://2ip.ru/": "div.page-wrapper",
                         "https://www.drom.ru/": "div.css-184qm5b",
@@ -187,12 +193,15 @@ class SurfWindowControl:
                         "https://www.wildberries.ru/": "div.header__nav-element.nav-element",
                         "https://www.ozon.ru/": "div.ed6"}
         result_columns = ["link", "pass_number", "load_status", "load_correctness", "load_speed"]
-        frame_site_result = pd.DataFrame(columns = result_columns)
+        frame_site_result = pd.DataFrame(columns=result_columns)
         brow = self.opened_browser.browser
         number_tests_on_page = 1
+        ip_info_dict = {}
         for link, check_row in dict_checked.items():
             for pass_number in range(number_tests_on_page):
                 number_row = len(frame_site_result)
+                time_test = datetime.now().strftime("%Y_%m_%d %H:%M")
+                link_info_dict = {"link": link, "pass_number": pass_number, "time_test": time_test}
                 try:
                     brow.get(link)
                     load_status = "ok"
@@ -200,12 +209,14 @@ class SurfWindowControl:
                 except Exception as error:
                     load_status = error
 
+                if link == "https://auto.ru/" and load_status == "ok":
+                    confirm_policy_auto_ru()
+
                 try:
                     brow.find_element(By.CSS_SELECTOR, check_row)
                     load_correctness = "ok"
                 except Exception as error:
                     print(error)
-                    input("вылезла ошибка, проверь и нажми на кнопку")
                     load_correctness = error
 
                 load_speed = brow.execute_script(
@@ -213,12 +224,13 @@ class SurfWindowControl:
 
                 if link == "https://2ip.ru/" and load_correctness == "ok":
                     print("Запускаю тест")
-                    check_ip_on_2ip()
+                    ip_info_dict = check_ip_on_2ip()
 
-                collation_dict = {"link": link, "pass_number": pass_number, "load_status": load_status,
-                                  "load_correctness": load_correctness, "load_speed": load_speed}
+                link_info_dict.update(ip_info_dict)
+                link_info_dict.update({"load_status": load_status,
+                                       "load_correctness": load_correctness, "load_speed": load_speed})
 
-                for column, mean in collation_dict.items():
+                for column, mean in link_info_dict.items():
                     frame_site_result.loc[number_row, column] = mean
 
                 sleep(2)
@@ -229,27 +241,32 @@ class SurfWindowControl:
         self.start_browser()
         self.__get_interface()
         self.__get_country_list()
-        path_to_save = r"C:\PYTHON\my_parsing_common\data\country_tests\result_tests.csv"
+        start_test_time = datetime.now().strftime("%Y_%m_%d_%H_%M")
+        path_to_save = fr"C:\PYTHON\my_parsing_common\data\country_tests\{start_test_time}.csv"
 
         sleep_time = 330
         results_frame = pd.DataFrame()
         country_to_connect = None
+        number_counter = 3
 
         for country in self.country_name_list:
             connect_status = False
             while connect_status is False:
                 connect_status = self.__connect_to_country(country)
 
-            ip_address = self.__check_ip()
-            sleep(1)
-            sites_result = self.check_popular_pages()
-            sites_result.loc[:, "country"] = country
-            sites_result.loc[:, "ip_addres"] = ip_address
-            results_frame = pd.concat([results_frame, sites_result])
-            results_frame.to_csv(path_to_save, encoding="UTF-8", sep=";")
-            sleep(1)
+            for counter in range(number_counter):
+                ip_address = self.__check_ip()
+                sleep(1)
+                start_time = datetime.now()
+                sites_result_frame = self.check_popular_pages()
+                total_time = (datetime.now()-start_time).total_seconds()
+                sites_result_frame.loc[:, "country"] = country
+                sites_result_frame.loc[:, "ip_addres"] = ip_address
+                sites_result_frame.loc[:, "total_test_time"] = total_time
+                results_frame = pd.concat([results_frame, sites_result_frame])
+                results_frame.to_csv(path_to_save, encoding="UTF-8", sep=";")
+                sleep(sleep_time)
             self.disconnect_country()
-            sleep(5)
 
 
 if __name__ == "__main__":

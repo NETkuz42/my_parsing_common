@@ -1,60 +1,8 @@
-;link;pass_number;load_status;load_correctness;load_speed;country;ip_addres
-0;https://2ip.ru/;0;ok;"Message: no such element: Unable to locate element: {""method"":""css selector"",""selector"":""div.logo""}
-  (Session info: chrome=112.0.5615.50); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#no-such-element-exception
-Stacktrace:
-Backtrace:
-	GetHandleVerifier [0x0034DCE3+50899]
-	(No symbol) [0x002DE111]
-	(No symbol) [0x001E5588]
-	(No symbol) [0x002108F9]
-	(No symbol) [0x00210AFB]
-	(No symbol) [0x0023F902]
-	(No symbol) [0x0022B944]
-	(No symbol) [0x0023E01C]
-	(No symbol) [0x0022B6F6]
-	(No symbol) [0x00207708]
-	(No symbol) [0x0020886D]
-	GetHandleVerifier [0x005B3EAE+2566302]
-	GetHandleVerifier [0x005E92B1+2784417]
-	GetHandleVerifier [0x005E327C+2759788]
-	GetHandleVerifier [0x003E5740+672048]
-	(No symbol) [0x002E8872]
-	(No symbol) [0x002E41C8]
-	(No symbol) [0x002E42AB]
-	(No symbol) [0x002D71B7]
-	BaseThreadInitThunk [0x76177D59+25]
-	RtlInitializeExceptionChain [0x7760B74B+107]
-	RtlClearBits [0x7760B6CF+191]
-";993;Albania;31.171.153.20
-1;https://www.drom.ru/;0;ok;ok;5430;Albania;31.171.153.20
-2;https://www.avito.ru/;0;ok;ok;13065;Albania;31.171.153.20
-3;https://www.farpost.ru/;0;ok;ok;4984;Albania;31.171.153.20
-4;https://auto.ru/;0;ok;"Message: no such element: Unable to locate element: {""method"":""css selector"",""selector"":""div.Header__logo""}
-  (Session info: chrome=112.0.5615.50); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#no-such-element-exception
-Stacktrace:
-Backtrace:
-	GetHandleVerifier [0x0034DCE3+50899]
-	(No symbol) [0x002DE111]
-	(No symbol) [0x001E5588]
-	(No symbol) [0x002108F9]
-	(No symbol) [0x00210AFB]
-	(No symbol) [0x0023F902]
-	(No symbol) [0x0022B944]
-	(No symbol) [0x0023E01C]
-	(No symbol) [0x0022B6F6]
-	(No symbol) [0x00207708]
-	(No symbol) [0x0020886D]
-	GetHandleVerifier [0x005B3EAE+2566302]
-	GetHandleVerifier [0x005E92B1+2784417]
-	GetHandleVerifier [0x005E327C+2759788]
-	GetHandleVerifier [0x003E5740+672048]
-	(No symbol) [0x002E8872]
-	(No symbol) [0x002E41C8]
-	(No symbol) [0x002E42AB]
-	(No symbol) [0x002D71B7]
-	BaseThreadInitThunk [0x76177D59+25]
-	RtlInitializeExceptionChain [0x7760B74B+107]
-	RtlClearBits [0x7760B6CF+191]
-";1119;Albania;31.171.153.20
-5;https://www.wildberries.ru/;0;ok;ok;4619;Albania;31.171.153.20
-6;https://www.ozon.ru/;0;ok;ok;2421;Albania;31.171.153.20
+;link;pass_number;load_status;load_correctness;load_speed;Имя вашего компьютера;Операционная система;Ваш браузер;Ваше местоположение;Ваш провайдер;Прокси;Защита данных;time_test;country;ip_addres;total_test_time
+0;;;ok;ok;7615;31.171.153.164;Windows 15.0.0;Chrome 85.0.4183.127;Албания, Тирана;Keminet SHPK;Не используется;Отсутствует;;Albania;31.171.153.166;89.939943
+1;https://www.drom.ru/;0;ok;ok;5514;;;;;;;;2023_06_18 22:03;Albania;31.171.153.166;89.939943
+2;https://www.avito.ru/;0;ok;ok;14187;;;;;;;;2023_06_18 22:04;Albania;31.171.153.166;89.939943
+3;https://www.farpost.ru/;0;ok;ok;5164;;;;;;;;2023_06_18 22:04;Albania;31.171.153.166;89.939943
+4;https://auto.ru/;0;ok;ok;10252;;;;;;;;2023_06_18 22:04;Albania;31.171.153.166;89.939943
+5;https://www.wildberries.ru/;0;ok;ok;4901;;;;;;;;2023_06_18 22:04;Albania;31.171.153.166;89.939943
+6;https://www.ozon.ru/;0;ok;ok;2745;;;;;;;;2023_06_18 22:05;Albania;31.171.153.166;89.939943
