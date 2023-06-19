@@ -9,6 +9,7 @@ selenium = "*"
 user-agent = "*"
 pywinauto = "*"
 adrenaline = "*"
+numpy = "*"
 
 [dev-packages]
 

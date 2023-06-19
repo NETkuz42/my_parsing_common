@@ -11,6 +11,7 @@ from my_browsers import Chrome
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 from datetime import datetime, timedelta
+from numpy import array_split
 
 
 def test_speedtest(path_result):
@@ -52,7 +53,7 @@ def test_speedtest(path_result):
 
 
 class SurfWindowControl:
-    def __init__(self):
+    def __init__(self, path_save_dir=None):
         self.path_to_surf = r"C:\Program Files (x86)\Surfshark\Surfshark.exe"
         self.path_to_log_ip = r""
         self.surf: application.WindowSpecification = None
@@ -62,6 +63,9 @@ class SurfWindowControl:
         self.path_to_browser_optim_user = r"\browsers\chrome\112.0.5615.50\optim_user"
         self.opened_browser: Chrome = None
         self.country_tree_objects = None
+        self.vmachine_id = None
+        self.number_vmachines = None
+        self.path_to_split_country = fr"data\country_split\country_split_vmashines.csv"
 
     def __get_interface(self):
         """Запускает сурф, выводит интерфейс на передний план"""
@@ -102,15 +106,37 @@ class SurfWindowControl:
 
     def __get_country_list(self):
         """Получает список стран из списка"""
+        def reload_surf():
+            print("В интерфейсе сурфа есть мусор, перезагружаю")
+            self.__close_surf()
+            sleep(5)
+            self.__get_interface()
+            self.__get_country_list()
+
         self.country_tree_objects = self.surf.child_window(title="Armenia", auto_id="location_armenia",
                                                    control_type="Button").parent().parent()
         country_name_list = []
+
         for country_row in self.country_tree_objects.texts():
             country = country_row[0]
-            self.country_name_list.append(country)
-        print(self.country_name_list)
+            if country == "{DisconnectedItem}":
+                reload_surf()
+                break
+            country_name_list.append(country)
+        self.country_name_list = country_name_list
 
         return self.country_name_list
+
+    def __split_country_by_vmachines(self, number_vmachines):
+        self.number_vmachines = number_vmachines
+        divided_countries = list(array_split(self.country_name_list, self.number_vmachines))
+        county_series = pd.Series(name="vm_id")
+        counter = 0
+        for list_country in divided_countries:
+            for county in list_country:
+                county_series.loc[county] = counter
+            counter += 1
+        county_series.to_csv(self.path_to_split_country, encoding="UTF-8", sep=";")
 
     def __check_ip(self):
         """Проверяет номер ip адреса на внутренней старнице"""
@@ -185,9 +211,12 @@ class SurfWindowControl:
 
         def confirm_policy_auto_ru():
             if brow.find_element(By.CSS_SELECTOR, "#confirm-button"):
-                brow.find_element(By.CSS_SELECTOR, "#confirm-button").click()
+                try:
+                    brow.find_element(By.CSS_SELECTOR, "#confirm-button").click()
+                except Exception as error_click:
+                    load_error = type(error_click)
+                    print(load_error)
                 sleep(2)
-
 
         dict_checked = {"https://2ip.ru/": "div.page-wrapper",
                         "https://www.drom.ru/": "div.css-184qm5b",
@@ -211,7 +240,8 @@ class SurfWindowControl:
                     load_status = "ok"
                     sleep(3)
                 except Exception as error:
-                    load_status = error
+                    print(type(error))
+                    load_status = type(error)
 
                 if link == "https://auto.ru/" and load_status == "ok":
                     confirm_policy_auto_ru()
@@ -220,8 +250,8 @@ class SurfWindowControl:
                     brow.find_element(By.CSS_SELECTOR, check_row)
                     load_correctness = "ok"
                 except Exception as error:
-                    print(error)
-                    load_correctness = error
+                    print(type(error))
+                    load_correctness = type(error)
 
                 load_speed = brow.execute_script(
                     "return ( window.performance.timing.loadEventEnd - window.performance.timing.navigationStart )")
@@ -241,19 +271,28 @@ class SurfWindowControl:
 
         return frame_site_result
 
-    def get_test(self):
+    def get_preparing_on_real_machine(self):
+        self.__get_interface()
+        self.__get_country_list()
+        self.__split_country_by_vmachines(5)
+
+    def get_test_in_vm(self, id_vmachine):
         self.start_browser()
         self.__get_interface()
         self.__get_country_list()
+
+        id_vmachine = str(id_vmachine)
+        list_country = pd.read_csv(self.path_to_split_country, encoding="UTF-8", sep=";", dtype=str, index_col=0)
+        print(list_country)
+        list_country = list_country[list_country["vm_id"] == id_vmachine]
         start_test_time = datetime.now().strftime("%Y_%m_%d_%H_%M")
-        path_to_save = fr"C:\PYTHON\my_parsing_common\data\country_tests\{start_test_time}.csv"
+        path_to_save = fr"data\country_tests\{id_vmachine}_{start_test_time}.csv"
 
         sleep_time = 330
         results_frame = pd.DataFrame()
-        country_to_connect = None
         number_counter = 3
 
-        for country in self.country_name_list:
+        for country in list_country.index:
             connect_status = False
             while connect_status is False:
                 connect_status = self.__connect_to_country(country)
@@ -275,6 +314,6 @@ class SurfWindowControl:
 
 if __name__ == "__main__":
     with prevent_sleep():
-        SurfWindowControl().get_test()
+        id_vm = input("Введи ID вирт машины")
+        SurfWindowControl().get_test_in_vm(id_vm)
 
-# run_speedtest(r"C:\PYTHON\my_parsing_common\speedtest_result.csv")
