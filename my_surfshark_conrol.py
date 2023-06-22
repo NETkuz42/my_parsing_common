@@ -61,7 +61,7 @@ class SurfWindowControl:
         self.country_name_list = []
         self.log_ip = {}
         self.path_to_result = None
-        self.path_to_browser_optim_user = r"\browsers\chrome\112.0.5615.50\optim_user"
+        self.path_to_browser_optim_user = r"browsers\chrome\112.0.5615.50\optim_user"
         self.opened_browser: Chrome = None
         self.country_tree_objects = None
         self.vmachine_id = None
