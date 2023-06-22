@@ -182,9 +182,8 @@ class SurfWindowControl:
 
     def start_browser(self):
         print("Запускаю браузер")
-        my_help_func.profile_manager(1, r"browsers\chrome\112.0.5615.50\optim_user",
-                                     cloning_path=r"D:\DISTRIB_LOCAL\PARSING\CHROME")
-        self.opened_browser = Chrome(0, path_to_profiles=r"D:\DISTRIB_LOCAL\PARSING\\CHROME").start_chrome(path_brow_folder=r"browsers\chrome")
+        my_help_func.profile_manager(1, self.path_to_browser_optim_user)
+        self.opened_browser = Chrome(0).start_chrome(path_brow_folder=r"browsers\chrome")
 
     def check_popular_pages(self):
         def check_ip_on_2ip():
@@ -315,7 +314,7 @@ class SurfWindowControl:
 if __name__ == "__main__":
     with prevent_sleep():
         id_vm = input("Введи ID вирт машины")
-        SurfWindowControl().get_preparing_on_real_machine()
-        sleep(10)
+        # SurfWindowControl().get_preparing_on_real_machine()
+        # sleep(10)
         SurfWindowControl().get_test_in_vm(id_vm)
 
