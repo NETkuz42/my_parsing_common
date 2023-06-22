@@ -12,7 +12,7 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 from datetime import datetime, timedelta
 from numpy import array_split
-from random import randrange
+from random import randrange, shuffle
 
 
 def test_speedtest(path_result):
@@ -130,6 +130,7 @@ class SurfWindowControl:
 
     def __split_country_by_vmachines(self, number_vmachines):
         self.number_vmachines = number_vmachines
+        shuffle(self.country_name_list)
         divided_countries = list(array_split(self.country_name_list, self.number_vmachines))
         county_series = pd.Series(name="vm_id")
         counter = 0
@@ -273,10 +274,10 @@ class SurfWindowControl:
 
         return frame_site_result
 
-    def get_preparing_on_real_machine(self):
+    def get_preparing_on_real_machine(self, number_vmachines):
         self.__get_interface()
         self.__get_country_list()
-        self.__split_country_by_vmachines(1)
+        self.__split_country_by_vmachines(number_vmachines)
 
     def get_test_in_vm(self, id_vmachine):
         self.start_browser()
@@ -290,11 +291,11 @@ class SurfWindowControl:
         start_test_time = datetime.now().strftime("%Y_%m_%d_%H_%M")
         path_to_save = fr"data\country_tests\{id_vmachine}_{start_test_time}.csv"
 
-        sleep_time = randrange(300, 400)
         results_frame = pd.DataFrame()
         number_counter = 3
 
         for country in list_country.index:
+            sleep_time = randrange(300, 400)
             connect_status = False
             while connect_status is False:
                 connect_status = self.__connect_to_country(country)
@@ -312,12 +313,13 @@ class SurfWindowControl:
                 results_frame.to_csv(path_to_save, encoding="UTF-8", sep=";")
                 sleep(sleep_time)
             self.disconnect_country()
+            sleep(sleep_time)
 
 
 if __name__ == "__main__":
     with prevent_sleep():
         id_vm = input("Введи ID вирт машины")
-        # SurfWindowControl().get_preparing_on_real_machine()
+        # SurfWindowControl().get_preparing_on_real_machine(5)
         # sleep(10)
         SurfWindowControl().get_test_in_vm(id_vm)
 
