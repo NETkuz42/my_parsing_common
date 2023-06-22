@@ -213,13 +213,11 @@ class SurfWindowControl:
             return result_dict
 
         def confirm_policy_auto_ru():
-            if brow.find_element(By.CSS_SELECTOR, "#confirm-button"):
-                try:
-                    brow.find_element(By.CSS_SELECTOR, "#confirm-button").click()
-                except Exception as error_click:
-                    load_error = type(error_click)
-                    print(load_error)
-                sleep(2)
+            try:
+                brow.find_element(By.CSS_SELECTOR, "#confirm-button").click()
+            except NoSuchElementException:
+                pass
+            sleep(2)
 
         dict_checked = {"https://2ip.ru/": "div.page-wrapper",
                         "https://www.drom.ru/": "div.css-184qm5b",
