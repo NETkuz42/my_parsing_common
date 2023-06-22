@@ -12,6 +12,7 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 from datetime import datetime, timedelta
 from numpy import array_split
+from random import randrange
 
 
 def test_speedtest(path_result):
@@ -145,7 +146,7 @@ class SurfWindowControl:
         print("Текущий IP:", current_ip)
         return current_ip
 
-    def __connect_to_country(self, country):
+    def __connect_to_country(self, country, max_sleep_time=30):
         """Коннектится у казанной стране"""
         select_country = self.country_tree_objects.get_item(country).set_focus()
         # select_country = self.surf.child_window(title="Poland Gdansk", auto_id="location_poland_gdansk", control_type="Button").set_focus()
@@ -163,6 +164,8 @@ class SurfWindowControl:
 
         select_details = self.surf.child_window(title="Home info", auto_id="homeinfo_connectionlabel",
                                                 control_type="Button")
+        sleep_time = randrange(0, max_sleep_time)
+        print("Переключусь на ip через", sleep_time, "секунд")
         select_details.wrapper_object().click_input()
 
         ip_button = self.surf.child_window(auto_id="homeinfo_ipaddress_button", control_type="Button").wait("exists",
@@ -287,7 +290,7 @@ class SurfWindowControl:
         start_test_time = datetime.now().strftime("%Y_%m_%d_%H_%M")
         path_to_save = fr"data\country_tests\{id_vmachine}_{start_test_time}.csv"
 
-        sleep_time = 330
+        sleep_time = randrange(300, 400)
         results_frame = pd.DataFrame()
         number_counter = 3
 
