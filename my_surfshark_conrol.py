@@ -183,7 +183,7 @@ class SurfWindowControl:
     def start_browser(self):
         print("Запускаю браузер")
         my_help_func.profile_manager(1, self.path_to_browser_optim_user)
-        self.opened_browser = Chrome(0).start_chrome(path_brow_folder=r"browsers\chrome")
+        self.opened_browser = Chrome(0).start_chrome(path_brow_folder=r"D:")
 
     def check_popular_pages(self):
         def check_ip_on_2ip():
