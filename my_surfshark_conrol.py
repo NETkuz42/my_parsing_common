@@ -278,8 +278,6 @@ class SurfWindowControl:
                         print("Запускаю тест")
                         ip_info_dict.update(check_ip_on_2ip())
                     frame_update(ip_info_dict, frame_ip_result)
-                else:
-                    frame_ip_result = False
 
                 frame_update(link_info_dict, frame_site_result)
                 sleep(2)
@@ -337,10 +335,9 @@ class SurfWindowControl:
                 start_time = datetime.now()
                 sites_result_list = self.check_popular_pages()
                 site_detail_frame = update_result_frame(sites_result_list["site_result"], site_detail_frame)
-                if sites_result_list["ip_detail"]:
-                    ip_info_frame = update_result_frame(sites_result_list["ip_detail"], ip_info_frame)
-                site_detail_frame.to_csv(path_to_save_web_test, encoding="UTF-8", sep=";")
-                ip_info_frame.to_csv(path_to_save_ip_info, encoding="UTF-8", sep=";")
+                ip_info_frame = update_result_frame(sites_result_list["ip_detail"], ip_info_frame)
+                ip_info_frame.to_csv(path_to_save_ip_info, encoding="UTF-8", sep=";", index=False)
+                site_detail_frame.to_csv(path_to_save_web_test, encoding="UTF-8", sep=";", index=False)
 
             self.disconnect_country()
             sleep(sleep_time)
