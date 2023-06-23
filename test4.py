@@ -1,7 +1,9 @@
 import my_help_func
 
-path_to_dir_test_result = r"data\country_tests"
+def test():
+    test1 = 1
+    test2 = 2
+    return {"ip_info": test1, "ip_info2": test2}
 
-result = my_help_func.sorted_files_by_date(path_to_dir_test_result)[-1]
 
-print(result)
+print(type(test()))

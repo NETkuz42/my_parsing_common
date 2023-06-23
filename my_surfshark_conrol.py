@@ -273,17 +273,18 @@ class SurfWindowControl:
                                        "load_correctness": load_correctness, "load_speed": load_speed})
 
                 if link == "https://2ip.ru/":
-                    ip_info_dict = link_info_dict
+                    ip_info_dict = link_info_dict.copy()
                     if load_correctness == "ok":
                         print("Запускаю тест")
                         ip_info_dict.update(check_ip_on_2ip())
                     frame_update(ip_info_dict, frame_ip_result)
+                else:
+                    frame_ip_result = False
 
                 frame_update(link_info_dict, frame_site_result)
-
                 sleep(2)
 
-        return frame_site_result, frame_ip_result
+        return {"site_result": frame_site_result, "ip_detail": frame_ip_result}
 
     def get_preparing_on_real_machine(self, number_vmachines):
         self.__get_interface()
@@ -332,8 +333,9 @@ class SurfWindowControl:
                 sleep(1)
                 start_time = datetime.now()
                 sites_result_list = self.check_popular_pages()
-                update_result_frame(sites_result_list[0], results_frame)
-                update_result_frame(sites_result_list[1], ip_info_frame)
+                update_result_frame(sites_result_list["site_result"], results_frame)
+                if sites_result_list["ip_detail"]:
+                    update_result_frame(sites_result_list["ip_detail"], ip_info_frame)
                 results_frame.to_csv(path_to_save_web_test, encoding="UTF-8", sep=";")
                 ip_info_frame.to_csv(path_to_save_ip_info, encoding="UTF-8", sep=";")
                 sleep(sleep_time)
