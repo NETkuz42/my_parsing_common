@@ -1,9 +1,7 @@
 import my_help_func
 
-def test():
-    test1 = 1
-    test2 = 2
-    return {"ip_info": test1, "ip_info2": test2}
+counters=5
 
+for counter in range(counters):
+    print(counter)
 
-print(type(test()))

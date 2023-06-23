@@ -329,6 +329,8 @@ class SurfWindowControl:
                 connect_status = self.__connect_to_country(country)
 
             for counter in range(number_counter):
+                if counter != 0:
+                    sleep(sleep_time)
                 ip_address = self.__check_ip()
                 sleep(1)
                 start_time = datetime.now()
@@ -338,7 +340,7 @@ class SurfWindowControl:
                     update_result_frame(sites_result_list["ip_detail"], ip_info_frame)
                 results_frame.to_csv(path_to_save_web_test, encoding="UTF-8", sep=";")
                 ip_info_frame.to_csv(path_to_save_ip_info, encoding="UTF-8", sep=";")
-                sleep(sleep_time)
+
             self.disconnect_country()
             sleep(sleep_time)
 
