@@ -1,3 +1,7 @@
-from my_browsers import Chrome
+import my_help_func
 
-Chrome(0).clear_cache()
+path_to_dir_test_result = r"data\country_tests"
+
+result = my_help_func.sorted_files_by_date(path_to_dir_test_result)[-1]
+
+print(result)
