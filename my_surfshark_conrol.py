@@ -1,3 +1,5 @@
+import os
+
 from pywinauto import Desktop, Application, timings, application
 from pywinauto import findwindows, ElementNotFoundError
 from pywinauto.timings import always_wait_until_passes
@@ -67,6 +69,7 @@ class SurfWindowControl:
         self.vmachine_id = None
         self.number_vmachines = None
         self.path_to_split_country = fr"data\country_split\country_split_vmashines.csv"
+        self.path_to_dir_test_result = r"data\country_tests"
 
     def __get_interface(self):
         """Запускает сурф, выводит интерфейс на передний план"""
@@ -219,6 +222,15 @@ class SurfWindowControl:
                 pass
             sleep(2)
 
+        def frame_update(target_dict, target_frame):
+            for column, mean in target_dict.items():
+                target_frame.loc[number_row, column] = mean
+
+        self.opened_browser.change_fake_agent()
+        self.opened_browser.clear_cache()
+
+        sleep(2)
+
         dict_checked = {"https://2ip.ru/": "div.page-wrapper",
                         "https://www.drom.ru/": "div.css-184qm5b",
                         "https://www.avito.ru/": "div.index-navigation-gCayT",
@@ -228,9 +240,9 @@ class SurfWindowControl:
                         "https://www.ozon.ru/": "div.ed6"}
         result_columns = ["link", "pass_number", "load_status", "load_correctness", "load_speed"]
         frame_site_result = pd.DataFrame(columns=result_columns)
+        frame_ip_result = pd.DataFrame(columns=result_columns)
         brow = self.opened_browser.browser
         number_tests_on_page = 1
-        ip_info_dict = {}
         for link, check_row in dict_checked.items():
             for pass_number in range(number_tests_on_page):
                 number_row = len(frame_site_result)
@@ -257,27 +269,42 @@ class SurfWindowControl:
                 load_speed = brow.execute_script(
                     "return ( window.performance.timing.loadEventEnd - window.performance.timing.navigationStart )")
 
-                if link == "https://2ip.ru/" and load_correctness == "ok":
-                    print("Запускаю тест")
-                    ip_info_dict = check_ip_on_2ip()
-
-                link_info_dict.update(ip_info_dict)
                 link_info_dict.update({"load_status": load_status,
                                        "load_correctness": load_correctness, "load_speed": load_speed})
 
-                for column, mean in link_info_dict.items():
-                    frame_site_result.loc[number_row, column] = mean
+                if link == "https://2ip.ru/":
+                    ip_info_dict = link_info_dict
+                    if load_correctness == "ok":
+                        print("Запускаю тест")
+                        ip_info_dict.update(check_ip_on_2ip())
+                    frame_update(ip_info_dict, frame_ip_result)
+
+                frame_update(link_info_dict, frame_site_result)
 
                 sleep(2)
 
-        return frame_site_result
+        return frame_site_result, frame_ip_result
 
     def get_preparing_on_real_machine(self, number_vmachines):
         self.__get_interface()
         self.__get_country_list()
         self.__split_country_by_vmachines(number_vmachines)
 
+        now_time = datetime.now().strftime("%Y_%m_%d_%H_%M")
+        mather_path = fr"{self.path_to_dir_test_result}\{now_time}"
+        os.mkdir(mather_path)
+        os.mkdir(fr"{mather_path}\ip_info")
+        os.mkdir(fr"{mather_path}\web_test")
+
     def get_test_in_vm(self, id_vmachine):
+
+        def update_result_frame(small_frame, big_frame):
+            total_time = (datetime.now() - start_time).total_seconds()
+            small_frame.loc[:, "country"] = country
+            small_frame.loc[:, "ip_addres"] = ip_address
+            small_frame.loc[:, "total_test_time"] = total_time
+            big_frame = pd.concat([big_frame, small_frame])
+
         self.start_browser()
         self.__get_interface()
         self.__get_country_list()
@@ -287,9 +314,11 @@ class SurfWindowControl:
         print(list_country)
         list_country = list_country[list_country["vm_id"] == id_vmachine]
         start_test_time = datetime.now().strftime("%Y_%m_%d_%H_%M")
-        path_to_save = fr"data\country_tests\{id_vmachine}_{start_test_time}.csv"
-
+        last_folder = my_help_func.sorted_files_by_date(self.path_to_dir_test_result)[-1]
+        path_to_save_web_test = fr"{last_folder}\web_test\web_test_{id_vmachine}_{start_test_time}.csv"
+        path_to_save_ip_info = fr"{last_folder}\ip_info\ip_info_{id_vmachine}_{start_test_time}.csv"
         results_frame = pd.DataFrame()
+        ip_info_frame = pd.DataFrame()
         number_counter = 3
 
         for country in list_country.index:
@@ -302,13 +331,11 @@ class SurfWindowControl:
                 ip_address = self.__check_ip()
                 sleep(1)
                 start_time = datetime.now()
-                sites_result_frame = self.check_popular_pages()
-                total_time = (datetime.now()-start_time).total_seconds()
-                sites_result_frame.loc[:, "country"] = country
-                sites_result_frame.loc[:, "ip_addres"] = ip_address
-                sites_result_frame.loc[:, "total_test_time"] = total_time
-                results_frame = pd.concat([results_frame, sites_result_frame])
-                results_frame.to_csv(path_to_save, encoding="UTF-8", sep=";")
+                sites_result_list = self.check_popular_pages()
+                update_result_frame(sites_result_list[0], results_frame)
+                update_result_frame(sites_result_list[1], ip_info_frame)
+                results_frame.to_csv(path_to_save_web_test, encoding="UTF-8", sep=";")
+                ip_info_frame.to_csv(path_to_save_ip_info, encoding="UTF-8", sep=";")
                 sleep(sleep_time)
             self.disconnect_country()
             sleep(sleep_time)
