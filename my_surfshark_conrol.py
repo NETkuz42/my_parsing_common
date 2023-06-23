@@ -305,6 +305,7 @@ class SurfWindowControl:
             small_frame.loc[:, "ip_addres"] = ip_address
             small_frame.loc[:, "total_test_time"] = total_time
             big_frame = pd.concat([big_frame, small_frame])
+            return big_frame
 
         self.start_browser()
         self.__get_interface()
@@ -318,7 +319,7 @@ class SurfWindowControl:
         last_folder = my_help_func.sorted_files_by_date(self.path_to_dir_test_result)[-1]
         path_to_save_web_test = fr"{last_folder}\web_test\web_test_{id_vmachine}_{start_test_time}.csv"
         path_to_save_ip_info = fr"{last_folder}\ip_info\ip_info_{id_vmachine}_{start_test_time}.csv"
-        results_frame = pd.DataFrame()
+        site_detail_frame = pd.DataFrame()
         ip_info_frame = pd.DataFrame()
         number_counter = 3
 
@@ -335,10 +336,10 @@ class SurfWindowControl:
                 sleep(1)
                 start_time = datetime.now()
                 sites_result_list = self.check_popular_pages()
-                update_result_frame(sites_result_list["site_result"], results_frame)
+                site_detail_frame = update_result_frame(sites_result_list["site_result"], site_detail_frame)
                 if sites_result_list["ip_detail"]:
-                    update_result_frame(sites_result_list["ip_detail"], ip_info_frame)
-                results_frame.to_csv(path_to_save_web_test, encoding="UTF-8", sep=";")
+                    ip_info_frame = update_result_frame(sites_result_list["ip_detail"], ip_info_frame)
+                site_detail_frame.to_csv(path_to_save_web_test, encoding="UTF-8", sep=";")
                 ip_info_frame.to_csv(path_to_save_ip_info, encoding="UTF-8", sep=";")
 
             self.disconnect_country()
