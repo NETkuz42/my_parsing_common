@@ -94,6 +94,15 @@ class SurfWindowControl:
             return False
         return True
 
+    def __check_popup_background_process(self):
+        try:
+            got_it_button = self.surf.child_window(title="Got it", auto_id="popup_primary_button", control_type="Button")
+            got_it_button.click_input()
+            print("выведено сообщение о работе в фоне")
+        except ElementNotFoundError:
+            return False
+        return True
+
     def __cancel_incomplete_connection(self):
         try:
             self.surf.child_window(title="Cancel connecting", auto_id="connect_button", control_type="Button").click_input()
@@ -110,6 +119,8 @@ class SurfWindowControl:
 
     def __close_surf(self):
         self.surf.child_window(title="Close application", control_type="Button").click_input()
+        sleep(1)
+        self.__check_popup_background_process()
 
     def reload_surf_interface(self):
         print("В интерфейсе сурфа есть мусор, перезагружаю")
@@ -186,7 +197,7 @@ class SurfWindowControl:
         """Разрывает соединение"""
         self.surf.child_window(title="Back", auto_id="BackButton", control_type="Button").wrapper_object().click_input()
         disconnect_button = self.surf.child_window(title="Disconnect", auto_id="connect_button",
-                                                   control_type="Button").wait("exists", 10, 1)
+                                                   control_type="Button").wait("exists", 10, 2)
         disconnect_button.click_input()
         print("Отключился от страны")
 
