@@ -357,11 +357,17 @@ class SurfWindowControl:
             self.disconnect_country()
             sleep(sleep_time)
 
+    def test(self):
+        print("Вывожу интерфейс")
+        self.__get_interface()
+        print("пробую закрыть")
+        self.__close_surf()
+
 
 if __name__ == "__main__":
     with prevent_sleep():
-        id_vm = input("Введи ID вирт машины")
+        # id_vm = input("Введи ID вирт машины")
         # SurfWindowControl().get_preparing_on_real_machine(5)
         # sleep(10)
-        SurfWindowControl().get_test_in_vm(id_vm)
-
+        # SurfWindowControl().get_test_in_vm(id_vm)
+        SurfWindowControl().test()
