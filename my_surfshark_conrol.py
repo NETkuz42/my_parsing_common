@@ -95,7 +95,10 @@ class SurfWindowControl:
         return True
 
     def __cancel_incomplete_connection(self):
-        self.surf.child_window(title="Cancel connecting", auto_id="connect_button", control_type="Button").click_input()
+        try:
+            self.surf.child_window(title="Cancel connecting", auto_id="connect_button", control_type="Button").click_input()
+        except ElementNotFoundError:
+            return False
         try:
             close_click = self.surf.child_window(title="Cancel connection", auto_id="popup_secondary_button",
                                                  control_type="Button").wait("exists", 10, 1)
@@ -108,23 +111,23 @@ class SurfWindowControl:
     def __close_surf(self):
         self.surf.child_window(title="Close application", control_type="Button").click_input()
 
+    def reload_surf_interface(self):
+        print("В интерфейсе сурфа есть мусор, перезагружаю")
+        self.__close_surf()
+        sleep(5)
+        self.__get_interface()
+        self.__get_country_list()
+
     def __get_country_list(self):
         """Получает список стран из списка"""
-        def reload_surf():
-            print("В интерфейсе сурфа есть мусор, перезагружаю")
-            self.__close_surf()
-            sleep(5)
-            self.__get_interface()
-            self.__get_country_list()
-
         self.country_tree_objects = self.surf.child_window(title="Armenia", auto_id="location_armenia",
-                                                   control_type="Button").parent().parent()
+                                                           control_type="Button").parent().parent()
         country_name_list = []
 
         for country_row in self.country_tree_objects.texts():
             country = country_row[0]
             if country == "{DisconnectedItem}":
-                reload_surf()
+                self.reload_surf_interface()
                 break
             country_name_list.append(country)
         self.country_name_list = country_name_list
@@ -325,6 +328,7 @@ class SurfWindowControl:
             sleep_time = randrange(300, 400)
             connect_status = False
             while connect_status is False:
+                self.reload_surf_interface()
                 connect_status = self.__connect_to_country(country)
 
             for counter in range(number_counter):
