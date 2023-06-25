@@ -180,10 +180,12 @@ class SurfWindowControl:
             self.__cancel_incomplete_connection()
             return False
 
-        select_details = self.surf.child_window(title="Home info", auto_id="homeinfo_connectionlabel",
-                                                control_type="Button")
         sleep_time = randrange(0, max_sleep_time)
         print("Переключусь на ip через", sleep_time, "секунд")
+        sleep(sleep_time)
+
+        select_details = self.surf.child_window(title="Home info", auto_id="homeinfo_connectionlabel",
+                                                control_type="Button")
         select_details.wrapper_object().click_input()
 
         ip_button = self.surf.child_window(auto_id="homeinfo_ipaddress_button", control_type="Button").wait("exists",
