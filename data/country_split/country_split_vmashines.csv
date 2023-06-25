@@ -1,142 +1,139 @@
-;vm_id
-Peru;0
-South Africa;0
-Bolivia;0
-Uzbekistan;0
-Luxembourg;0
-United States Buffalo;0
-Belgium Brussels;0
-Monaco;0
-Egypt;0
-Lithuania;0
-Moldova;0
-United States Kansas City;0
-Mexico;0
-Germany Berlin;0
-France Marseille;0
-Indonesia;0
-United States Ashburn;0
-Myanmar;0
-United States Houston;0
-Argentina;0
-Hungary;0
-Denmark;0
-Nepal;0
-Macau;0
-Brazil;0
-Georgia;0
-Ghana;0
-Malta;0
-United States Seattle;0
-Belgium Antwerp;1
-Slovakia;1
-Australia Melbourne;1
-United Kingdom Glasgow;1
-Pakistan;1
-Montenegro;1
-Malaysia;1
-Sri Lanka;1
-Portugal Lisbon;1
-Vietnam;1
-Israel;1
-Greece;1
-United Kingdom London;1
-Sweden;1
-Nigeria;1
-Laos;1
-Puerto Rico;1
-Greenland;1
-Slovenia;1
-Latvia;1
-Panama;1
-South Korea;1
-United States Tampa;1
-Hong Kong;1
-Paraguay;1
-Algeria;1
-Norway;1
-North Macedonia;1
-Serbia;2
-Poland Gdansk;2
-Liechtenstein;2
-United States San Francisco;2
-Colombia;2
-Spain Madrid;2
-Thailand;2
-Bhutan;2
-United States Orlando;2
-United States San Jose;2
-India;2
-Albania;2
-United States Las Vegas;2
-Croatia;2
-United States Chicago;2
-Japan;2
-United States Bend;2
-Costa Rica;2
-France Paris;2
-Ireland;2
-Spain Valencia;2
-United States Phoenix;2
-United States New York;2
-Spain Barcelona;2
-Netherlands;2
-United Arab Emirates;2
-Taiwan;2
-Bangladesh;2
-Bosnia and Herzegovina;3
-Iceland;3
-United States Detroit;3
-Kazakhstan;3
-Austria;3
-United States Denver;3
-Mongolia;3
-Italy Rome;3
-Uruguay;3
-Finland;3
-Isle of Man;3
-Andorra;3
-France Bordeaux;3
-Brunei;3
-Marocco;3
-Estonia;3
-Australia Perth;3
-Germany Frankfurt am Main;3
-Australia Adelaide;3
-Venezuela;3
-Saudi Arabia;3
-Cambodia;3
-United States Latham;3
-Canada Toronto;3
-Bahamas;3
-United States St. Louis;3
-Cyprus;3
-United States Los Angeles;3
-Turkey;4
-Philippines;4
-Bulgaria;4
-Canada Montreal;4
-New Zealand;4
-Portugal Porto;4
-Singapore;4
-United Kingdom Edinburgh;4
-United States Boston;4
-Romania;4
-Ukraine;4
-United States Miami;4
-Ecuador;4
-Belize;4
-United States Atlanta;4
-Czech Republic;4
-Armenia;4
-Switzerland;4
-Australia Brisbane;4
-Canada Vancouver;4
-United Kingdom Manchester;4
-Poland Warsaw;4
-Australia Sydney;4
-United States Charlotte;4
-Chile;4
-Italy Milan;4
-United States Salt Lake City;4
-United States Dallas;4
+country;vm_id;result
+North Macedonia;;ok
+Taiwan;;ok
+Paraguay;;ok
+United Kingdom Manchester;;ok
+Indonesia;;ok
+Norway;;ok
+Ukraine;;ok
+Mongolia;;ok
+United States Denver;;ok
+Ireland;;ok
+Philippines;;ok
+Moldova;;ok
+United States San Jose;;ok
+Poland Gdansk;;ok
+Australia Brisbane;;ok
+Malaysia;;ok
+United States Orlando;;ok
+United States Dallas;;ok
+Thailand;;ok
+United States Phoenix;;ok
+Denmark;;ok
+Romania;;ok
+United States Detroit;;ok
+France Paris;;ok
+Germany Berlin;;ok
+Czech Republic;;ok
+Hong Kong;;ok
+Belize;;ok
+Portugal Lisbon;;ok
+Slovakia;;ok
+Bulgaria;;ok
+Luxembourg;;ok
+Israel;;ok
+Uruguay;;ok
+Greenland;;ok
+Panama;;ok
+Egypt;;ok
+Puerto Rico;;ok
+Serbia;;ok
+Greece;;ok
+Italy Milan;;ok
+Austria;;ok
+United States Bend;;ok
+United Kingdom London;;ok
+Switzerland;;ok
+United Arab Emirates;;ok
+Armenia;;ok
+Monaco;;ok
+Finland;;ok
+United States Salt Lake City;;ok
+South Africa;;ok
+Liechtenstein;;ok
+Kazakhstan;;ok
+Singapore;;ok
+United States San Francisco;;ok
+Ecuador;;ok
+Spain Valencia;;ok
+United Kingdom Glasgow;;ok
+France Marseille;;ok
+Peru;;ok
+Colombia;;ok
+United Kingdom Edinburgh;;ok
+Spain Madrid;;ok
+Albania;;ok
+United States Houston;;ok
+Portugal Porto;;ok
+Slovenia;;ok
+Iceland;;ok
+United States Boston;;ok
+Hungary;;ok
+Belgium Antwerp;;ok
+Mexico;;ok
+United States Tampa;;ok
+India;;ok
+United States Kansas City;;ok
+Japan;;ok
+Bosnia and Herzegovina;;ok
+United States Ashburn;;ok
+Argentina;;ok
+United States Atlanta;;ok
+Canada Montreal;;ok
+Myanmar;;ok
+New Zealand;;ok
+United States Buffalo;;ok
+Chile;;ok
+Canada Vancouver;;ok
+Uzbekistan;;ok
+United States New York;;ok
+Italy Rome;;ok
+Turkey;;ok
+Costa Rica;;ok
+Sweden;;ok
+Bhutan;;ok
+United States Chicago;;ok
+Latvia;;ok
+Algeria;;ok
+Croatia;;ok
+Poland Warsaw;;ok
+Lithuania;;ok
+South Korea;;ok
+Pakistan;;ok
+Spain Barcelona;;ok
+Netherlands;;ok
+Australia Melbourne;;ok
+United States Charlotte;;ok
+Australia Sydney;;ok
+Belgium Brussels;;ok
+Laos;;ok
+Bolivia;;ok
+United States Las Vegas;;ok
+Nigeria;;ok
+United States Miami;;ok
+Sri Lanka;;ok
+Montenegro;;ok
+Vietnam;;ok
+Isle of Man;;ok
+Brunei;0;
+Canada Toronto;0;
+Germany Frankfurt am Main;0;
+Georgia;0;
+France Bordeaux;0;
+Estonia;1;
+Australia Perth;1;
+Brazil;1;
+United States St. Louis;1;
+Australia Adelaide;1;
+Venezuela;2;
+Bahamas;2;
+Marocco;2;
+United States Latham;2;
+United States Los Angeles;3;
+Malta;3;
+Ghana;3;
+Saudi Arabia;3;
+Cyprus;4;
+Cambodia;4;
+United States Seattle;4;
+Andorra;4;

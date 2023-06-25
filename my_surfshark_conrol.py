@@ -145,17 +145,43 @@ class SurfWindowControl:
 
         return self.country_name_list
 
-    def __split_country_by_vmachines(self, number_vmachines):
+    def __split_country_by_vmachines(self, number_vmachines, mode):
+        """mode = supplement - перераспределяет не проверенные страны по виртуальным машинам
+           mode = new - начинает проверку стран с начала"""
+        def split_not_ready_country():
+            shuffle(self.country_name_list)
+            divided_countries = list(array_split(self.country_name_list, self.number_vmachines))
+            country_frame = pd.DataFrame(columns=["country", "vm_id", "result"])
+            counter = 0
+            for list_country in divided_countries:
+                for county in list_country:
+                    number_row = len(country_frame)
+                    country_frame.loc[number_row, "country"] = county
+                    country_frame.loc[number_row, "vm_id"] = counter
+                counter += 1
+            return country_frame
+
+        def check_country_old_status():
+            country_old_frame = pd.read_csv(self.path_to_split_country, sep=";", encoding="UTF-8", dtype=str)
+            ready_country_frame = country_old_frame[country_old_frame["result"] == "ok"]
+            ready_country_frame.loc[:, "vm_id"] = None
+            not_ready_country_frame = country_old_frame[country_old_frame["result"] != "ok"]
+            self.country_name_list = list(not_ready_country_frame["country"])
+            not_ready_country_frame = split_not_ready_country()
+            result_frame = pd.concat([ready_country_frame, not_ready_country_frame])
+            return result_frame
+
         self.number_vmachines = number_vmachines
-        shuffle(self.country_name_list)
-        divided_countries = list(array_split(self.country_name_list, self.number_vmachines))
-        county_series = pd.Series(name="vm_id")
-        counter = 0
-        for list_country in divided_countries:
-            for county in list_country:
-                county_series.loc[county] = counter
-            counter += 1
-        county_series.to_csv(self.path_to_split_country, encoding="UTF-8", sep=";")
+
+        if mode == "supplement":
+            country_spliter_on_vm = check_country_old_status()
+        elif mode == "new":
+            country_spliter_on_vm = split_not_ready_country()
+        else:
+            raise "Не ввел тип"
+
+        country_spliter_on_vm.to_csv(self.path_to_split_country, encoding="UTF-8", sep=";", index=False)
+        return country_spliter_on_vm
 
     def __check_ip(self):
         """Проверяет номер ip адреса на внутренней старнице"""
@@ -300,10 +326,11 @@ class SurfWindowControl:
 
         return {"site_result": frame_site_result, "ip_detail": frame_ip_result}
 
-    def get_preparing_on_real_machine(self, number_vmachines):
+    def get_preparing_on_real_machine(self, number_vmachines, mode="supplement"):
+
         self.__get_interface()
         self.__get_country_list()
-        self.__split_country_by_vmachines(number_vmachines)
+        self.__split_country_by_vmachines(number_vmachines, mode=mode)
 
         now_time = datetime.now().strftime("%Y_%m_%d_%H_%M")
         mather_path = fr"{self.path_to_dir_test_result}\{now_time}"
@@ -326,7 +353,7 @@ class SurfWindowControl:
         self.__get_country_list()
 
         id_vmachine = str(id_vmachine)
-        list_country = pd.read_csv(self.path_to_split_country, encoding="UTF-8", sep=";", dtype=str, index_col=0)
+        list_country = pd.read_csv(self.path_to_split_country, encoding="UTF-8", sep=";", dtype=str)
         print(list_country)
         list_country = list_country[list_country["vm_id"] == id_vmachine]
         start_test_time = datetime.now().strftime("%Y_%m_%d_%H_%M")
@@ -337,7 +364,7 @@ class SurfWindowControl:
         ip_info_frame = pd.DataFrame()
         number_counter = 3
 
-        for country in list_country.index:
+        for country in list_country["country"]:
             sleep_time = randrange(300, 400)
             connect_status = False
             while connect_status is False:
@@ -365,10 +392,30 @@ class SurfWindowControl:
         print("пробую закрыть")
         self.__close_surf()
 
+    def collect_temporary_results(self):
+        last_general_folder = my_help_func.sorted_files_by_date(self.path_to_dir_test_result)[-1]
+        ip_info_path = fr"{last_general_folder}\ip_info"
+        web_test_path = fr"{last_general_folder}\web_test"
+        result_path = fr"{last_general_folder}\results"
+        country_frame = pd.read_csv(self.path_to_split_country, encoding="UTF-8", sep=";", dtype=str,
+                                    index_col="country")
+        result_frame = my_help_func.merge_files(ip_info_path, result_path)
+
+        for country in result_frame["country"]:
+            country_frame.loc[country, "result"] = "ok"
+
+        country_frame.reset_index()
+        country_frame.to_csv(self.path_to_split_country, encoding="UTF-8", sep=";")
+
+
+
+
 
 if __name__ == "__main__":
     with prevent_sleep():
         id_vm = input("Введи ID вирт машины")
-        # SurfWindowControl().get_preparing_on_real_machine(5)
+        # SurfWindowControl().get_preparing_on_real_machine(5, mode="new")
+        # SurfWindowControl().collect_temporary_results()
+        # SurfWindowControl().get_preparing_on_real_machine(5, mode="supplement")
         # sleep(10)
         SurfWindowControl().get_test_in_vm(id_vm)
