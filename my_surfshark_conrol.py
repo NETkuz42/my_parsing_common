@@ -393,9 +393,40 @@ class SurfWindowControl:
         self.__close_surf()
 
     def collect_temporary_results(self):
-        last_general_folder = my_help_func.sorted_files_by_date(self.path_to_dir_test_result)[-1]
-        last_path = last_general_folder.split("\\")[-1]
-        print(last_path)
+        def collect_result():
+            path_save_result = r"data\results"
+            last_general_folder = my_help_func.sorted_files_by_date(self.path_to_dir_test_result)[-1]
+            print(last_general_folder)
+            last_date_dir = last_general_folder.split("\\")[-1]
+            destination_dict = {"ip_info": fr"{last_general_folder}\ip_info", "web_test": fr"{last_general_folder}\web_test"}
+            result_frames_dict = {}
+            for name, path_destination in destination_dict.items():
+                full_path_to_save = fr"{path_save_result}\{name}\{last_date_dir}.csv"
+                result_frame = my_help_func.merge_files(path_destination, full_path_to_save)
+                result_frames_dict.update({name: result_frame})
+            return result_frames_dict
+
+        def analise_speed_connect(web_test_frame: pd.DataFrame):
+            web_test_frame["load_speed"] = web_test_frame["load_speed"].astype("int64")
+            abnormal_time = web_test_frame[web_test_frame["load_speed"] <= 0].index
+            web_test_frame.loc[abnormal_time, "load_speed"] = 100000
+
+            country_group = web_test_frame.groupby(["link", "country"]).agg({"load_speed": "mean", "load_status": list}).reset_index()
+
+            for index, list_status in country_group["load_status"].items():
+                successful_counter = list_status.count("ok")
+                country_group.loc[index, "successful_counter"] = successful_counter
+
+            return country_group
+
+        def analise_ip_rotation(ip_info_frame: pd.DataFrame):
+
+        frames_dict = collect_result()
+        analise_speed_connect(frames_dict["web_test"])
+
+
+
+
         # ip_info_path = fr"{last_general_folder}\ip_info"
         # web_test_path = fr"{last_general_folder}\web_test"
         # result_path = fr"{last_general_folder}\results"
@@ -415,7 +446,7 @@ class SurfWindowControl:
 
 if __name__ == "__main__":
     with prevent_sleep():
-        id_vm = input("Введи ID вирт машины")
+        # id_vm = input("Введи ID вирт машины")
         # SurfWindowControl().get_preparing_on_real_machine(5, mode="new")
         SurfWindowControl().collect_temporary_results()
         # SurfWindowControl().get_preparing_on_real_machine(5, mode="supplement")
