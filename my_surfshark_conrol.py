@@ -394,18 +394,20 @@ class SurfWindowControl:
 
     def collect_temporary_results(self):
         last_general_folder = my_help_func.sorted_files_by_date(self.path_to_dir_test_result)[-1]
-        ip_info_path = fr"{last_general_folder}\ip_info"
-        web_test_path = fr"{last_general_folder}\web_test"
-        result_path = fr"{last_general_folder}\results"
-        country_frame = pd.read_csv(self.path_to_split_country, encoding="UTF-8", sep=";", dtype=str,
-                                    index_col="country")
-        result_frame = my_help_func.merge_files(ip_info_path, result_path)
-
-        for country in result_frame["country"]:
-            country_frame.loc[country, "result"] = "ok"
-
-        country_frame.reset_index()
-        country_frame.to_csv(self.path_to_split_country, encoding="UTF-8", sep=";")
+        last_path = last_general_folder.split("\\")[-1]
+        print(last_path)
+        # ip_info_path = fr"{last_general_folder}\ip_info"
+        # web_test_path = fr"{last_general_folder}\web_test"
+        # result_path = fr"{last_general_folder}\results"
+        # country_frame = pd.read_csv(self.path_to_split_country, encoding="UTF-8", sep=";", dtype=str,
+        #                             index_col="country")
+        # result_frame = my_help_func.merge_files(ip_info_path, result_path)
+        #
+        # for country in result_frame["country"]:
+        #     country_frame.loc[country, "result"] = "ok"
+        #
+        # country_frame.reset_index()
+        # country_frame.to_csv(self.path_to_split_country, encoding="UTF-8", sep=";")
 
 
 
@@ -415,7 +417,7 @@ if __name__ == "__main__":
     with prevent_sleep():
         id_vm = input("Введи ID вирт машины")
         # SurfWindowControl().get_preparing_on_real_machine(5, mode="new")
-        # SurfWindowControl().collect_temporary_results()
+        SurfWindowControl().collect_temporary_results()
         # SurfWindowControl().get_preparing_on_real_machine(5, mode="supplement")
         # sleep(10)
-        SurfWindowControl().get_test_in_vm(id_vm)
+        # SurfWindowControl().get_test_in_vm(id_vm)
