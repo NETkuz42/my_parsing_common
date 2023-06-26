@@ -394,10 +394,6 @@ class SurfWindowControl:
 
     def collect_temporary_results(self):
         def collect_result():
-            path_save_result = r"data\results"
-            last_general_folder = my_help_func.sorted_files_by_date(self.path_to_dir_test_result)[-1]
-            print(last_general_folder)
-            last_date_dir = last_general_folder.split("\\")[-1]
             destination_dict = {"ip_info": fr"{last_general_folder}\ip_info", "web_test": fr"{last_general_folder}\web_test"}
             result_frames_dict = {}
             for name, path_destination in destination_dict.items():
@@ -411,20 +407,46 @@ class SurfWindowControl:
             abnormal_time = web_test_frame[web_test_frame["load_speed"] <= 0].index
             web_test_frame.loc[abnormal_time, "load_speed"] = 100000
 
-            country_group = web_test_frame.groupby(["link", "country"]).agg({"load_speed": "mean", "load_status": list}).reset_index()
+            country_group = web_test_frame.groupby(["link", "country"]).agg({"load_speed": "mean",
+                                                                             "load_status": list}).reset_index()
 
             for index, list_status in country_group["load_status"].items():
+                total_counter = len(list_status)
                 successful_counter = list_status.count("ok")
-                country_group.loc[index, "successful_counter"] = successful_counter
+                country_group.loc[index, "percent_success_connect"] = successful_counter/total_counter
+
+            country_group = country_group.drop(columns=["load_status"])
 
             return country_group
 
         def analise_ip_rotation(ip_info_frame: pd.DataFrame):
+            ip_info_frame["time_test"] = pd.to_datetime(ip_info_frame["time_test"], format="%Y_%m_%d %H:%M")
+            country_group = ip_info_frame.groupby("country").agg({"ip_addres": list, "Имя вашего компьютера": list,
+                                                                  "time_test": list}).reset_index()
+            ip_analise_frame = pd.DataFrame()
+            for index, row in country_group.iterrows():
+                count_number_connections = len(row["ip_addres"])
+                count_ip_on_surf = len(set(row["ip_addres"]))
+                count_ip_on_2ip = len(set(row["Имя вашего компьютера"]))
+                start_test = min(row["time_test"])
+                end_test = max(row["time_test"])
+                duration_test = end_test - start_test
+                ip_analise_frame.loc[index, "country"] = row["country"]
+                ip_analise_frame.loc[index, "chang_ip_surf_percent"] = count_ip_on_surf/count_number_connections
+                ip_analise_frame.loc[index, "chang_ip_2ip_percent"] = count_ip_on_2ip/count_number_connections
+                ip_analise_frame.loc[index, "duration_test"] = duration_test.seconds/60
 
+            return ip_analise_frame
+
+        path_save_result = r"data\results"
+        last_general_folder = my_help_func.sorted_files_by_date(self.path_to_dir_test_result)[-1]
+        last_date_dir = last_general_folder.split("\\")[-1]
         frames_dict = collect_result()
-        analise_speed_connect(frames_dict["web_test"])
-
-
+        speed_connect_frame = analise_speed_connect(frames_dict["web_test"])
+        ip_rotation_frame = analise_ip_rotation(frames_dict["ip_info"])
+        final_result_frame = speed_connect_frame.merge(ip_rotation_frame, "left", "country")
+        path_to_save_super_final = fr"{path_save_result}\super_final\{last_date_dir}.csv"
+        final_result_frame.to_csv(path_to_save_super_final, sep=";", encoding="UTF-8", index=False, float_format="%.2f")
 
 
         # ip_info_path = fr"{last_general_folder}\ip_info"
