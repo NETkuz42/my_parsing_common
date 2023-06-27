@@ -1,0 +1,3 @@
+Y:\my_parsing_common-CrMSVWjX\Scripts\activate.bat
+Y:\my_parsing_common-CrMSVWjX\Scripts\python.exe my_surfshark_conrol.py
+
