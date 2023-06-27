@@ -61,10 +61,11 @@ def profile_manager(cloning_numbers: int, sample_profile=r"my_parsing_common\bro
         for number in range(cloning_numbers):
             name = f"FAKE_USER_DATA_{number}"
             new_path = os.path.join(cloning_path, name)
-            shutil.copytree(sample_profile, new_path, dirs_exist_ok=True)
-            print("профиль", name, "создан")
-            mb.Chrome(number).clear_file_in_cache(new_path)
-            print("профиль", name, "кэш очищен")
+            if os.path.exists(new_path) is False:
+                shutil.copytree(sample_profile, new_path, dirs_exist_ok=True)
+                print("профиль", name, "создан")
+                mb.Chrome(number).clear_file_in_cache(new_path)
+                print("профиль", name, "кэш очищен")
 
     elif len(profiles_exist) == cloning_numbers:
         print("профили уже были созданы", cloning_numbers, "профилей")
@@ -75,7 +76,7 @@ def profile_manager(cloning_numbers: int, sample_profile=r"my_parsing_common\bro
             print("профиль", name, "кэш очищен")
 
     if cloning_numbers == 0:
-        print("Удаляю", len(profiles_exist),"профилей")
+        print("Удаляю", len(profiles_exist), "профилей")
         for profile in profiles_exist:
             shutil.rmtree(profile, ignore_errors=True)
             print(profile, "удалён")
