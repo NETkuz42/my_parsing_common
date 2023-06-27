@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import os
 import shutil
-import my_browsers
+import my_parsing_common.my_browsers as mb
 
 
 # Сканирует директорию и определяет пути ко всем файлам
@@ -63,7 +63,7 @@ def profile_manager(cloning_numbers: int, sample_profile=r"my_parsing_common\bro
             new_path = os.path.join(cloning_path, name)
             shutil.copytree(sample_profile, new_path, dirs_exist_ok=True)
             print("профиль", name, "создан")
-            my_browsers.Chrome(number).clear_file_in_cache(new_path)
+            mb.Chrome(number).clear_file_in_cache(new_path)
             print("профиль", name, "кэш очищен")
 
     elif len(profiles_exist) == cloning_numbers:
@@ -71,7 +71,7 @@ def profile_manager(cloning_numbers: int, sample_profile=r"my_parsing_common\bro
         for number in range(cloning_numbers):
             name = f"FAKE_USER_DATA_{number}"
             new_path = os.path.join(cloning_path, name)
-            my_browsers.Chrome(number).clear_file_in_cache(new_path)
+            mb.Chrome(number).clear_file_in_cache(new_path)
             print("профиль", name, "кэш очищен")
 
     if cloning_numbers == 0:

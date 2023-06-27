@@ -12,7 +12,7 @@ from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import InvalidSessionIdException
 from os import path
-import my_help_func
+import my_parsing_common.my_help_func as mhf
 import shutil
 import pandas as pd
 import random
@@ -110,7 +110,7 @@ class Chrome:
 
         for item in list_cleaning_folder:
             item_path = fr"{path_to_profile}{item}"
-            list_files_patches = my_help_func.path_cheker(item_path)
+            list_files_patches = mhf.path_cheker(item_path)
             for child_item_path in list_files_patches:
                 # final_path = fr"{item_path}\{child_item}"
                 try:
