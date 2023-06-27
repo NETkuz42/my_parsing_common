@@ -284,7 +284,7 @@ class SurfWindowControl:
         frame_site_result = pd.DataFrame(columns=result_columns)
         frame_ip_result = pd.DataFrame(columns=result_columns)
         brow = self.opened_browser.browser
-        number_tests_on_page = 1
+        number_tests_on_page = 3
         for link, check_row in dict_checked.items():
             for pass_number in range(number_tests_on_page):
                 number_row = len(frame_site_result)
@@ -420,6 +420,7 @@ class SurfWindowControl:
             return country_group
 
         def analise_ip_rotation(ip_info_frame: pd.DataFrame):
+            ip_info_frame = ip_info_frame[ip_info_frame["pass_number"] == "0"]
             ip_info_frame["time_test"] = pd.to_datetime(ip_info_frame["time_test"], format="%Y_%m_%d %H:%M")
             country_group = ip_info_frame.groupby("country").agg({"ip_addres": list, "Имя вашего компьютера": list,
                                                                   "time_test": list}).reset_index()
@@ -447,23 +448,6 @@ class SurfWindowControl:
         final_result_frame = speed_connect_frame.merge(ip_rotation_frame, "left", "country")
         path_to_save_super_final = fr"{path_save_result}\super_final\{last_date_dir}.csv"
         final_result_frame.to_csv(path_to_save_super_final, sep=";", encoding="UTF-8", index=False, float_format="%.2f")
-
-
-        # ip_info_path = fr"{last_general_folder}\ip_info"
-        # web_test_path = fr"{last_general_folder}\web_test"
-        # result_path = fr"{last_general_folder}\results"
-        # country_frame = pd.read_csv(self.path_to_split_country, encoding="UTF-8", sep=";", dtype=str,
-        #                             index_col="country")
-        # result_frame = my_help_func.merge_files(ip_info_path, result_path)
-        #
-        # for country in result_frame["country"]:
-        #     country_frame.loc[country, "result"] = "ok"
-        #
-        # country_frame.reset_index()
-        # country_frame.to_csv(self.path_to_split_country, encoding="UTF-8", sep=";")
-
-
-
 
 
 if __name__ == "__main__":
