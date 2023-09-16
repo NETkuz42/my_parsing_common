@@ -21,7 +21,7 @@ def path_cheker(papka, result_list=None):
 
 
 def test_list():
-    li=[]
+    li = []
     for i in range(1,1000):
         li.append("https://www.farpost.ru/")
         # li.append("https://aliexpress.ru/")
@@ -29,7 +29,7 @@ def test_list():
         li.append("https://www.avito.ru/")
         # li.append("https://www.ozon.ru/")
 
-    test=pd.DataFrame()
+    test = pd.DataFrame()
 
     for i in li:
         test.loc[len(test.index),'Ссылка']=i
