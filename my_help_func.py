@@ -67,7 +67,7 @@ def profile_manager(cloning_numbers: int, sample_profile=r"my_parsing_common\bro
                 mb.Chrome(number).clear_file_in_cache(new_path)
                 print("профиль", name, "кэш очищен")
 
-    elif len(profiles_exist) == cloning_numbers:
+    elif len(profiles_exist) >= cloning_numbers:
         print("профили уже были созданы", cloning_numbers, "профилей")
         for number in range(cloning_numbers):
             name = f"FAKE_USER_DATA_{number}"
