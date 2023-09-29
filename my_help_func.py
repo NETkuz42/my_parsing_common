@@ -47,6 +47,31 @@ def lower_case(path_to_file,path_to_save):
 
 # Управляет профилями, создаёт или удаляет папки.
 def profile_manager(cloning_numbers: int, sample_profile=r"my_parsing_common\browsers\chrome\112.0.5615.50\optim_user", cloning_path=r"D:\DISTRIB_LOCAL\PARSING\CHROME"):
+    def clear_cache():
+        for number in range(cloning_numbers):
+            name = f"FAKE_USER_DATA_{number}"
+            new_path = os.path.join(cloning_path, name)
+            mb.Chrome(number).clear_file_in_cache(new_path)
+            print("профиль", name, "кэш очищен")
+
+    def create_new_profiles():
+        print("создаю", cloning_numbers, "профилей")
+        for number in range(cloning_numbers):
+            name = f"FAKE_USER_DATA_{number}"
+            new_path = os.path.join(cloning_path, name)
+            if os.path.exists(new_path) is False:
+                shutil.copytree(sample_profile, new_path, dirs_exist_ok=True)
+                print("профиль", name, "создан")
+
+    def delete_profiles():
+        numbers_too_delete = count_prof_exist - cloning_numbers
+        print("профили уже были созданы, удаляю", numbers_too_delete, "лишних")
+        for number in range(1, numbers_too_delete+1):
+            final_number = count_prof_exist-number
+            name = f"FAKE_USER_DATA_{final_number}"
+            path_to_delete = os.path.join(cloning_path, name)
+            shutil.rmtree(path_to_delete, ignore_errors=True)
+            print(final_number, "удалён")
 
     list_items = os.listdir(cloning_path)
 
@@ -59,33 +84,12 @@ def profile_manager(cloning_numbers: int, sample_profile=r"my_parsing_common\bro
     count_prof_exist = len(profiles_exist)
 
     if count_prof_exist < cloning_numbers:
-        print("создаю", cloning_numbers, "профилей")
-        for number in range(cloning_numbers):
-            name = f"FAKE_USER_DATA_{number}"
-            new_path = os.path.join(cloning_path, name)
-            if os.path.exists(new_path) is False:
-                shutil.copytree(sample_profile, new_path, dirs_exist_ok=True)
-                print("профиль", name, "создан")
-                mb.Chrome(number).clear_file_in_cache(new_path)
-                print("профиль", name, "кэш очищен")
+        create_new_profiles()
 
-    elif count_prof_exist >= cloning_numbers:
-        print("профили уже были созданы", cloning_numbers, "профилей")
-        for number in range(cloning_numbers):
-            name = f"FAKE_USER_DATA_{number}"
-            new_path = os.path.join(cloning_path, name)
-            mb.Chrome(number).clear_file_in_cache(new_path)
-            print("профиль", name, "кэш очищен")
+    elif count_prof_exist > cloning_numbers:
+        delete_profiles()
 
-        numbers_too_delete = count_prof_exist - cloning_numbers
-        if numbers_too_delete > 0:
-            print("Удаляю", numbers_too_delete, "профилей")
-            for number in range(1, numbers_too_delete+1):
-                final_number = count_prof_exist-number
-                name = f"FAKE_USER_DATA_{final_number}"
-                path_to_delete = os.path.join(cloning_path, name)
-                shutil.rmtree(path_to_delete, ignore_errors=True)
-                print(final_number, "удалён")
+    clear_cache()
 
 
 # Возращает текстовые значения при парсинге
