@@ -89,15 +89,6 @@ def profile_manager(cloning_numbers: int, sample_profile=r"my_parsing_common\bro
                 print(final_number, "удалён")
 
 
-
-    # if cloning_numbers == 0:
-    #     print("Удаляю", count_prof_exist, "профилей")
-    #     for profile in profiles_exist:
-    #         shutil.rmtree(profile, ignore_errors=True)
-    #         print(profile, "удалён")
-
-
-
 # Возращает текстовые значения при парсинге
 def find_values(value_type, table, clarification):
     try:
