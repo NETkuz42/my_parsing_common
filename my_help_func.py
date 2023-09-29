@@ -91,6 +91,8 @@ def profile_manager(cloning_numbers: int, sample_profile=r"my_parsing_common\bro
 
     clear_cache()
 
+    return cloning_numbers
+
 
 # Возращает текстовые значения при парсинге
 def find_values(value_type, table, clarification):
