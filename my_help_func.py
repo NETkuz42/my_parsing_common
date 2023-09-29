@@ -56,7 +56,6 @@ def profile_manager(cloning_numbers: int, sample_profile=r"my_parsing_common\bro
         if os.path.isdir(path_to_item):
             profiles_exist.append(path_to_item)
 
-    print(profiles_exist)
     count_prof_exist = len(profiles_exist)
 
     if count_prof_exist < cloning_numbers:
