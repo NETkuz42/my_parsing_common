@@ -56,6 +56,7 @@ def profile_manager(cloning_numbers: int, sample_profile=r"my_parsing_common\bro
         if os.path.isdir(path_to_item):
             profiles_exist.append(path_to_item)
 
+    print(profiles_exist)
     count_prof_exist = len(profiles_exist)
 
     if count_prof_exist < cloning_numbers:
@@ -77,12 +78,16 @@ def profile_manager(cloning_numbers: int, sample_profile=r"my_parsing_common\bro
             mb.Chrome(number).clear_file_in_cache(new_path)
             print("профиль", name, "кэш очищен")
 
-        number_too_delete = count_prof_exist - cloning_numbers
-        if number_too_delete > 0:
-            print("Удаляю", number_too_delete, "профилей")
-            for number in range(1, number_too_delete):
-                shutil.rmtree(profiles_exist[-number], ignore_errors=True)
-                print(count_prof_exist - number, "удалён")
+        numbers_too_delete = count_prof_exist - cloning_numbers
+        if numbers_too_delete > 0:
+            print("Удаляю", numbers_too_delete, "профилей")
+            for number in range(1, numbers_too_delete+1):
+                final_number = count_prof_exist-number
+                name = f"FAKE_USER_DATA_{final_number}"
+                path_to_delete = os.path.join(cloning_path, name)
+                shutil.rmtree(path_to_delete, ignore_errors=True)
+                print(final_number, "удалён")
+
 
 
     # if cloning_numbers == 0:
