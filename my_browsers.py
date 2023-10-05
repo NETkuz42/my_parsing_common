@@ -120,7 +120,6 @@ class Chrome:
                 except OSError:
                     pass
 
-
     # Открывает новую вкладку и определяет её ID
     def new_tab(self, tab_number):  # Функция запускающая новое окно и возвращающая его ID
         self.browser.execute_script(f'''window.open("", "_blank");''')  # Запускает новое пустое окно
