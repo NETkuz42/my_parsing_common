@@ -62,14 +62,17 @@ class Chrome:
         self.browser.set_page_load_timeout(60)  # Максимальное время ожидания загрузки страницы.
         return self
 
-    def wait_it(self, what_wait: str, how_long: int = 10, by_what=By.XPATH, many_element: bool = False):
+    def wait_it(self, what_wait: str, where_wait=None, how_long: int = 10, by_what=By.XPATH, many_element: bool = False):
+        if where_wait is None:
+            where_wait = self.browser
+
         if many_element is False:
-            wait_result = WebDriverWait(self.browser, how_long).until(
+            wait_result = WebDriverWait(where_wait, how_long).until(
                 EC.presence_of_element_located((by_what, what_wait)))
             return wait_result
 
         elif many_element is True:
-            wait_result = WebDriverWait(self.browser, how_long).until(
+            wait_result = WebDriverWait(where_wait, how_long).until(
                 EC.presence_of_all_elements_located((by_what, what_wait)))
             return wait_result
 
