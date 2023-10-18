@@ -17,6 +17,8 @@ import shutil
 import pandas as pd
 import random
 from typing import Optional
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 class Chrome:
@@ -59,6 +61,17 @@ class Chrome:
         self.browser = webdriver.Chrome(service=ser, options=op)  # Запускает селениум
         self.browser.set_page_load_timeout(60)  # Максимальное время ожидания загрузки страницы.
         return self
+
+    def wait_it(self, what_wait: str, how_long: int = 10, by_what=By.XPATH, many_element: bool = False):
+        if many_element is False:
+            wait_result = WebDriverWait(self.browser, how_long).until(
+                EC.presence_of_element_located((by_what, what_wait)))
+            return wait_result
+
+        elif many_element is True:
+            wait_result = WebDriverWait(self.browser, how_long).until(
+                EC.presence_of_all_elements_located((by_what, what_wait)))
+            return wait_result
 
     # Возвращает информацию от текущем юзер агенте
     def info_user_agent(self):
