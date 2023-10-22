@@ -23,7 +23,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 class Chrome:
     # Определяет браузер в классе
-    def __init__(self, id_browser, path_to_profiles=r"D:\DISTRIB_LOCAL\PARSING\\CHROME"):
+    def __init__(self, id_browser=None, path_to_profiles=r"D:\DISTRIB_LOCAL\PARSING\\CHROME"):
         self.browser: webdriver.Chrome = None
         self.path_to_dir = path.dirname(__file__)  # Путь к текущей папке
         self.id_browser = id_browser
@@ -31,6 +31,8 @@ class Chrome:
         self.error_counter = 0
         self.random_delimiter = random.randrange(1, 30)
         self.path_to_profile = fr"{path_to_profiles}\FAKE_USER_DATA_{str(self.id_browser)}"
+        self.path_to_dir_profiles = path_to_profiles
+        self.sample_profile = r"my_parsing_common\browsers\chrome\112.0.5615.50\optim_user"
         self.header = None
 
     # Запускает Хром
@@ -224,6 +226,54 @@ class Chrome:
             print(worked_chrome.info_user_agent())
             worked_chrome.browser.get(url_for_test)
             sleep(5)
+
+    # Управляет профилями, создаёт или удаляет папки.
+    def profile_manager(self, cloning_numbers: int):
+        def clear_cache():
+            for number in range(cloning_numbers):
+                name = f"FAKE_USER_DATA_{number}"
+                new_path = os.path.join(self.path_to_dir_profiles, name)
+                self.clear_file_in_cache(new_path)
+                print("профиль", name, "кэш очищен")
+
+        def create_new_profiles():
+            print("создаю", cloning_numbers, "профилей")
+            for number in range(cloning_numbers):
+                name = f"FAKE_USER_DATA_{number}"
+                new_path = os.path.join(self.path_to_dir_profiles, name)
+                if os.path.exists(new_path) is False:
+                    shutil.copytree(self.sample_profile, new_path, dirs_exist_ok=True)
+                    print("профиль", name, "создан")
+
+        def delete_profiles():
+            numbers_too_delete = count_prof_exist - cloning_numbers
+            print("профили уже были созданы, удаляю", numbers_too_delete, "лишних")
+            for number in range(1, numbers_too_delete + 1):
+                final_number = count_prof_exist - number
+                name = f"FAKE_USER_DATA_{final_number}"
+                path_to_delete = os.path.join(self.path_to_dir_profiles, name)
+                shutil.rmtree(path_to_delete, ignore_errors=True)
+                print(final_number, "удалён")
+
+        list_items = os.listdir(self.path_to_dir_profiles)
+
+        profiles_exist = []
+        for item in list_items:
+            path_to_item = os.path.join(self.path_to_dir_profiles, item)
+            if os.path.isdir(path_to_item):
+                profiles_exist.append(path_to_item)
+
+        count_prof_exist = len(profiles_exist)
+
+        if count_prof_exist < cloning_numbers:
+            create_new_profiles()
+
+        elif count_prof_exist > cloning_numbers:
+            delete_profiles()
+
+        clear_cache()
+
+        return cloning_numbers
 
     # def parsing_list_with_surf(self, links_list, key_func):
     #     number_pages = 0
