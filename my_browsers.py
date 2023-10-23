@@ -53,7 +53,7 @@ class Chrome:
         op.add_argument("--ignore-certificate-errors-spki-list")
         op.add_argument("--ignore-ssl-errors")
         op.add_argument("--disk-cache-size=0")
-        if header is False and big_windows is False:
+        if header is False and big_windows is True:
             op.add_argument("--window-size=2560,1440")
         # op.add_argument("--start-maximized")
 
