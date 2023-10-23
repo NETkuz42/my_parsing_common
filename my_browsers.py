@@ -36,7 +36,7 @@ class Chrome:
         self.header = None
 
     # Запускает Хром
-    def start_chrome(self, header=True, control_window=True, path_brow_folder=r"D:"):  # Принимает номер профиля, по умолчанию 0)
+    def start_chrome(self, header=True, control_window=True, path_brow_folder=r"D:", big_windows=False):  # Принимает номер профиля, по умолчанию 0)
         sleep(self.id_browser*2)
         ser = Service(executable_path=path.join(self.path_to_dir, fr"{path_brow_folder}\112.0.5615.50\chromedriver_112.0.5615.50.exe"))  # путь к chromedriver
         op = webdriver.ChromeOptions()  # опции для не разлоченного селениума
@@ -53,6 +53,8 @@ class Chrome:
         op.add_argument("--ignore-certificate-errors-spki-list")
         op.add_argument("--ignore-ssl-errors")
         op.add_argument("--disk-cache-size=0")
+        if header is False and big_windows is False:
+            op.add_argument("--window-size=2560,1440")
         # op.add_argument("--start-maximized")
 
         fake_user_agent = generate_user_agent(device_type="desktop", navigator='chrome')  # генерит рандомного юзер агента
