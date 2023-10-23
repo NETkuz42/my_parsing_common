@@ -36,7 +36,7 @@ class Chrome:
         self.header = None
 
     # Запускает Хром
-    def start_chrome(self, header=True, control_window=True, path_brow_folder=r"D:", big_windows=False):  # Принимает номер профиля, по умолчанию 0)
+    def start_chrome(self, header=True, control_window=True, path_brow_folder=r"D:"):  # Принимает номер профиля, по умолчанию 0)
         sleep(self.id_browser*2)
         ser = Service(executable_path=path.join(self.path_to_dir, fr"{path_brow_folder}\112.0.5615.50\chromedriver_112.0.5615.50.exe"))  # путь к chromedriver
         op = webdriver.ChromeOptions()  # опции для не разлоченного селениума
@@ -64,19 +64,14 @@ class Chrome:
         self.browser.set_page_load_timeout(60)  # Максимальное время ожидания загрузки страницы.
         return self
 
-    def wait_it(self, what_wait: str, where_wait=None, how_long: int = 10, by_what=By.XPATH, many_element: bool = False):
+    def wait_it(self, what_wait: str, where_wait=None, how_long: int = 10, by_what=By.XPATH):
         if where_wait is None:
             where_wait = self.browser
 
-        if many_element is False:
-            wait_result = WebDriverWait(where_wait, how_long).until(
-                EC.presence_of_element_located((by_what, what_wait)))
-            return wait_result
+        wait_result = WebDriverWait(where_wait, how_long).until(
+            EC.presence_of_element_located((by_what, what_wait)))
+        return wait_result
 
-        elif many_element is True:
-            wait_result = WebDriverWait(where_wait, how_long).until(
-                EC.presence_of_all_elements_located((by_what, what_wait)))
-            return wait_result
 
     # Возвращает информацию от текущем юзер агенте
     def info_user_agent(self):
