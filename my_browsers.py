@@ -40,7 +40,7 @@ class Chrome:
         sleep(self.id_browser*2)
         ser = Service(executable_path=path.join(self.path_to_dir, fr"{path_brow_folder}\112.0.5615.50\chromedriver_112.0.5615.50.exe"))  # путь к chromedriver
         op = webdriver.ChromeOptions()  # опции для не разлоченного селениума
-        self.header = False if control_window and self.id_browser == 0 else header
+        self.header = False if control_window is True and self.id_browser == 0 else header
         if self.header:
             op.add_argument('--headless')  # Параметр запуска безголового режима
         op.binary_location = path.join(self.path_to_dir, fr"{path_brow_folder}\112.0.5615.50\Chrome 112.0.5615.50\chrome.exe")  # Путь к старой версии хрома
@@ -107,7 +107,7 @@ class Chrome:
             actions.perform()  # Подтверждает сброс
             sleep(2)
 
-        if self.header is False:
+        if self.header is False :
             clear_from_interface()
 
         sleep(2)
@@ -115,6 +115,8 @@ class Chrome:
         sleep(2)
         self.browser.delete_all_cookies()
         sleep(2)
+        self.browser.remove_all_credentials()
+        self.browser.remove_virtual_authenticator()
 
     def clear_file_in_cache(self, path_to_profile=None):  # Сбрасывает кэш и куки удалением файлов
         list_cleaning_folder = [r"\Default\Cache", r"\Default\Code Cache"]
