@@ -115,8 +115,8 @@ class Chrome:
         sleep(2)
         self.browser.delete_all_cookies()
         sleep(2)
-        self.browser.remove_all_credentials()
-        self.browser.remove_virtual_authenticator()
+        # self.browser.remove_all_credentials()
+        # self.browser.remove_virtual_authenticator()
 
     def clear_file_in_cache(self, path_to_profile=None):  # Сбрасывает кэш и куки удалением файлов
         list_cleaning_folder = [r"\Default\Cache", r"\Default\Code Cache"]
