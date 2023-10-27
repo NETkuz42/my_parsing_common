@@ -67,9 +67,7 @@ class Chrome:
     def wait_it(self, what_wait: str, where_wait=None, how_long: int = 10, by_what=By.XPATH):
         if where_wait is None:
             where_wait = self.browser
-
-        wait_result = WebDriverWait(where_wait, how_long).until(
-            EC.presence_of_element_located((by_what, what_wait)))
+        wait_result = WebDriverWait(where_wait, how_long).until(EC.presence_of_element_located((by_what, what_wait)))
         return wait_result
 
 
