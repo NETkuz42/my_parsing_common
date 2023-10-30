@@ -19,11 +19,13 @@ import random
 from typing import Optional
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from typing import Literal
 
+Type_test = Literal["1", "2"]
 
 class Chrome:
     # Определяет браузер в классе
-    def __init__(self, id_browser=None, path_to_profiles=r"D:\DISTRIB_LOCAL\PARSING\\CHROME"):
+    def __init__(self, id_browser=None, path_to_profiles: Type_test = r"D:\DISTRIB_LOCAL\PARSING\\CHROME"):
         self.browser: webdriver.Chrome = None
         self.path_to_dir = path.dirname(__file__)  # Путь к текущей папке
         self.id_browser = id_browser
@@ -69,7 +71,6 @@ class Chrome:
             where_wait = self.browser
         wait_result = WebDriverWait(where_wait, how_long).until(EC.presence_of_element_located((by_what, what_wait)))
         return wait_result
-
 
     # Возвращает информацию от текущем юзер агенте
     def info_user_agent(self):
