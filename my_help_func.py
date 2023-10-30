@@ -104,7 +104,7 @@ def find_values(value_type, table, clarification):
 
 
 #Объеденяет все .csv файлы в папке в один датафрейм.
-def merge_files(papka_files, path_to_save=None):
+def merge_files(papka_files, path_to_save=None) -> pd.DataFrame:
     list_paths = path_cheker(papka_files)
     result_frame = pd.DataFrame()
     for file in list_paths:
