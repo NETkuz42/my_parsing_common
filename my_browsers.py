@@ -36,6 +36,7 @@ class Chrome:
         self.path_to_profile = fr"{path_to_profiles}\FAKE_USER_DATA_{str(self.id_browser)}"
         self.path_to_dir_profiles = path_to_profiles
         self.sample_profile = r"my_parsing_common\browsers\chrome\112.0.5615.50\optim_user"
+        self.sample_profile_no_optimize = r"my_parsing_common\browsers\chrome\112.0.5615.50\optim_user_with_picture"
         self.header = None
 
     # Запускает Хром
@@ -224,7 +225,7 @@ class Chrome:
             sleep(5)
 
     # Управляет профилями, создаёт или удаляет папки.
-    def profile_manager(self, cloning_numbers: int):
+    def profile_manager(self, cloning_numbers: int, not_optimize_user=False):
         def clear_cache():
             for number in range(cloning_numbers):
                 name = f"FAKE_USER_DATA_{number}"
@@ -238,7 +239,8 @@ class Chrome:
                 name = f"FAKE_USER_DATA_{number}"
                 new_path = os.path.join(self.path_to_dir_profiles, name)
                 if os.path.exists(new_path) is False:
-                    shutil.copytree(self.sample_profile, new_path, dirs_exist_ok=True)
+                    path_sample = self.sample_profile_no_optimize if not_optimize_user else self.sample_profile
+                    shutil.copytree(path_sample, new_path, dirs_exist_ok=True)
                     print("профиль", name, "создан")
 
         def delete_profiles():
