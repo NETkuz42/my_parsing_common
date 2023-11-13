@@ -4,9 +4,10 @@ import numpy as np
 import pandas as pd
 import os
 import shutil
-import my_parsing_common.my_browsers as mb
+import my_browsers as mb
 from gtts import gTTS
 import vlc
+from time import sleep
 
 
 # Сканирует директорию и определяет пути ко всем файлам

@@ -12,7 +12,7 @@ from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import InvalidSessionIdException
 from os import path
-import my_parsing_common.my_help_func as mhf
+import my_help_func as mhf
 import shutil
 import pandas as pd
 import random
