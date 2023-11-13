@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import os
 import shutil
-import my_browsers as mb
+from my_parsing_common import my_browsers as mb
 from gtts import gTTS
 import vlc
 from time import sleep
