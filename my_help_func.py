@@ -5,6 +5,8 @@ import pandas as pd
 import os
 import shutil
 import my_parsing_common.my_browsers as mb
+from gtts import gTTS
+import vlc
 
 
 # Сканирует директорию и определяет пути ко всем файлам
@@ -129,3 +131,13 @@ def sorted_files_by_date(path_to_folder):
     list_path_files = (os.path.join(path_to_folder, file) for file in list_file)
     list_path_sorted = sorted(list_path_files, key=os.path.getmtime)
     return list_path_sorted
+
+def play_sound(text_for_play="забыл ввести текст", letter_wait=0.12):
+    language = 'ru'
+    s = gTTS(text=text_for_play, lang=language, slow=False)
+    s.save('sound.mp3')
+    wait_playback = len(text_for_play) * letter_wait
+
+    player = vlc.MediaPlayer("sound.mp3")
+    player.play()
+    sleep(wait_playback)
