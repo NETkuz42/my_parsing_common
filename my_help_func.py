@@ -6,7 +6,7 @@ import os
 import shutil
 from my_parsing_common import my_browsers as mb
 from gtts import gTTS
-import vlc
+# import vlc
 from time import sleep
 
 
