@@ -5,8 +5,6 @@ import pandas as pd
 import os
 import shutil
 from my_parsing_common import my_browsers as mb
-from gtts import gTTS
-import vlc
 from time import sleep
 
 
@@ -134,16 +132,4 @@ def sorted_files_by_date(path_to_folder):
     return list_path_sorted
 
 
-def play_voice(text_for_play="забыл ввести текст", letter_wait=0.09):
 
-    language = 'ru'
-    try:
-        s = gTTS(text=text_for_play, lang=language, slow=False)
-        s.save('sound.mp3')
-    except gTTSError
-
-
-    wait_playback = len(text_for_play) * letter_wait + 2
-    player = vlc.MediaPlayer("sound.mp3")
-    player.play()
-    sleep(wait_playback)
