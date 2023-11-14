@@ -37,7 +37,7 @@ def test_list():
     for i in li:
         test.loc[len(test.index),'Ссылка']=i
 
-    test.to_csv("data\list_test.csv", sep=";")
+    test.to_csv(r"data\list_test.csv", sep=";")
 
 
 def lower_case(path_to_file,path_to_save):
@@ -134,11 +134,11 @@ def sorted_files_by_date(path_to_folder):
     return list_path_sorted
 
 
-def play_voice(text_for_play="забыл ввести текст", letter_wait=0.12):
+def play_voice(text_for_play="забыл ввести текст", letter_wait=0.09):
     language = 'ru'
     s = gTTS(text=text_for_play, lang=language, slow=False)
     s.save('sound.mp3')
-    wait_playback = len(text_for_play) * letter_wait
+    wait_playback = len(text_for_play) * letter_wait + 2
 
     player = vlc.MediaPlayer("sound.mp3")
     player.play()
