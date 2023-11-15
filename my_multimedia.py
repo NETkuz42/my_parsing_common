@@ -46,4 +46,5 @@ class Voices:
         self.__play(path_to_default_file)
 
 
-Voices().play_default_voice("капча появилась")
+if __name__ == "__main__":
+    Voices().play_default_voice("капча появилась")
