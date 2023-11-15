@@ -5,7 +5,6 @@ import pandas as pd
 import os
 import shutil
 from my_parsing_common import my_browsers as mb
-from time import sleep
 
 
 # Сканирует директорию и определяет пути ко всем файлам
