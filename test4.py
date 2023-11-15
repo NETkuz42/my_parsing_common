@@ -1,7 +1,5 @@
-import my_help_func
+import os
 
-counters=5
-
-for counter in range(counters):
-    print(counter)
+now_dir = os.getcwd()
+print(type(now_dir))
 

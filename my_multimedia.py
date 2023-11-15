@@ -3,13 +3,15 @@ from gtts.tts import gTTSError
 import vlc
 from time import sleep
 from typing import Literal
+from os import path
 
 
 class Voices:
     standard_voices = Literal["капча появилась", "капча всё ещё тут", "капча пройдена"]
 
     def __init__(self):
-        self.dir_sounds = r"multimedia\sounds"
+        self.work_dir = path.dirname(path.abspath(__file__))
+        self.dir_sounds = fr"{self.work_dir}\multimedia\sounds"
         self.default_letter_wait = 0.09
         self.standard_voice_dict = {"капча появилась": "captcha_appeared.mp3",
                                     "капча всё ещё тут": "captcha_still_here.mp3",
