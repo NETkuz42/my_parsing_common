@@ -260,13 +260,13 @@ class Chrome:
             for path_to_pref in path_to_pref_list:
                 full_path = fr"{path_to_user_data}\{path_to_pref}"
                 new_name = f"USER_{number_user}"
-                with open(full_path, 'r') as preference:
+                with open(full_path, 'r', encoding="UTF-8") as preference:
                     pref_json = json.load(preference)
                 if path_to_pref == path_to_pref_list[0]:
-                    pref_json["profile"]['name'] = new_name
+                    pref_json["profile"]["name"] = str(new_name)
                 elif path_to_pref == path_to_pref_list[1]:
                     pref_json["profile"]["info_cache"]["default"]["name"] = new_name
-                with open(full_path, 'w') as preference:
+                with open(full_path, 'w', encoding="UTF-8") as preference:
                     json.dump(pref_json, preference)
 
         list_items = os.listdir(self.path_to_dir_profiles)
