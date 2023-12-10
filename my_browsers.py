@@ -20,6 +20,7 @@ from typing import Optional
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from typing import Literal
+import json
 
 
 class Chrome:
@@ -241,6 +242,7 @@ class Chrome:
                 if os.path.exists(new_path) is False:
                     path_sample = self.sample_profile_no_optimize if not_optimize_user else self.sample_profile
                     shutil.copytree(path_sample, new_path, dirs_exist_ok=True)
+                    change_user_name(new_path, number)
                     print("профиль", name, "создан")
 
         def delete_profiles():
@@ -252,6 +254,17 @@ class Chrome:
                 path_to_delete = os.path.join(self.path_to_dir_profiles, name)
                 shutil.rmtree(path_to_delete, ignore_errors=True)
                 print(final_number, "удалён")
+
+        def change_user_name(path_to_user_data, number_user):
+            path_to_pref = fr"{path_to_user_data}\Default\Preferences"
+            new_name = f"FAKE_USER_{number_user}"
+            with open(path_to_pref, 'r', encoding="UTF-8") as preference:
+                pref_json = json.load(preference)
+
+            pref_json["profile"]['name'] = new_name
+
+            with open(path_to_pref, 'w', encoding="UTF-8") as preference:
+                preference.write(str(pref_json))
 
         list_items = os.listdir(self.path_to_dir_profiles)
 
