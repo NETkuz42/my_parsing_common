@@ -256,15 +256,18 @@ class Chrome:
                 print(final_number, "удалён")
 
         def change_user_name(path_to_user_data, number_user):
-            path_to_pref = fr"{path_to_user_data}\Default\Preferences"
-            new_name = f"FAKE_USER_{number_user}"
-            with open(path_to_pref, 'r', encoding="UTF-8") as preference:
-                pref_json = json.load(preference)
-
-            pref_json["profile"]['name'] = new_name
-
-            with open(path_to_pref, 'w', encoding="UTF-8") as preference:
-                preference.write(str(pref_json))
+            path_to_pref_list = [r"\Default\Preferences", r"\Local State"]
+            for path_to_pref in path_to_pref_list:
+                full_path = fr"{path_to_user_data}\{path_to_pref}"
+                new_name = f"FAKE_USER_{number_user}"
+                with open(full_path, 'r') as preference:
+                    pref_json = json.load(preference)
+                if path_to_pref == path_to_pref_list[0]:
+                    pref_json["profile"]['name'] = new_name
+                elif path_to_pref == path_to_pref_list[1]:
+                    pref_json["profile"]["info_cache"]["default"]["name"] = new_name
+                with open(full_path, 'w') as preference:
+                    json.dump(pref_json, preference)
 
         list_items = os.listdir(self.path_to_dir_profiles)
 
