@@ -259,7 +259,7 @@ class Chrome:
             path_to_pref_list = [r"\Default\Preferences", r"\Local State"]
             for path_to_pref in path_to_pref_list:
                 full_path = fr"{path_to_user_data}\{path_to_pref}"
-                new_name = f"FAKE_USER_{number_user}"
+                new_name = f"USER_{number_user}"
                 with open(full_path, 'r') as preference:
                     pref_json = json.load(preference)
                 if path_to_pref == path_to_pref_list[0]:
