@@ -25,4 +25,5 @@ def get_images_links_from_server():
     return pic_dict
 
 
-get_images_links_from_server()
+if __name__ == "__main__":
+    get_images_links_from_server()
