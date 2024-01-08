@@ -12,6 +12,9 @@ adrenaline = "*"
 numpy = "*"
 gtts = "*"
 python-vlc = "*"
+pynput = "*"
+pyautogui = "*"
+pydirectinput = "*"
 
 [dev-packages]
 
