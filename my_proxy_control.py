@@ -66,7 +66,7 @@ class SocksIMAP4SSL(SocksIMAP4):
 
 class ProxyList:
     def __init__(self):
-        self.path_to_proxy_file = r"C:\PYTHON\for_oleg\settings\proxies.csv"
+        self.path_to_proxy_file = r"data\proxys\proxys.csv"
         self.proxy_frame = self._get_proxy_frame()
         pass
 
