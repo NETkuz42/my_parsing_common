@@ -2,6 +2,7 @@ import ssl
 import socks
 from imaplib import IMAP4
 import pandas as pd
+import imaplib
 
 
 class SocksIMAP4(IMAP4):
@@ -66,12 +67,13 @@ class SocksIMAP4SSL(SocksIMAP4):
 
 class ProxyList:
     def __init__(self):
-        self.path_to_proxy_file = r"data\proxys\proxys.csv"
+        self.path_to_proxy_file = r"C:\PYTHON\for_oleg\my_parsing_common\data\proxys\proxys.csv"
         self.proxy_frame = self._get_proxy_frame()
         pass
 
     def _get_proxy_frame(self):
         proxy_frame = pd.read_csv(self.path_to_proxy_file, sep=";", encoding="UTF-8", dtype=object)
+        proxy_frame["port_socks5"] = proxy_frame["port_socks5"].astype(int)
         return proxy_frame
 
     def get_my_proxy(self, email):
