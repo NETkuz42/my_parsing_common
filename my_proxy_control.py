@@ -93,5 +93,21 @@ class ProxyList:
             raise "нет свободных проксей"
 
 
+class SocksSmtplib():
+    def __init__(self, account):
+        self.account = account
+        self.proxy_series = ProxyList().get_my_proxy(account)
+
+    def _smtplib_get_socket(self, host, port, timeout):
+        return socks.create_connection((host, port),
+                                       timeout,
+                                       self.account,
+                                       proxy_type=socks.SOCKS5,
+                                       proxy_addr=self.proxy_series["internal_ip"],
+                                       proxy_port=int(self.proxy_series["port_socks5"]),
+                                       proxy_username=self.proxy_series["username"],
+                                       proxy_password=self.proxy_series["password"])
+
+
 if __name__ == "__main__":
     pass
