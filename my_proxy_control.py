@@ -94,19 +94,23 @@ class ProxyList:
 
 
 class SocksSmtplib():
+
     def __init__(self, account):
         self.account = account
-        self.proxy_series = ProxyList().get_my_proxy(account)
 
-    def _smtplib_get_socket(self, host, port, timeout):
-        return socks.create_connection((host, port),
-                                       timeout,
-                                       self.account,
-                                       proxy_type=socks.SOCKS5,
-                                       proxy_addr=self.proxy_series["internal_ip"],
-                                       proxy_port=int(self.proxy_series["port_socks5"]),
-                                       proxy_username=self.proxy_series["username"],
-                                       proxy_password=self.proxy_series["password"])
+    def change_smtp_proxy_settings(self):
+        def smtplib_get_socket(self, host, port, timeout):
+            return socks.create_connection((host, port),
+                                           timeout,
+                                           self.source_address,
+                                           proxy_type=socks.SOCKS5,
+                                           proxy_addr=str(proxy_series["internal_ip"]),
+                                           proxy_port=int(proxy_series["port_socks5"]),
+                                           proxy_username=str(proxy_series["username"]),
+                                           proxy_password=str(proxy_series["password"]))
+
+        proxy_series = ProxyList().get_my_proxy(self.account)
+        return smtplib_get_socket
 
 
 if __name__ == "__main__":
