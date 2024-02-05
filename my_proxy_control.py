@@ -93,12 +93,12 @@ class ProxyList:
             raise "нет свободных проксей"
 
 
-class SocksSmtplib():
+class ChangeProxy():
 
     def __init__(self, account):
         self.account = account
 
-    def change_smtp_proxy_settings(self):
+    def change_smtp_proxy(self):
         def smtplib_get_socket(self, host, port, timeout):
             return socks.create_connection((host, port),
                                            timeout,
@@ -111,6 +111,17 @@ class SocksSmtplib():
 
         proxy_series = ProxyList().get_my_proxy(self.account)
         return smtplib_get_socket
+
+    def change_imap_proxy(self, server="outlook.office365.com"):
+        proxy_series = ProxyList().get_my_proxy(self.account)
+        imap = SocksIMAP4SSL(host=server,
+                             proxy_addr=str(proxy_series["internal_ip"]),
+                             proxy_port=int(proxy_series["port_socks5"]),
+                             username=str(proxy_series["username"]),
+                             password=str(proxy_series["password"]),
+                             proxy_type="socks5")
+        return imap
+
 
 
 if __name__ == "__main__":
