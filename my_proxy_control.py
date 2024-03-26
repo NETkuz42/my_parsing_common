@@ -67,12 +67,12 @@ class SocksIMAP4SSL(SocksIMAP4):
 
 class ProxyList:
     def __init__(self):
-        self.path_to_proxy_file = r"C:\PYTHON\for_oleg\my_parsing_common\data\proxys\proxys.csv"
+        self.path_to_proxy_file = r"C:\PYTHON\for_oleg\my_parsing_common\data\proxys\Proxy-26-03-2024.csv"
         self.proxy_frame = self._get_proxy_frame()
         pass
 
     def _get_proxy_frame(self):
-        proxy_frame = pd.read_csv(self.path_to_proxy_file, sep=";", encoding="UTF-8", dtype=object)
+        proxy_frame = pd.read_csv(self.path_to_proxy_file, sep=":", encoding="UTF-8", dtype=object)
         proxy_frame["port_socks5"] = proxy_frame["port_socks5"].astype(int)
         return proxy_frame
 
@@ -86,7 +86,7 @@ class ProxyList:
             result_proxy_series = free_proxy.iloc[0]
             index_proxy = result_proxy_series.name
             self.proxy_frame.loc[index_proxy, "last_account"] = email
-            self.proxy_frame.to_csv(self.path_to_proxy_file, sep=";", index=False, encoding="UTF-8")
+            self.proxy_frame.to_csv(self.path_to_proxy_file, sep=":", index=False, encoding="UTF-8")
             return result_proxy_series
 
         else:
