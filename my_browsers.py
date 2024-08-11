@@ -68,6 +68,7 @@ class Chrome:
 
         op.add_experimental_option("excludeSwitches", ["enable-automation"])  # Убирает данные что хром в авто режиме
         op.add_experimental_option("useAutomationExtension", False)  # Убирает данные что хром в авто режиме
+        op.set_capability('pageLoadStrategy', 'none')  #Ждать ли полной загрузки страницы
         self.browser = webdriver.Chrome(service=ser, options=op)  # Запускает селениум
         self.browser.set_page_load_timeout(60)  # Максимальное время ожидания загрузки страницы.
         return self
