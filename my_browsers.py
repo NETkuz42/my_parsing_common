@@ -39,10 +39,11 @@ class Chrome:
         self.sample_profile = r"my_parsing_common\browsers\chrome\112.0.5615.50\optim_user"
         self.sample_profile_no_optimize = r"my_parsing_common\browsers\chrome\112.0.5615.50\optim_user_with_picture"
         self.header = None
+        self.limited_load = False
 
     # Запускает Хром
     def start_chrome(self, header=True, control_window=True, path_brow_folder: Chrome_locations = r"D:",
-                     resolution='2560,1440'):  # Принимает номер профиля, по умолчанию 0)
+                     resolution='2560,1440', limited_load=False):  # Принимает номер профиля, по умолчанию 0)
         sleep(self.id_browser*2)
         ser = Service(executable_path=path.join(self.path_to_dir, fr"{path_brow_folder}\112.0.5615.50\chromedriver_112.0.5615.50.exe"))  # путь к chromedriver
         op = webdriver.ChromeOptions()  # опции для не разлоченного селениума
@@ -50,6 +51,9 @@ class Chrome:
         if self.header:
             op.add_argument('--headless')  # Параметр запуска безголового режима
             op.add_argument(f"--window-size={resolution}")  # Задаёт разрешение экрана
+        if limited_load:
+            self.limited_load = limited_load
+            op.set_capability('pageLoadStrategy', 'none')  # Ждать ли полной загрузки страницы
 
         op.binary_location = path.join(self.path_to_dir, fr"{path_brow_folder}\112.0.5615.50\Chrome 112.0.5615.50\chrome.exe")  # Путь к старой версии хрома
         op.add_argument(
@@ -65,10 +69,9 @@ class Chrome:
         fake_user_agent = generate_user_agent(device_type="desktop", navigator='chrome')  # генерит рандомного юзер агента
         op.add_argument(f"user-agent={fake_user_agent}")  # устанавливает фиктивный юзер агент
         # op.add_argument("--disable-notifications") # Отключает уведомления, включение этой функции даёт не прохождение проверки на intoli.com
-
         op.add_experimental_option("excludeSwitches", ["enable-automation"])  # Убирает данные что хром в авто режиме
         op.add_experimental_option("useAutomationExtension", False)  # Убирает данные что хром в авто режиме
-        op.set_capability('pageLoadStrategy', 'none')  #Ждать ли полной загрузки страницы
+
         self.browser = webdriver.Chrome(service=ser, options=op)  # Запускает селениум
         self.browser.set_page_load_timeout(60)  # Максимальное время ожидания загрузки страницы.
         return self
@@ -150,8 +153,15 @@ class Chrome:
         tab_id = self.browser.current_window_handle  # Определяет ID нового окна
         return tab_id  # Возвращает ID окна
 
+    def get_limited_load(self, expected_xpath, load_link: bool = False, link=None):
+        w = WebDriverWait(self.browser, 15)
+        if load_link:
+            self.browser.get(link)
+        w.until(EC.presence_of_element_located((By.XPATH, expected_xpath)))
+        self.browser.execute_script("window.stop();")
+
     # Проверяет страница на ошибки возвращает содержимое
-    def simple_check(self, link, verif_note, sleep_time=3, mass_error_sleep_time=300, reset_counter=60):
+    def simple_check(self, link, verif_note, sleep_time=3, mass_error_sleep_time=300, reset_counter=60, verif_by_what=By.CSS_SELECTOR):
         def remove_track():
             self.error_counter += 1
             if self.error_counter == 5:
@@ -168,7 +178,7 @@ class Chrome:
 
         def check_verif_note(time_to_sleep):
             try:
-                self.browser.find_element(By.CSS_SELECTOR, verif_note)
+                self.browser.find_element(verif_by_what, verif_note)
                 sleep(1)
                 source = self.browser.page_source
                 sleep(time_to_sleep)
@@ -186,6 +196,9 @@ class Chrome:
             return source
 
         max_page = reset_counter-self.random_delimiter
+        if max_page < reset_counter:
+            max_page = reset_counter
+
         if self.page_counter % max_page == 0 and self.page_counter != 0:
             print("ID:", self.id_browser, "link:", link,  ", стр:", self.page_counter, ", меняю агента")
             self.clear_cache()
@@ -194,8 +207,11 @@ class Chrome:
             sleep(1)
 
         try:
-            self.browser.get(link)
-            sleep(1)
+            if self.limited_load:
+                self.get_limited_load(verif_note, True, link)
+            else:
+                self.browser.get(link)
+                sleep(1)
             check_verif_note(sleep_time)
             source_page = check_verif_note(1)
             self.page_counter += 1
