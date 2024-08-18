@@ -167,7 +167,7 @@ class Chrome:
 
     # Проверяет страница на ошибки возвращает содержимое
     def simple_check(self, link, verif_note, sleep_time=3, mass_error_sleep_time=300, reset_counter=60,
-                     verif_by_what=By.CSS_SELECTOR, reload_current_link=False):
+                     verif_by_what=By.CSS_SELECTOR, check_current_url=False):
         def remove_track():
             self.error_counter += 1
             if self.error_counter == 5:
@@ -179,7 +179,12 @@ class Chrome:
                 self.change_fake_agent()
                 sleep(1)
                 self.error_counter = 0
-            source = self.simple_check(link, verif_note, sleep_time, reset_counter)
+            source = self.simple_check(link=link,
+                                       verif_note=verif_note,
+                                       sleep_time=sleep_time,
+                                       mass_error_sleep_time=mass_error_sleep_time,
+                                       reset_counter=reset_counter,
+                                       verif_by_what=verif_by_what)
             return source
 
         def check_verif_note(time_to_sleep):
@@ -213,13 +218,15 @@ class Chrome:
             sleep(1)
 
         try:
-            if self.limited_load:
-                self.get_limited_load(verif_note, True, link)
-            elif reload_current_link:
+            if check_current_url:
                 pass
             else:
-                self.browser.get(link)
+                if self.limited_load:
+                    self.get_limited_load(verif_note, True, link)
+                else:
+                    self.browser.get(link)
                 sleep(1)
+
             check_verif_note(sleep_time)
             source_page = check_verif_note(1)
             self.page_counter += 1
