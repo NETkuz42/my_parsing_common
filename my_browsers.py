@@ -157,11 +157,17 @@ class Chrome:
         w = WebDriverWait(self.browser, 15)
         if load_link:
             self.browser.get(link)
-        w.until(EC.presence_of_element_located((By.XPATH, expected_xpath)))
+        test = w.until(EC.presence_of_element_located((By.XPATH, expected_xpath)))
         self.browser.execute_script("window.stop();")
+        print(self.id_browser, test)
+
+        # if self.browser.find_element(By.XPATH, expected_xpath) is None:
+        #     self.browser.refresh()
+        #     self.get_limited_load(expected_xpath, load_link, link)
 
     # Проверяет страница на ошибки возвращает содержимое
-    def simple_check(self, link, verif_note, sleep_time=3, mass_error_sleep_time=300, reset_counter=60, verif_by_what=By.CSS_SELECTOR):
+    def simple_check(self, link, verif_note, sleep_time=3, mass_error_sleep_time=300, reset_counter=60,
+                     verif_by_what=By.CSS_SELECTOR, reload_current_link=False):
         def remove_track():
             self.error_counter += 1
             if self.error_counter == 5:
@@ -209,6 +215,8 @@ class Chrome:
         try:
             if self.limited_load:
                 self.get_limited_load(verif_note, True, link)
+            elif reload_current_link:
+                pass
             else:
                 self.browser.get(link)
                 sleep(1)
