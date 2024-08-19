@@ -184,7 +184,9 @@ class Chrome:
                                        sleep_time=sleep_time,
                                        mass_error_sleep_time=mass_error_sleep_time,
                                        reset_counter=reset_counter,
-                                       verif_by_what=verif_by_what)
+                                       verif_by_what=verif_by_what,
+                                       check_current_url=False)
+            print(self.id_browser, link) # Временно
             return source
 
         def check_verif_note(time_to_sleep):
