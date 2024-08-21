@@ -21,6 +21,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from typing import Literal
 import json
+from datetime import datetime
 
 
 class Chrome:
@@ -167,11 +168,11 @@ class Chrome:
 
     # Проверяет страница на ошибки возвращает содержимое
     def simple_check(self, link, verif_note, sleep_time=3, mass_error_sleep_time=300, reset_counter=60,
-                     verif_by_what=By.CSS_SELECTOR, check_current_url=False):
+                     verif_by_what=By.CSS_SELECTOR, check_current_url=False, errors_before_stop=None):
         def remove_track():
             self.error_counter += 1
             if self.error_counter == 5:
-                print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter,
+                print("ID:", datetime.now(), self.id_browser, "link:", link, ", cтр:", self.page_counter,
                       f"больше 5 ошибок, сплю {mass_error_sleep_time} секунд, потом меняю лицо")
                 sleep(mass_error_sleep_time)
                 self.clear_cache()
@@ -185,7 +186,8 @@ class Chrome:
                                        mass_error_sleep_time=mass_error_sleep_time,
                                        reset_counter=reset_counter,
                                        verif_by_what=verif_by_what,
-                                       check_current_url=False)
+                                       check_current_url=False,
+                                       errors_before_stop=errors_before_stop)
             print(self.id_browser, link) # Временно
             return source
 
@@ -196,14 +198,14 @@ class Chrome:
                 source = self.browser.page_source
                 sleep(time_to_sleep)
             except NoSuchElementException:
-                print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "нет_контрольной_надписи")
+                print("ID:", datetime.now(), self.id_browser, "link:", link, ", cтр:", self.page_counter, "нет_контрольной_надписи")
                 source = remove_track()
             except TimeoutException as er:
-                print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "ошибка в момент проверки",
+                print("ID:", datetime.now(), self.id_browser, "link:", link, ", cтр:", self.page_counter, "ошибка в момент проверки",
                       er)
                 source = remove_track()
             except WebDriverException as er:
-                print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "ошибка в момент проверки",
+                print("ID:", datetime.now(), self.id_browser, "link:", link, ", cтр:", self.page_counter, "ошибка в момент проверки",
                       er)
                 source = remove_track()
             return source
@@ -211,6 +213,9 @@ class Chrome:
         max_page = reset_counter-self.random_delimiter
         if max_page < reset_counter:
             max_page = reset_counter
+
+        if self.error_counter >= errors_before_stop:
+            return False
 
         if self.page_counter % max_page == 0 and self.page_counter != 0:
             print("ID:", self.id_browser, "link:", link,  ", стр:", self.page_counter, ", меняю агента")
@@ -235,15 +240,15 @@ class Chrome:
             self.error_counter = 0
 
         except TimeoutException:
-            print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "ошибка времени загрузки страницы, повторяю")
+            print("ID:", datetime.now(), self.id_browser, "link:", link, ", cтр:", self.page_counter, "ошибка времени загрузки страницы, повторяю")
             source_page = remove_track()
 
         except InvalidSessionIdException:
-            print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "непонятная ошибка InvalidSession")
+            print("ID:", datetime.now(), self.id_browser, "link:", link, ", cтр:", self.page_counter, "непонятная ошибка InvalidSession")
             source_page = remove_track()
 
         except WebDriverException:
-            print("ID:", self.id_browser, "link:", link, ", cтр:", self.page_counter, "ошибка драйвера")
+            print("ID:", datetime.now(), self.id_browser, "link:", link, ", cтр:", self.page_counter, "ошибка драйвера")
             source_page = remove_track()
 
         return source_page
