@@ -168,7 +168,7 @@ class Chrome:
 
     # Проверяет страница на ошибки возвращает содержимое
     def simple_check(self, link, verif_note, sleep_time=3, mass_error_sleep_time=300, reset_counter=60,
-                     verif_by_what=By.CSS_SELECTOR, check_current_url=False, errors_before_stop=50):
+                     verif_by_what=By.CSS_SELECTOR, check_current_url=False, errors_before_stop=0):
         def remove_track():
             self.error_counter += 1
             if self.error_counter == 5:
@@ -214,7 +214,7 @@ class Chrome:
         if max_page < reset_counter:
             max_page = reset_counter
 
-        if self.error_counter >= errors_before_stop:
+        if self.error_counter >= errors_before_stop != 0:
             return False
 
         if self.page_counter % max_page == 0 and self.page_counter != 0:
