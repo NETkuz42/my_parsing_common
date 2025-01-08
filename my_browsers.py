@@ -44,7 +44,7 @@ class Chrome:
 
     # Запускает Хром
     def start_chrome(self, header=True, control_window=True, path_brow_folder: Chrome_locations = r"D:",
-                     resolution='2560,1440', limited_load=False):  # Принимает номер профиля, по умолчанию 0)
+                     resolution='2560,1440', limited_load=False, javascript=True):  # Принимает номер профиля, по умолчанию 0)
         sleep(self.id_browser*2)
         ser = Service(executable_path=path.join(self.path_to_dir, fr"{path_brow_folder}\112.0.5615.50\chromedriver_112.0.5615.50.exe"))  # путь к chromedriver
         op = webdriver.ChromeOptions()  # опции для не разлоченного селениума
@@ -55,6 +55,8 @@ class Chrome:
         if limited_load:
             self.limited_load = limited_load
             op.set_capability('pageLoadStrategy', 'none')  # Ждать ли полной загрузки страницы
+        if javascript is False:
+            op.add_experimental_option("prefs", {'profile.managed_default_content_settings.javascript': 2})
 
         op.binary_location = path.join(self.path_to_dir, fr"{path_brow_folder}\112.0.5615.50\Chrome 112.0.5615.50\chrome.exe")  # Путь к старой версии хрома
         op.add_argument(
